@@ -5,15 +5,16 @@
 */
 
 import React, { useState, useEffect } from 'react';
-import { HeroScene, GlobalScene } from './components/QuantumScene';
+import { HeroScene } from './components/QuantumScene';
 import { GraphTheoryDiagram, DataPipelineDiagram } from './components/Diagrams';
 import { ArrowDown, Menu, X, Mail, Linkedin, FileText } from 'lucide-react';
 import { govtPaper, ricePoster, histPaper, nmunPaper, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
+import { useScrollReveal } from './hooks/useScrollReveal';
 
-const HonorCard = ({ title, org, date, delay }: { title: string, org: string, date: string, delay: string }) => {
+const HonorCard = ({ title, org, date, delayIndex }: { title: string, org: string, date: string, delayIndex: number }) => {
     return (
-        <div className="flex flex-col group animate-fade-in-up items-center p-6 bg-white rounded-xl border border-stone-200 shadow-sm hover:shadow-md transition-all duration-300 w-full hover:border-nobel-gold/50" style={{ animationDelay: delay }}>
+        <div className={`flex flex-col group items-center p-6 bg-white rounded-sm border border-stone-200/60 hover:shadow-sm transition-all duration-300 w-full hover:-translate-y-1 hover:border-nobel-gold/50 reveal reveal-delay-${delayIndex}`}>
             <h3 className="font-serif text-lg text-stone-900 text-center mb-2 leading-tight">{title}</h3>
             <div className="w-8 h-0.5 bg-nobel-gold mb-3 opacity-60"></div>
             <p className="text-xs text-stone-500 font-bold uppercase tracking-widest text-center">{org}</p>
@@ -39,15 +40,15 @@ const ExperienceItem = ({
     documentData?: ResearchDocument,
     onOpenDocument?: (doc: ResearchDocument) => void
 }) => (
-    <div className="mb-12 border-l-2 border-stone-200 pl-6 relative">
-        <div className="absolute w-3 h-3 bg-nobel-gold rounded-full -left-[7px] top-1.5"></div>
+    <div ref={useScrollReveal()} className="reveal mb-12 border-l border-stone-200 pl-6 relative">
+        <div className="absolute w-2 h-2 bg-nobel-gold rounded-full -left-[4.5px] top-1.5"></div>
         <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
             <div className="flex items-center gap-3">
                 <h3 className="text-xl font-serif text-stone-900 font-medium">{title}</h3>
                 {documentData && onOpenDocument && (
                     <button
                         onClick={() => onOpenDocument(documentData)}
-                        className="flex items-center gap-1.5 px-2 py-1 bg-white border border-nobel-gold/30 rounded-md text-nobel-gold hover:bg-nobel-gold hover:text-white transition-all duration-300 text-xs uppercase font-bold tracking-wider shadow-sm group"
+                        className="flex items-center gap-1.5 px-2 py-1 bg-white border border-nobel-gold/30 rounded-md text-nobel-gold hover:bg-nobel-gold hover:text-white transition-all duration-300 text-xs uppercase font-bold tracking-wider group"
                         title="View Paper/Poster"
                     >
                         <FileText size={14} className="group-hover:scale-110 transition-transform" />
@@ -106,16 +107,16 @@ const App: React.FC = () => {
             />
 
             {/* Navigation */}
-            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#F9F8F4]/95 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6'}`}>
+            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#F9F8F4]/95 backdrop-blur-md shadow-sm py-4 border-b border-stone-200/80' : 'bg-transparent py-6 border-b border-stone-200/0'}`}>
                 <div className="container mx-auto px-6 flex justify-between items-center">
                     <div className="flex items-center gap-4 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                        <div className="w-8 h-8 bg-nobel-gold rounded-full flex items-center justify-center text-white font-serif font-bold text-xl shadow-sm pb-1">T</div>
+                        <div className="w-8 h-8 bg-nobel-gold rounded-sm flex items-center justify-center text-white font-serif font-bold text-xl shadow-sm pb-1">T</div>
                         <span className={`font-serif font-bold text-lg tracking-wide transition-opacity ${scrolled ? 'opacity-100' : 'opacity-0 md:opacity-100'}`}>
                             TUNG VO
                         </span>
                     </div>
 
-                    <div className="hidden md:flex items-center gap-6 text-sm font-medium tracking-wide text-stone-600">
+                    <div className={`hidden md:flex items-center gap-6 transition-all ${scrolled ? 'text-sm font-medium tracking-wide text-stone-600' : 'text-sm font-light tracking-widest text-stone-600'}`}>
                         <a href="#about" onClick={scrollToSection('about')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">About</a>
                         <a href="#research" onClick={scrollToSection('research')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">Research</a>
                         <a href="#leadership" onClick={scrollToSection('leadership')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">Leadership</a>
@@ -184,28 +185,28 @@ const App: React.FC = () => {
 
             <main>
                 {/* Education Section */}
-                <section id="about" className="py-24 bg-white">
+                <section id="about" className="py-32 bg-white">
                     <div className="container mx-auto px-6">
-                        <div className="text-center mb-12">
+                        <div ref={useScrollReveal()} className="reveal text-center mb-12">
                             <div className="inline-block mb-3 text-xs font-bold tracking-widest text-stone-500 uppercase">Education</div>
                             <h2 className="font-serif text-4xl leading-tight text-stone-900">Academic Foundation</h2>
-                            <div className="w-16 h-1 bg-nobel-gold mx-auto mt-6"></div>
+                            <div className="w-10 h-px bg-nobel-gold mx-auto mt-6"></div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                            <div className="p-6 bg-[#F9F8F4] rounded-xl border border-stone-200 text-center hover:shadow-md transition-shadow">
+                            <div className="p-6 bg-[#F9F8F4] rounded-sm border border-stone-200/60 text-center hover:shadow-sm transition-shadow">
                                 <h4 className="font-bold text-stone-900 text-lg mb-2">University of St. Thomas</h4>
                                 <p className="text-stone-600 font-serif italic mb-2">B.S. Applied Mathematics</p>
                                 <p className="text-sm text-stone-500">Expected May 2027</p>
                                 <p className="text-xs text-stone-400 mt-2 uppercase tracking-wide">Minor: Data Analytics</p>
                             </div>
-                            <div className="p-6 bg-[#F9F8F4] rounded-xl border border-stone-200 text-center hover:shadow-md transition-shadow">
+                            <div className="p-6 bg-[#F9F8F4] rounded-sm border border-stone-200/60 text-center hover:shadow-sm transition-shadow">
                                 <h4 className="font-bold text-stone-900 text-lg mb-2">Lone Star College</h4>
                                 <p className="text-stone-600 font-serif italic mb-2">Honors A.S. / General</p>
                                 <p className="text-sm text-stone-500">May 2025</p>
                                 <p className="text-xs text-stone-400 mt-2 uppercase tracking-wide">Summa Cum Laude</p>
                             </div>
-                            <div className="p-6 bg-[#F9F8F4] rounded-xl border border-stone-200 text-center hover:shadow-md transition-shadow">
+                            <div className="p-6 bg-[#F9F8F4] rounded-sm border border-stone-200/60 text-center hover:shadow-sm transition-shadow">
                                 <h4 className="font-bold text-stone-900 text-lg mb-2">Jersey Village High School</h4>
                                 <p className="text-stone-600 font-serif italic mb-2">High School Diploma</p>
                                 <p className="text-sm text-stone-500">May 2023</p>
@@ -216,14 +217,16 @@ const App: React.FC = () => {
                 </section>
 
                 {/* Research Experience */}
-                <section id="research" className="py-24 bg-[#F5F4F0] border-t border-stone-200">
+                <section id="research" className="py-32 bg-[#F5F4F0] border-t border-stone-100">
                     <div className="container mx-auto px-6">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
                             <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-stone-600 text-xs font-bold tracking-widest uppercase rounded-full mb-6 border border-stone-200 shadow-sm">
-                                    Research Focus
+                                <div ref={useScrollReveal()} className="reveal">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-stone-600 text-xs font-bold tracking-widest uppercase rounded-full mb-6 border border-stone-200 shadow-sm">
+                                        Research Focus
+                                    </div>
+                                    <h2 className="font-serif text-4xl md:text-5xl mb-6 text-stone-900">Graph Theory &<br />Network Dynamics</h2>
                                 </div>
-                                <h2 className="font-serif text-4xl md:text-5xl mb-6 text-stone-900">Graph Theory &<br />Network Dynamics</h2>
                                 <ExperienceItem
                                     title="University of St. Thomas"
                                     role="Undergraduate Researcher"
@@ -239,10 +242,12 @@ const App: React.FC = () => {
                             </div>
 
                             <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-stone-600 text-xs font-bold tracking-widest uppercase rounded-full mb-6 border border-stone-200 shadow-sm">
-                                    Data Science
+                                <div ref={useScrollReveal()} className="reveal">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-stone-600 text-xs font-bold tracking-widest uppercase rounded-full mb-6 border border-stone-200 shadow-sm">
+                                        Data Science
+                                    </div>
+                                    <h2 className="font-serif text-4xl md:text-5xl mb-6 text-stone-900">Sustainability &<br />Data Analytics</h2>
                                 </div>
-                                <h2 className="font-serif text-4xl md:text-5xl mb-6 text-stone-900">Sustainability &<br />Data Analytics</h2>
                                 <ExperienceItem
                                     title="Rice University"
                                     role="Undergraduate Researcher"
@@ -298,22 +303,17 @@ const App: React.FC = () => {
                 </section>
 
                 {/* Leadership Development */}
-                <section id="leadership" className="py-24 bg-white border-t border-stone-200">
+                <section id="leadership" className="py-32 bg-white border-t border-stone-100">
                     <div className="container mx-auto px-6">
-                        <div className="flex flex-col md:flex-row gap-12 mb-16">
-                            <div className="md:w-1/3">
-                                <div className="inline-block mb-3 text-xs font-bold tracking-widest text-stone-500 uppercase">Impact</div>
-                                <h2 className="font-serif text-4xl mb-6 text-stone-900">Leadership Development</h2>
-                                <div className="aspect-[4/5] bg-stone-900 rounded-xl overflow-hidden relative border border-stone-800 shadow-2xl sticky top-24">
-                                    <GlobalScene />
-                                    <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
-                                        <div className="text-white font-serif text-2xl mb-2">Global Vision</div>
-                                        <p className="text-stone-400 text-sm">Cultivating ethical leadership and cultural competency on an international stage.</p>
-                                    </div>
+                        <div className="mb-16">
+                            <div>
+                                <div ref={useScrollReveal()} className="reveal">
+                                    <div className="inline-block mb-3 text-xs font-bold tracking-widest text-stone-500 uppercase">Impact</div>
+                                    <h2 className="font-serif text-4xl mb-6 text-stone-900">Leadership Development</h2>
                                 </div>
                             </div>
 
-                            <div className="md:w-2/3">
+                            <div>
                                 <ExperienceItem
                                     title="Community, Action, and Social Entrepreneurship"
                                     role="Finalist"
@@ -382,9 +382,9 @@ const App: React.FC = () => {
                 </section>
 
                 {/* Work Experience */}
-                <section id="work" className="py-24 bg-[#F5F4F0] border-t border-stone-200">
+                <section id="work" className="py-32 bg-[#F5F4F0] border-t border-stone-100">
                     <div className="container mx-auto px-6 max-w-4xl">
-                        <div className="text-center mb-16">
+                        <div ref={useScrollReveal()} className="reveal text-center mb-16">
                             <div className="inline-block mb-3 text-xs font-bold tracking-widest text-stone-500 uppercase">Professional</div>
                             <h2 className="font-serif text-3xl md:text-5xl text-stone-900">Work Experience</h2>
                         </div>
@@ -431,50 +431,50 @@ const App: React.FC = () => {
                 </section>
 
                 {/* Honors & Awards */}
-                <section id="honors" className="py-24 bg-white border-t border-stone-300">
+                <section id="honors" className="py-32 bg-white border-t border-stone-100">
                     <div className="container mx-auto px-6">
-                        <div className="text-center mb-16">
+                        <div ref={useScrollReveal()} className="reveal text-center mb-16">
                             <div className="inline-block mb-3 text-xs font-bold tracking-widest text-stone-500 uppercase">Recognition</div>
                             <h2 className="font-serif text-3xl md:text-5xl mb-4 text-stone-900">Honors & Awards</h2>
                             <p className="text-stone-500 max-w-2xl mx-auto">Selected competitive accomplishments and scholarships.</p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div ref={useScrollReveal()} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <HonorCard
                                 title="Monaghan Excellence Scholarship"
                                 org="University of St. Thomas"
                                 date="Fall 2025 - Spring 2027"
-                                delay="0s"
+                                delayIndex={1}
                             />
                             <HonorCard
                                 title="Distinguished Global Scholar"
                                 org="Lone Star College"
                                 date="Fall 2024 - Spring 2025"
-                                delay="0.1s"
+                                delayIndex={2}
                             />
                             <HonorCard
                                 title="Best In Committee Award"
                                 org="National Model United Nations, NY"
                                 date="2024"
-                                delay="0.2s"
+                                delayIndex={3}
                             />
                             <HonorCard
                                 title="Outstanding Delegation Award"
                                 org="National Model United Nations, NY"
                                 date="2024"
-                                delay="0.3s"
+                                delayIndex={1}
                             />
                             <HonorCard
                                 title="Global Scholar Award"
                                 org="Lone Star College Houston-North"
                                 date="Fall 2023 – Spring 2025"
-                                delay="0.4s"
+                                delayIndex={2}
                             />
                             <HonorCard
                                 title="President’s List"
                                 org="Lone Star College"
                                 date="2023 - 2025"
-                                delay="0.5s"
+                                delayIndex={3}
                             />
                         </div>
 
