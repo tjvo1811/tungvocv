@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Database, FileText, PieChart, Activity, Brain, Server } from 'lucide-react';
+import { FileText, Activity } from 'lucide-react';
 
 // --- GRAPH THEORY DIAGRAM ---
 // Represents "Vertex connectivity" and "Zero forcing sets"
@@ -78,50 +78,3 @@ export const GraphTheoryDiagram: React.FC = () => {
   );
 };
 
-// --- DATA PIPELINE DIAGRAM ---
-// Represents "Raw Data -> Cleaning -> Analysis -> Insight"
-export const DataPipelineDiagram: React.FC = () => {
-  const [stage, setStage] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-        setStage(s => (s + 1) % 4);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const stages = [
-      { icon: <Database size={20} />, label: "Collection" },
-      { icon: <Server size={20} />, label: "Processing" },
-      { icon: <Brain size={20} />, label: "Analysis" },
-      { icon: <PieChart size={20} />, label: "Insight" },
-  ];
-
-  return (
-    <div className="flex flex-col items-center p-8 bg-[#F5F4F0] rounded-xl border border-stone-200">
-      <h3 className="font-serif text-xl mb-4 text-stone-900">Data Science Workflow</h3>
-      <div className="flex items-center gap-4 md:gap-8">
-        {stages.map((s, i) => (
-            <div key={i} className="flex items-center gap-2">
-                <div className={`flex flex-col items-center gap-2 transition-opacity duration-500 ${i <= stage ? 'opacity-100' : 'opacity-30'}`}>
-                    <div className={`w-12 h-12 rounded-full border-2 flex items-center justify-center transition-colors duration-300 ${i === stage ? 'border-nobel-gold bg-white text-nobel-gold shadow-md' : 'border-stone-300 bg-stone-100 text-stone-400'}`}>
-                        {s.icon}
-                    </div>
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-stone-600">{s.label}</span>
-                </div>
-                {i < stages.length - 1 && (
-                    <div className="w-8 h-[2px] bg-stone-300">
-                        <motion.div 
-                            className="h-full bg-nobel-gold" 
-                            initial={{ width: "0%" }}
-                            animate={{ width: stage > i ? "100%" : "0%" }}
-                            transition={{ duration: 0.5 }}
-                        />
-                    </div>
-                )}
-            </div>
-        ))}
-      </div>
-    </div>
-  );
-};

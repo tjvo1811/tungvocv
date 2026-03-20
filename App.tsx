@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { HeroScene } from './components/QuantumScene';
-import { GraphTheoryDiagram, DataPipelineDiagram } from './components/Diagrams';
+import { GraphTheoryDiagram } from './components/Diagrams';
 import { ArrowDown, Menu, X, Mail, Linkedin, FileText } from 'lucide-react';
 import { govtPaper, ricePoster, histPaper, nmunPaper, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
@@ -243,10 +243,7 @@ const App: React.FC = () => {
 
                             <div>
                                 <div ref={useScrollReveal()} className="reveal">
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-stone-600 text-xs font-bold tracking-widest uppercase rounded-full mb-6 border border-stone-200 shadow-sm">
-                                        Data Science
-                                    </div>
-                                    <h2 className="font-serif text-4xl md:text-5xl mb-6 text-stone-900">Sustainability &<br />Data Analytics</h2>
+                                    <h2 className="font-serif text-4xl md:text-5xl mb-6 text-stone-900">Sustainability &<br />Public Policy</h2>
                                 </div>
                                 <ExperienceItem
                                     title="Rice University"
@@ -258,12 +255,6 @@ const App: React.FC = () => {
                                 >
                                     Exploring the vast world of Data Science within the lens of sustainability. Using scientific methods, programming skills, and mathematics to extract insight regarding food webs, data visualization, and the ethics of data centers.
                                 </ExperienceItem>
-
-                                <div className="my-8">
-                                    <DataPipelineDiagram />
-                                </div>
-
-
 
                                 <ExperienceItem
                                     title="Lone Star College Honors College"
