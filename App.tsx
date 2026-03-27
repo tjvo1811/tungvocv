@@ -1,507 +1,912 @@
-
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { useState, useEffect } from 'react';
-import { HeroScene } from './components/QuantumScene';
-import { GraphTheoryDiagram } from './components/Diagrams';
-import { ArrowDown, Menu, X, Mail, Linkedin, FileText } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowDown, Menu, X, Mail, Linkedin, FileText, Moon, Sun } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { govtPaper, ricePoster, histPaper, nmunPaper, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
-import { useScrollReveal } from './hooks/useScrollReveal';
 
-const HonorCard = ({ title, org, date, delayIndex }: { title: string, org: string, date: string, delayIndex: number }) => {
-    return (
-        <div className={`flex flex-col group items-center p-6 bg-white rounded-sm border border-stone-200/60 hover:shadow-sm transition-all duration-300 w-full hover:-translate-y-1 hover:border-nobel-gold/50 reveal reveal-delay-${delayIndex}`}>
-            <h3 className="font-serif text-lg text-stone-900 text-center mb-2 leading-tight">{title}</h3>
-            <div className="w-8 h-0.5 bg-nobel-gold mb-3 opacity-60"></div>
-            <p className="text-xs text-stone-500 font-bold uppercase tracking-widest text-center">{org}</p>
-            <p className="text-xs text-stone-400 mt-2 font-serif italic">{date}</p>
-        </div>
-    );
+type TabId = 'home' | 'about' | 'research' | 'leadership' | 'work' | 'honors';
+
+/* ─── Animation variants ──────────────────────────────────────────── */
+const cubicEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+const pageTransition = {
+  initial: { opacity: 0, y: 24 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: cubicEase, staggerChildren: 0.07 },
+  },
+  exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
 };
 
-const ExperienceItem = ({
-    title,
-    role,
-    date,
-    children,
-    location,
-    documentData,
-    onOpenDocument
+const fadeIn = {
+  initial: { opacity: 0, y: 16 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, ease: cubicEase },
+  },
+};
+
+/* ─── Static data ─────────────────────────────────────────────────── */
+const educationData = [
+  { school: 'University of St. Thomas', degree: 'B.S. Applied Mathematics', date: 'Expected May 2027', honor: 'Minor: Data Analytics', url: 'https://stthom.edu/', color: 'bg-[#d4e8dc] dark:bg-[#1a3d2b]/40' },
+  { school: 'Lone Star College', degree: 'Honors A.S. / General', date: 'May 2025', honor: 'Summa Cum Laude', url: 'https://www.lonestar.edu/', color: 'bg-[#e0d6f0] dark:bg-[#2a1e46]/40' },
+  { school: 'Jersey Village High School', degree: 'High School Diploma', date: 'May 2023', honor: 'Cum Laude', url: 'https://jerseyvillage.cfisd.net/', color: 'bg-[#f0dcd4] dark:bg-[#3e2218]/40' },
+];
+
+const honorData = [
+  { title: 'Monaghan Excellence Scholarship', org: 'University of St. Thomas', date: 'Fall 2025 – Spring 2027', color: 'bg-[#d4e8dc] dark:bg-[#1a3d2b]/30' },
+  { title: 'Distinguished Global Scholar', org: 'Lone Star College', date: 'Fall 2024 – Spring 2025', color: 'bg-[#e0d6f0] dark:bg-[#2a1e46]/30' },
+  { title: 'Best In Committee Award', org: 'National Model United Nations, NY', date: '2024', color: 'bg-[#f0dcd4] dark:bg-[#3e2218]/30' },
+  { title: 'Outstanding Delegation Award', org: 'National Model United Nations, NY', date: '2024', color: 'bg-[#d4dce8] dark:bg-[#1a2a3e]/30' },
+  { title: 'Global Scholar Award', org: 'Lone Star College Houston-North', date: 'Fall 2023 – Spring 2025', color: 'bg-[#f0e8d4] dark:bg-[#3e3218]/30' },
+  { title: "President's List", org: 'Lone Star College', date: '2023 – 2025', color: 'bg-[#d4e8e4] dark:bg-[#1a3d35]/30' },
+];
+
+/* ─── Utility ─────────────────────────────────────────────────────── */
+const getStaircaseOffset = (index: number, total: number) =>
+  ((total - 1 - index) / Math.max(total - 1, 1)) * 50;
+
+/* ─── Sparkle ─────────────────────────────────────────────────────── */
+const Sparkle = ({
+  className = '',
+  size = 36,
+  style,
 }: {
-    title: string,
-    role: string,
-    date: string,
-    children: React.ReactNode,
-    location?: string,
-    documentData?: ResearchDocument,
-    onOpenDocument?: (doc: ResearchDocument) => void
+  className?: string;
+  size?: number;
+  style?: React.CSSProperties;
 }) => (
-    <div ref={useScrollReveal()} className="reveal mb-12 border-l border-stone-200 pl-6 relative">
-        <div className="absolute w-2 h-2 bg-nobel-gold rounded-full -left-[4.5px] top-1.5"></div>
-        <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
-            <div className="flex items-center gap-3">
-                <h3 className="text-xl font-serif text-stone-900 font-medium">{title}</h3>
-                {documentData && onOpenDocument && (
-                    <button
-                        onClick={() => onOpenDocument(documentData)}
-                        className="flex items-center gap-1.5 px-2 py-1 bg-white border border-nobel-gold/30 rounded-md text-nobel-gold hover:bg-nobel-gold hover:text-white transition-all duration-300 text-xs uppercase font-bold tracking-wider group"
-                        title="View Paper/Poster"
-                    >
-                        <FileText size={14} className="group-hover:scale-110 transition-transform" />
-                        <span className="hidden sm:inline">View {documentData.type}</span>
-                    </button>
-                )}
-            </div>
-            <span className="text-sm text-stone-500 font-mono whitespace-nowrap ml-4">{date}</span>
-        </div>
-        <div className="text-sm font-bold text-stone-600 uppercase tracking-wider mb-1">{role}</div>
-        {location && <div className="text-xs text-stone-400 mb-3 italic">{location}</div>}
-        <div className="text-stone-600 leading-relaxed text-lg">
-            {children}
-        </div>
-    </div>
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 36 36"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={className}
+    style={style}
+  >
+    <path
+      d="M18 0 C10 3 3 10 0 18 C3 26 10 33 18 36 C26 33 33 26 36 18 C33 10 26 3 18 0 Z"
+      fill="currentColor"
+    />
+  </svg>
 );
 
+/* ─── Tab hero heading (like seanhalpin.xyz) ──────────────────────── */
+const TabHero = ({ children }: { children: React.ReactNode }) => (
+  <motion.div variants={fadeIn} className="text-center mb-16 pt-4">
+    <h1
+      className="font-display font-black text-forest dark:text-white leading-[0.88]"
+      style={{ fontSize: 'clamp(3.5rem, 10vw, 8rem)' }}
+    >
+      {children}
+    </h1>
+  </motion.div>
+);
+
+/* ─── Honor card ─────────────────────────────────────────────────── */
+const HonorCard = ({
+  title,
+  org,
+  date,
+  color,
+}: {
+  title: string;
+  org: string;
+  date: string;
+  color: string;
+}) => (
+  <motion.div
+    variants={fadeIn}
+    className={`flex flex-col group items-center p-6 ${color} rounded-2xl border border-white/40 dark:border-white/10 hover:shadow-lg transition-all duration-300 hover:-translate-y-1`}
+  >
+    <h3 className="font-display font-bold text-lg text-forest dark:text-white text-center mb-2 leading-tight">
+      {title}
+    </h3>
+    <div className="w-8 h-0.5 bg-nobel-gold mb-3 opacity-60" />
+    <p className="text-xs text-stone-500 dark:text-white/55 font-bold uppercase tracking-widest text-center">
+      {org}
+    </p>
+    <p className="text-xs text-stone-400 dark:text-white/35 mt-2 italic">{date}</p>
+  </motion.div>
+);
+
+/* ─── Experience item (used in Research) ──────────────────────────── */
+const ExperienceItem = ({
+  title,
+  role,
+  date,
+  children,
+  location,
+  documentData,
+  onOpenDocument,
+}: {
+  title: string;
+  role: string;
+  date: string;
+  children: React.ReactNode;
+  location?: string;
+  documentData?: ResearchDocument;
+  onOpenDocument?: (doc: ResearchDocument) => void;
+}) => (
+  <motion.div
+    variants={fadeIn}
+    className="mb-12 border-l-2 border-forest/20 dark:border-white/15 pl-6 relative"
+  >
+    <div className="absolute w-3 h-3 bg-forest dark:bg-white/70 rounded-full -left-[6.5px] top-1.5 ring-2 ring-white/80 dark:ring-black/30" />
+
+    <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
+      <div className="flex items-center gap-3 flex-wrap">
+        <h3 className="text-xl font-display font-bold text-forest dark:text-white">{title}</h3>
+        {documentData && onOpenDocument && (
+          <button
+            onClick={() => onOpenDocument(documentData)}
+            className="flex items-center gap-1.5 px-3 py-1 bg-white/70 dark:bg-white/10 border border-forest/20 dark:border-white/15 rounded-full text-forest dark:text-white/80 hover:bg-forest dark:hover:bg-white hover:text-white dark:hover:text-forest transition-all duration-300 text-xs uppercase font-bold tracking-wider group"
+            title="View Paper/Poster"
+          >
+            <FileText size={13} className="group-hover:scale-110 transition-transform" />
+            <span className="hidden sm:inline">View {documentData.type}</span>
+          </button>
+        )}
+      </div>
+      <span className="text-xs text-forest/50 dark:text-white/40 font-mono whitespace-nowrap mt-1 md:mt-0 md:ml-4 bg-white/50 dark:bg-white/8 px-2 py-0.5 rounded-full">
+        {date}
+      </span>
+    </div>
+
+    <div className="text-sm font-bold text-forest/70 dark:text-white/55 uppercase tracking-wider mb-1">{role}</div>
+    {location && (
+      <div className="text-xs text-forest/50 dark:text-white/40 mb-3 italic">{location}</div>
+    )}
+    <div className="text-forest/80 dark:text-white/65 leading-relaxed text-base">{children}</div>
+  </motion.div>
+);
+
+/* ─── Section heading (smaller, used within sections) ────────────── */
+const SectionHeading = ({
+  label,
+  heading,
+  sub,
+  center = false,
+}: {
+  label: string;
+  heading: string;
+  sub?: string;
+  center?: boolean;
+}) => (
+  <motion.div
+    variants={fadeIn}
+    className={`mb-12 ${center ? 'text-center' : ''}`}
+  >
+    <div className="inline-block mb-3 text-xs font-bold tracking-[0.2em] text-forest/50 dark:text-white/40 uppercase">
+      {label}
+    </div>
+    <h2 className="font-display font-black text-5xl md:text-6xl text-forest dark:text-white leading-[0.92]">
+      {heading}
+    </h2>
+    {sub && (
+      <p className="mt-4 text-forest/60 dark:text-white/50 max-w-xl mx-auto text-base">{sub}</p>
+    )}
+  </motion.div>
+);
+
+/* ─── Staircase card (like seanhalpin.xyz About timeline) ─────────── */
+const StaircaseCard = ({
+  title,
+  role,
+  shortDate,
+  location,
+  offset,
+  children,
+}: {
+  title: string;
+  role: string;
+  shortDate: string;
+  location?: string;
+  offset: number;
+  children?: React.ReactNode;
+}) => (
+  <motion.div
+    variants={fadeIn}
+    className="mb-3 staircase-step"
+    style={{ paddingLeft: `${offset}%` }}
+  >
+    <div className="bg-forest dark:bg-forest-light text-white rounded-2xl p-5 md:p-6 max-w-lg">
+      <div className="flex items-baseline justify-between gap-4 mb-1">
+        <h3 className="font-display font-bold text-base md:text-lg leading-tight">
+          {title}
+        </h3>
+        <span className="font-display font-black text-lg md:text-xl whitespace-nowrap opacity-70">
+          {shortDate}
+        </span>
+      </div>
+      <div className="text-white/70 text-sm font-bold uppercase tracking-wider">
+        {role}
+      </div>
+      {location && (
+        <div className="text-white/50 text-xs italic mt-1">{location}</div>
+      )}
+      {children && (
+        <div className="text-white/60 text-sm leading-relaxed mt-3">{children}</div>
+      )}
+    </div>
+  </motion.div>
+);
+
+/* ─── Education cards (reused on home + Education tab) ────────────── */
+const EducationCards = () => (
+  <motion.div
+    variants={fadeIn}
+    className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto"
+  >
+    {educationData.map((item) => (
+      <a
+        key={item.school}
+        href={item.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`p-6 ${item.color} rounded-2xl border border-white/40 dark:border-white/10 hover:shadow-md hover:-translate-y-1 transition-all duration-300 text-center block`}
+      >
+        <h4 className="font-display font-black text-forest dark:text-white text-lg mb-2">
+          {item.school}
+        </h4>
+        <p className="text-forest/60 dark:text-white/50 italic mb-2 text-sm">
+          {item.degree}
+        </p>
+        <p className="text-sm text-forest/50 dark:text-white/40">{item.date}</p>
+        <p className="text-xs text-forest/60 dark:text-white/50 mt-2 uppercase tracking-wide font-bold">
+          {item.honor}
+        </p>
+      </a>
+    ))}
+  </motion.div>
+);
+
+/* ─── Nav links ──────────────────────────────────────────────────── */
+const NAV_LINKS: { id: TabId; label: string }[] = [
+  { id: 'about',      label: 'Education'  },
+  { id: 'research',   label: 'Research'   },
+  { id: 'leadership', label: 'Leadership' },
+  { id: 'work',       label: 'Work'       },
+  { id: 'honors',     label: 'Honors'     },
+];
+
+/* ─── App ────────────────────────────────────────────────────────── */
 const App: React.FC = () => {
-    const [scrolled, setScrolled] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false);
-    const [activeDocument, setActiveDocument] = useState<ResearchDocument | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeDocument, setActiveDocument] = useState<ResearchDocument | null>(null);
+  const [isDark, setIsDark] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabId>('home');
 
-    useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 50);
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark);
+  }, [isDark]);
 
-    const scrollToSection = (id: string) => (e: React.MouseEvent) => {
-        e.preventDefault();
-        setMenuOpen(false);
-        const element = document.getElementById(id);
-        if (element) {
-            const headerOffset = 100;
-            const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [activeTab]);
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: "smooth"
-            });
-        }
-    };
+  /* sliding nav pill */
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const navRef = useRef<HTMLDivElement>(null);
+  const linkRefs = useRef<Record<string, HTMLElement | null>>({});
+  const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, visible: false });
 
-    const handleOpenDocument = (doc: ResearchDocument) => {
-        setActiveDocument(doc);
-    };
+  useEffect(() => {
+    const targetId = hoveredId ?? (activeTab !== 'home' ? activeTab : null);
+    if (targetId && navRef.current && linkRefs.current[targetId]) {
+      const navRect = navRef.current.getBoundingClientRect();
+      const linkRect = linkRefs.current[targetId]!.getBoundingClientRect();
+      setPillStyle({
+        left: linkRect.left - navRect.left,
+        width: linkRect.width,
+        visible: true,
+      });
+    } else {
+      setPillStyle((prev) => ({ ...prev, visible: false }));
+    }
+  }, [hoveredId, activeTab]);
 
-    return (
-        <div className="min-h-screen bg-[#F9F8F4] text-stone-800 selection:bg-nobel-gold selection:text-white">
+  const switchTab = (id: TabId) => {
+    setActiveTab(id);
+    setMenuOpen(false);
+  };
 
-            <DocumentModal
-                isOpen={!!activeDocument}
-                onClose={() => setActiveDocument(null)}
-                document={activeDocument}
-            />
+  return (
+    <div className="site-shell min-h-screen text-forest dark:text-white selection:bg-forest selection:text-white transition-colors duration-300">
+      <DocumentModal
+        isOpen={!!activeDocument}
+        onClose={() => setActiveDocument(null)}
+        document={activeDocument}
+      />
 
-            {/* Navigation */}
-            <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-[#F9F8F4]/95 backdrop-blur-md shadow-sm py-4 border-b border-stone-200/80' : 'bg-transparent py-6 border-b border-stone-200/0'}`}>
-                <div className="container mx-auto px-6 flex justify-between items-center">
-                    <div className="flex items-center gap-4 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                        <div className="w-8 h-8 bg-nobel-gold rounded-sm flex items-center justify-center text-white font-serif font-bold text-xl shadow-sm pb-1">T</div>
-                        <span className={`font-serif font-bold text-lg tracking-wide transition-opacity ${scrolled ? 'opacity-100' : 'opacity-0 md:opacity-100'}`}>
-                            TUNG VO
-                        </span>
-                    </div>
+      {/* ── Floating pill nav ──────────────────────────────── */}
+      <nav className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+        {/* Desktop */}
+        <div
+          ref={navRef}
+          className="hidden md:flex pointer-events-auto items-center gap-0.5 px-2 py-1.5 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 relative"
+        >
+          <div
+            className="absolute rounded-full bg-forest/10 dark:bg-white/15 pointer-events-none"
+            style={{
+              left: pillStyle.left,
+              width: pillStyle.width,
+              top: 6,
+              bottom: 6,
+              opacity: pillStyle.visible ? 1 : 0,
+              transition:
+                'left 320ms cubic-bezier(0.4, 0, 0.2, 1), width 320ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease',
+            }}
+          />
 
-                    <div className={`hidden md:flex items-center gap-6 transition-all ${scrolled ? 'text-sm font-medium tracking-wide text-stone-600' : 'text-sm font-light tracking-widest text-stone-600'}`}>
-                        <a href="#about" onClick={scrollToSection('about')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">About</a>
-                        <a href="#research" onClick={scrollToSection('research')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">Research</a>
-                        <a href="#leadership" onClick={scrollToSection('leadership')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">Leadership</a>
-                        <a href="#work" onClick={scrollToSection('work')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">Work</a>
-                        <a href="#honors" onClick={scrollToSection('honors')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">Honors</a>
-                        <a
-                            href="https://www.linkedin.com/in/tung-vo-4728b7235/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-5 py-2 bg-stone-900 text-white rounded-full hover:bg-stone-800 transition-colors shadow-sm cursor-pointer flex items-center gap-2"
-                        >
-                            <Linkedin size={14} /> Connect
-                        </a>
-                    </div>
+          <button
+            onClick={() => switchTab('home')}
+            className="w-8 h-8 bg-forest dark:bg-white rounded-full flex items-center justify-center text-white dark:text-forest font-display font-black text-sm mr-1 flex-shrink-0 hover:bg-forest/80 dark:hover:bg-white/90 transition-colors relative z-10"
+          >
+            T
+          </button>
+          {NAV_LINKS.map(({ id, label }) => (
+            <button
+              key={id}
+              ref={(el) => {
+                linkRefs.current[id] = el;
+              }}
+              onClick={() => switchTab(id)}
+              onMouseEnter={() => setHoveredId(id)}
+              onMouseLeave={() => setHoveredId(null)}
+              className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors cursor-pointer whitespace-nowrap relative z-10 ${
+                activeTab === id
+                  ? 'text-forest dark:text-white'
+                  : 'text-forest/70 dark:text-white/70 hover:text-forest dark:hover:text-white'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+          <a
+            href="https://www.linkedin.com/in/tung-vo-4728b7235/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-1 px-4 py-1.5 bg-forest text-white text-sm font-medium rounded-full hover:bg-forest/80 transition-colors flex items-center gap-1.5 flex-shrink-0 relative z-10"
+          >
+            <Linkedin size={13} />
+            Connect
+          </a>
+          <button
+            onClick={() => setIsDark(!isDark)}
+            className="w-8 h-8 ml-0.5 rounded-full flex items-center justify-center text-forest/50 hover:text-forest hover:bg-forest/10 dark:text-white/50 dark:hover:text-white dark:hover:bg-white/10 transition-all flex-shrink-0 relative z-10"
+            aria-label="Toggle dark mode"
+          >
+            {isDark ? <Sun size={14} /> : <Moon size={14} />}
+          </button>
+        </div>
 
-                    <button className="md:hidden text-stone-900 p-2" onClick={() => setMenuOpen(!menuOpen)}>
-                        {menuOpen ? <X /> : <Menu />}
-                    </button>
+        {/* Mobile */}
+        <div className="flex md:hidden w-full pointer-events-auto justify-between items-center gap-2">
+          <button
+            onClick={() => switchTab('home')}
+            className="flex items-center gap-2 px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10"
+          >
+            <div className="w-7 h-7 bg-forest dark:bg-white rounded-full flex items-center justify-center text-white dark:text-forest font-display font-black text-sm">
+              T
+            </div>
+            <span className="font-display font-black text-forest dark:text-white text-sm">
+              TJ Vo
+            </span>
+          </button>
+          <div className="flex items-center gap-1.5">
+            <button
+              className="p-2.5 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white/60"
+              onClick={() => setIsDark(!isDark)}
+              aria-label="Toggle dark mode"
+            >
+              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <button
+              className="p-2.5 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              {menuOpen ? <X size={18} /> : <Menu size={18} />}
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile fullscreen menu */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-40 bg-[#EDEAE2]/95 dark:bg-[#0c1a11]/95 backdrop-blur-md flex flex-col items-center justify-center gap-7">
+          {NAV_LINKS.map(({ id, label }) => (
+            <button
+              key={id}
+              onClick={() => switchTab(id)}
+              className="font-display font-black text-3xl text-forest dark:text-white hover:text-forest/60 dark:hover:text-white/60 transition-colors"
+            >
+              {label}
+            </button>
+          ))}
+          <a
+            href="mailto:vo.tung@stthom.edu"
+            className="mt-4 px-8 py-3 bg-forest text-white rounded-full text-sm font-medium shadow-lg"
+          >
+            Contact Me
+          </a>
+        </div>
+      )}
+
+      {/* ── Content area ─────────────────────────────────────── */}
+      <AnimatePresence mode="wait">
+        {/* ── Home (Hero + Education) ──────────────────────── */}
+        {activeTab === 'home' && (
+          <motion.div
+            key="hero-page"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1, transition: { duration: 0.5 } }}
+            exit={{ opacity: 0, transition: { duration: 0.3 } }}
+          >
+            <header className="hero-fade relative min-h-screen pb-28 md:pb-36 flex items-center justify-center overflow-hidden mesh-gradient">
+              <span
+                className="absolute hero-pop pointer-events-none"
+                style={{ top: '16%', left: '9%', animationDelay: '0.35s' }}
+              >
+                <Sparkle className="text-white/80 sparkle-anim" size={60} style={{ animationDuration: '9s' }} />
+              </span>
+              <span
+                className="absolute hero-pop pointer-events-none"
+                style={{ top: '19%', right: '8%', animationDelay: '0.55s' }}
+              >
+                <Sparkle className="text-white/65 sparkle-anim-rev" size={38} style={{ animationDuration: '13s' }} />
+              </span>
+              <span
+                className="absolute hero-pop pointer-events-none"
+                style={{ bottom: '26%', left: '7%', animationDelay: '0.70s' }}
+              >
+                <Sparkle className="text-white/45 sparkle-anim" size={26} style={{ animationDuration: '7s' }} />
+              </span>
+              <span
+                className="absolute hero-pop pointer-events-none"
+                style={{ bottom: '31%', right: '10%', animationDelay: '0.50s' }}
+              >
+                <Sparkle className="text-white/50 sparkle-anim-rev" size={20} style={{ animationDuration: '11s' }} />
+              </span>
+
+              <div className="relative z-10 container mx-auto px-6 text-center">
+                <div className="hero-pop hero-pop-1 inline-block mb-7 px-4 py-1.5 bg-white/50 dark:bg-white/10 backdrop-blur-sm text-forest dark:text-white/80 text-xs tracking-[0.22em] uppercase font-bold rounded-full border border-white/70 dark:border-white/20">
+                  Portfolio ✦
                 </div>
-            </nav>
 
-            {/* Mobile Menu */}
-            {menuOpen && (
-                <div className="fixed inset-0 z-40 bg-[#F9F8F4] flex flex-col items-center justify-center gap-8 text-xl font-serif animate-fade-in">
-                    <a href="#about" onClick={scrollToSection('about')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">About</a>
-                    <a href="#research" onClick={scrollToSection('research')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">Research</a>
-                    <a href="#leadership" onClick={scrollToSection('leadership')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">Leadership</a>
-                    <a href="#work" onClick={scrollToSection('work')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">Work</a>
-                    <a href="#honors" onClick={scrollToSection('honors')} className="hover:text-nobel-gold transition-colors cursor-pointer uppercase">Honors</a>
-                    <a href="mailto:vo.tung@stthom.edu" className="px-6 py-3 bg-stone-900 text-white rounded-full shadow-lg cursor-pointer">Contact Me</a>
+                <h1
+                  className="hero-pop hero-pop-2 font-display font-black text-forest dark:text-white leading-[0.88] mb-8"
+                  style={{ fontSize: 'clamp(3.2rem, 10.5vw, 8.5rem)' }}
+                >
+                  Hi. I'm TJ.
+                </h1>
+
+                <div className="hero-pop hero-pop-3 flex flex-col sm:flex-row justify-center items-center gap-3">
+                  <a
+                    href="mailto:vo.tung@stthom.edu"
+                    className="flex items-center gap-2 px-7 py-3 bg-forest dark:bg-white text-white dark:text-forest rounded-full hover:bg-forest/85 dark:hover:bg-white/90 transition-colors font-medium text-sm shadow-md"
+                  >
+                    <Mail size={15} />
+                    vo.tung@stthom.edu
+                  </a>
+                  <div className="px-7 py-3 border-2 border-white/55 dark:border-white/20 rounded-full text-forest/75 dark:text-white/60 bg-white/35 dark:bg-white/5 backdrop-blur-sm text-sm font-medium">
+                    Houston, Texas
+                  </div>
                 </div>
-            )}
 
-            {/* Hero Section */}
-            <header className="relative h-screen flex items-center justify-center overflow-hidden">
-                <HeroScene />
-
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(249,248,244,0.92)_0%,rgba(249,248,244,0.7)_50%,rgba(249,248,244,0.4)_100%)]" />
-
-                <div className="relative z-10 container mx-auto px-6 text-center">
-                    <div className="inline-block mb-4 px-3 py-1 border border-nobel-gold text-nobel-gold text-xs tracking-[0.2em] uppercase font-bold rounded-full backdrop-blur-sm bg-white/30">
-                        Portfolio
-                    </div>
-                    <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-medium leading-tight md:leading-[1.1] mb-6 text-stone-900 drop-shadow-sm">
-                        Tung (TJ) Vo <br />
-                        <span className="italic font-normal text-stone-600 text-2xl md:text-4xl block mt-4">Applied Mathematics Student</span>
-                    </h1>
-
-                    <div className="flex flex-col md:flex-row justify-center items-center gap-4 text-sm font-medium">
-                        <a href="mailto:vo.tung@stthom.edu" className="flex items-center gap-2 px-6 py-3 bg-stone-900 text-white rounded-full hover:bg-stone-800 transition-colors">
-                            <Mail size={16} /> vo.tung@stthom.edu
-                        </a>
-                        <div className="px-6 py-3 border border-stone-300 rounded-full text-stone-600 bg-white/50">
-                            Houston, Texas
-                        </div>
-                    </div>
-
-                    <div className="absolute bottom-10 left-0 right-0 flex justify-center animate-bounce">
-                        <a href="#about" onClick={scrollToSection('about')} className="text-stone-400 hover:text-stone-900 transition-colors cursor-pointer">
-                            <ArrowDown size={24} />
-                        </a>
-                    </div>
+                <div className="hero-pop hero-pop-4 absolute bottom-10 left-0 right-0 flex justify-center animate-bounce">
+                  <button
+                    onClick={() =>
+                      document
+                        .getElementById('home-education')
+                        ?.scrollIntoView({ behavior: 'smooth' })
+                    }
+                    className="text-forest/40 hover:text-forest transition-colors cursor-pointer"
+                  >
+                    <ArrowDown size={24} />
+                  </button>
                 </div>
+              </div>
             </header>
 
-            <main>
-                {/* Education Section */}
-                <section id="about" className="py-32 bg-white">
-                    <div className="container mx-auto px-6">
-                        <div ref={useScrollReveal()} className="reveal text-center mb-12">
-                            <div className="inline-block mb-3 text-xs font-bold tracking-widest text-stone-500 uppercase">Education</div>
-                            <h2 className="font-serif text-4xl leading-tight text-stone-900">Academic Foundation</h2>
-                            <div className="w-10 h-px bg-nobel-gold mx-auto mt-6"></div>
-                        </div>
+            {/* Education below hero */}
+            <motion.section
+              id="home-education"
+              className="py-24 px-6 md:px-16"
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, amount: 0.15 }}
+              variants={pageTransition}
+            >
+              <SectionHeading label="Education" heading="Academic Foundation." center />
+              <EducationCards />
+            </motion.section>
+          </motion.div>
+        )}
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                            <div className="p-6 bg-[#F9F8F4] rounded-sm border border-stone-200/60 text-center hover:shadow-sm transition-shadow">
-                                <h4 className="font-bold text-stone-900 text-lg mb-2">University of St. Thomas</h4>
-                                <p className="text-stone-600 font-serif italic mb-2">B.S. Applied Mathematics</p>
-                                <p className="text-sm text-stone-500">Expected May 2027</p>
-                                <p className="text-xs text-stone-400 mt-2 uppercase tracking-wide">Minor: Data Analytics</p>
-                            </div>
-                            <div className="p-6 bg-[#F9F8F4] rounded-sm border border-stone-200/60 text-center hover:shadow-sm transition-shadow">
-                                <h4 className="font-bold text-stone-900 text-lg mb-2">Lone Star College</h4>
-                                <p className="text-stone-600 font-serif italic mb-2">Honors A.S. / General</p>
-                                <p className="text-sm text-stone-500">May 2025</p>
-                                <p className="text-xs text-stone-400 mt-2 uppercase tracking-wide">Summa Cum Laude</p>
-                            </div>
-                            <div className="p-6 bg-[#F9F8F4] rounded-sm border border-stone-200/60 text-center hover:shadow-sm transition-shadow">
-                                <h4 className="font-bold text-stone-900 text-lg mb-2">Jersey Village High School</h4>
-                                <p className="text-stone-600 font-serif italic mb-2">High School Diploma</p>
-                                <p className="text-sm text-stone-500">May 2023</p>
-                                <p className="text-xs text-stone-400 mt-2 uppercase tracking-wide">Cum Laude</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+        {/* ── Education ───────────────────────────────────────── */}
+        {activeTab === 'about' && (
+          <motion.main
+            key="about"
+            variants={pageTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="tab-content pt-24 pb-24 px-6 md:px-16"
+          >
+            <TabHero>Education.</TabHero>
+            <EducationCards />
+          </motion.main>
+        )}
 
-                {/* Research Experience */}
-                <section id="research" className="py-32 bg-[#F5F4F0] border-t border-stone-100">
-                    <div className="container mx-auto px-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-                            <div>
-                                <div ref={useScrollReveal()} className="reveal">
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-white text-stone-600 text-xs font-bold tracking-widest uppercase rounded-full mb-6 border border-stone-200 shadow-sm">
-                                        Research Focus
-                                    </div>
-                                    <h2 className="font-serif text-4xl md:text-5xl mb-6 text-stone-900">Graph Theory &<br />Network Dynamics</h2>
-                                </div>
-                                <ExperienceItem
-                                    title="University of St. Thomas"
-                                    role="Undergraduate Researcher"
-                                    date="Fall 2025 (Upcoming)"
-                                    location="Supervisor: Dr. Mary Flagg"
-                                >
-                                    Focusing on graph theory topics such as competing zero forcing sets. Conducting theoretical analysis and computational modeling of vertex connectivity across graph families to explore network dynamics and efficiency.
-                                </ExperienceItem>
-                                <div className="hidden lg:block">
-                                    <GraphTheoryDiagram />
-                                    <p className="text-xs text-center text-stone-500 mt-2">Interactive: Click nodes to explore connectivity</p>
-                                </div>
-                            </div>
-
-                            <div>
-                                <div ref={useScrollReveal()} className="reveal">
-                                    <h2 className="font-serif text-4xl md:text-5xl mb-6 text-stone-900">Sustainability &<br />Public Policy</h2>
-                                </div>
-                                <ExperienceItem
-                                    title="Rice University"
-                                    role="Undergraduate Researcher"
-                                    date="Spring 2025"
-                                    location="Supervisors: Dr. Carrie Masiello, Dr. Risa Myers, Dr. Canek Phillips"
-                                    documentData={ricePoster}
-                                    onOpenDocument={handleOpenDocument}
-                                >
-                                    Exploring the vast world of Data Science within the lens of sustainability. Using scientific methods, programming skills, and mathematics to extract insight regarding food webs, data visualization, and the ethics of data centers.
-                                </ExperienceItem>
-
-                                <ExperienceItem
-                                    title="Lone Star College Honors College"
-                                    role="Researcher - Vietnam War Analysis"
-                                    date="Fall 2024"
-                                    location="Supervisor: Dr. Kelly Phillips"
-                                    documentData={histPaper}
-                                    onOpenDocument={handleOpenDocument}
-                                >
-                                    Explored differences in recruitment tactics and desertion motivations among U.S. and Viet Cong soldiers. Aimed to understand the relationship between recruitment tactics and wartime desertion rates.
-                                </ExperienceItem>
-
-                                <ExperienceItem
-                                    title="National Model United Nations (NMUN)"
-                                    role="Delegate & Researcher"
-                                    date="Spring 2024"
-                                    location="New York, NY | Supervisors: Dr. Tiffee & Prof. Garcia"
-                                    documentData={nmunPaper}
-                                    onOpenDocument={handleOpenDocument}
-                                >
-                                    Conducted an autoethnographic study on intercultural communication and leadership dynamics at the NMUN conference. Analyzed the effectiveness of relational leadership theory and public speaking strategies in a high-stakes diplomatic simulation, resulting in a 'Best in Committee' award.
-                                </ExperienceItem>
-
-                                <ExperienceItem
-                                    title="Lone Star College Honors College"
-                                    role="Researcher - Air Pollution"
-                                    date="Spring 2024"
-                                    location="Supervisor: Dr. Dana Van De Walker"
-                                    documentData={govtPaper}
-                                    onOpenDocument={handleOpenDocument}
-                                >
-                                    Compared and analyzed major air polluters (US and Chad) to identify factors decreasing life expectancy. Investigated correlations between air pollution levels and public health outcomes.
-                                </ExperienceItem>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Leadership Development */}
-                <section id="leadership" className="py-32 bg-white border-t border-stone-100">
-                    <div className="container mx-auto px-6">
-                        <div className="mb-16">
-                            <div>
-                                <div ref={useScrollReveal()} className="reveal">
-                                    <div className="inline-block mb-3 text-xs font-bold tracking-widest text-stone-500 uppercase">Impact</div>
-                                    <h2 className="font-serif text-4xl mb-6 text-stone-900">Leadership Development</h2>
-                                </div>
-                            </div>
-
-                            <div>
-                                <ExperienceItem
-                                    title="Community, Action, and Social Entrepreneurship"
-                                    role="Finalist"
-                                    date="Summer 2025"
-                                    location="Amideast Education Abroad Connect"
-                                >
-                                    An 8-day guided program in Tunisia. Selected finalists will be introduced to the world of civil society organizations in and around Tunis through daily presentations, panel discussions, engagement with local peers, tours, and community service. Additionally interact with leading regional organizations and community leaders on topics of civic engagement, sustainability, identity, gender, labor, and other critical global justice issues through Tunisian and North African lenses.
-                                </ExperienceItem>
-
-                                <ExperienceItem
-                                    title="Honors College Student Advisory Board"
-                                    role="Campus Representative"
-                                    date="Fall 2024 – Spring 2025"
-                                    location="Lone Star College Houston-North"
-                                >
-                                    Meet with the Associate Vice Chancellor of Honors and International Education biannually as a campus representative. Collaborating with other campus representatives to contribute student perspectives on the Honors College programming, providing recommendations and feedback regarding system-wide student activities.
-                                </ExperienceItem>
-
-                                <ExperienceItem
-                                    title="Honors and International Education Emissary"
-                                    role="System Liaison Emeritus"
-                                    date="Spring 2025"
-                                    location="Lone Star College"
-                                >
-                                    As an Emeritus, responsible for collaborating with the current System Liaison Emissary and mentoring them. Additionally, assisting in promoting all related programs within The Honors College and all programs within the International Education branch.
-                                </ExperienceItem>
-
-                                <ExperienceItem
-                                    title="Honors and International Education Emissary"
-                                    role="System Liaison"
-                                    date="Fall 2024"
-                                    location="Lone Star College"
-                                >
-                                    Responsible for promoting The Honors College throughout the semester, collaborating with other campus liaisons for system-wide events or opportunities. Additionally responsible for promoting the Rice University Take Flight program, the National Model United Nations team, and scholarships.
-                                </ExperienceItem>
-
-                                <ExperienceItem
-                                    title="Global Leadership Program"
-                                    role="Member"
-                                    date="Fall 2024 – Spring 2025"
-                                    location="Lone Star College"
-                                >
-                                    Cultivating ethical, inclusive leadership skills in a global context. Gaining hands-on exposure to international diplomacy and cultural engagement through immersive experiences such as global leadership training and conference participation and in partnership with local and national organizations.
-                                </ExperienceItem>
-
-                                <ExperienceItem
-                                    title="Distinguished Global Scholar"
-                                    role="Member"
-                                    date="Fall 2024 – Spring 2025"
-                                    location="Lone Star College"
-                                >
-                                    In a competitive selection process with approximately 100 applicants, I was one of eight cohorts of academically talented students selected. As part of my commitment to the program and my interest in developing cultural competency, my coursework contains International Study (IS) designated classes. These IS classes add components of an international scope to the curriculum.
-                                </ExperienceItem>
-
-                                <ExperienceItem
-                                    title="Texas Boys State"
-                                    role="Press Team Member and Stateman"
-                                    date="Summer 2022"
-                                    location="The American Legion"
-                                >
-                                    In a nominated competitive selection process in a class of 800 students, I was one of two students selected to represent Jersey Village High School at Texas Boys State. Responsible for attending Texas Boys State’s mock House of Representative meetings and conceptualized campaigns for social media platforms. Additionally, composing website articles on current events happening within the House of Representatives.
-                                </ExperienceItem>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Work Experience */}
-                <section id="work" className="py-32 bg-[#F5F4F0] border-t border-stone-100">
-                    <div className="container mx-auto px-6 max-w-4xl">
-                        <div ref={useScrollReveal()} className="reveal text-center mb-16">
-                            <div className="inline-block mb-3 text-xs font-bold tracking-widest text-stone-500 uppercase">Professional</div>
-                            <h2 className="font-serif text-3xl md:text-5xl text-stone-900">Work Experience</h2>
-                        </div>
-
-                        <ExperienceItem
-                            title="Geospace Technology"
-                            role="Electro-Mechanical Assembler"
-                            date="June 2025 – Present"
-                            location="Houston, Texas"
-                        >
-                            <ul className="list-disc pl-5 space-y-2">
-                                <li>Operate coiling machinery to assemble water cable, troubleshoot minor mechanical issues.</li>
-                                <li>Enter coil data into systems and follow electrical schematics to ensure correct cable builds.</li>
-                                <li>Maintain clean, safe workstation and follow safety protocols.</li>
-                            </ul>
-                        </ExperienceItem>
-
-                        <ExperienceItem
-                            title="Lone Star College – CyFair"
-                            role="College Relations Intern"
-                            date="March 2024 – May 2025"
-                            location="Cypress, Texas"
-                        >
-                            <ul className="list-disc pl-5 space-y-2">
-                                <li>Drafting/Planning events throughout campus.</li>
-                                <li>Coordinate/Manage Social Media platforms and posts.</li>
-                                <li>Conceptualized Social Media Campaign for (X, Instagram, Facebook).</li>
-                            </ul>
-                        </ExperienceItem>
-
-                        <ExperienceItem
-                            title="East Aldine BakerRipley"
-                            role="Front Desk Volunteer (Unpaid)"
-                            date="November 2024 – May 2025"
-                            location="Aldine, Texas"
-                        >
-                            <ul className="list-disc pl-5 space-y-2">
-                                <li>Answer incoming calls and route inquiries appropriately.</li>
-                                <li>Greet residents and visitors, providing a friendly and welcoming environment.</li>
-                                <li>Assist with basic administrative tasks, ensuring smooth front desk operations.</li>
-                            </ul>
-                        </ExperienceItem>
-                    </div>
-                </section>
-
-                {/* Honors & Awards */}
-                <section id="honors" className="py-32 bg-white border-t border-stone-100">
-                    <div className="container mx-auto px-6">
-                        <div ref={useScrollReveal()} className="reveal text-center mb-16">
-                            <div className="inline-block mb-3 text-xs font-bold tracking-widest text-stone-500 uppercase">Recognition</div>
-                            <h2 className="font-serif text-3xl md:text-5xl mb-4 text-stone-900">Honors & Awards</h2>
-                            <p className="text-stone-500 max-w-2xl mx-auto">Selected competitive accomplishments and scholarships.</p>
-                        </div>
-
-                        <div ref={useScrollReveal()} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <HonorCard
-                                title="Monaghan Excellence Scholarship"
-                                org="University of St. Thomas"
-                                date="Fall 2025 - Spring 2027"
-                                delayIndex={1}
-                            />
-                            <HonorCard
-                                title="Distinguished Global Scholar"
-                                org="Lone Star College"
-                                date="Fall 2024 - Spring 2025"
-                                delayIndex={2}
-                            />
-                            <HonorCard
-                                title="Best In Committee Award"
-                                org="National Model United Nations, NY"
-                                date="2024"
-                                delayIndex={3}
-                            />
-                            <HonorCard
-                                title="Outstanding Delegation Award"
-                                org="National Model United Nations, NY"
-                                date="2024"
-                                delayIndex={1}
-                            />
-                            <HonorCard
-                                title="Global Scholar Award"
-                                org="Lone Star College Houston-North"
-                                date="Fall 2023 – Spring 2025"
-                                delayIndex={2}
-                            />
-                            <HonorCard
-                                title="President’s List"
-                                org="Lone Star College"
-                                date="2023 - 2025"
-                                delayIndex={3}
-                            />
-                        </div>
-
-                        <div className="mt-16 text-center">
-                            <h3 className="font-serif text-2xl mb-6">Certifications & Memberships</h3>
-                            <div className="flex flex-wrap justify-center gap-4">
-                                <span className="px-4 py-2 bg-white border border-stone-200 rounded-full text-sm text-stone-600 shadow-sm">Micro-Credential: Environmental Data Science (Rice)</span>
-                                <span className="px-4 py-2 bg-white border border-stone-200 rounded-full text-sm text-stone-600 shadow-sm">Google Data Analytics (Coursera)</span>
-                                <span className="px-4 py-2 bg-white border border-stone-200 rounded-full text-sm text-stone-600 shadow-sm">OSHA 10</span>
-                                <span className="px-4 py-2 bg-white border border-stone-200 rounded-full text-sm text-stone-600 shadow-sm">Phi Theta Kappa Member</span>
-                                <span className="px-4 py-2 bg-white border border-stone-200 rounded-full text-sm text-stone-600 shadow-sm">Rice Take Flight Program</span>
-                                <span className="px-4 py-2 bg-white border border-stone-200 rounded-full text-sm text-stone-600 shadow-sm">Global Scholar</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-            </main>
-
-            <footer className="bg-stone-900 text-stone-400 py-16">
-                <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="text-center md:text-left">
-                        <div className="text-white font-serif font-bold text-2xl mb-2">Tung (TJ) Vo</div>
-                        <p className="text-sm">Driven by curiosity, grounded in data.</p>
-                    </div>
-                    <div className="flex gap-6">
-                        <a href="mailto:vo.tung@stthom.edu" className="hover:text-nobel-gold transition-colors"><Mail /></a>
-                        <a href="https://www.linkedin.com/in/tung-vo-4728b7235/" target="_blank" className="hover:text-nobel-gold transition-colors"><Linkedin /></a>
-                    </div>
+        {/* ── Research ────────────────────────────────────────── */}
+        {activeTab === 'research' && (
+          <motion.main
+            key="research"
+            variants={pageTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="tab-content pt-24 pb-24 px-6 md:px-16"
+          >
+            <TabHero>Research.</TabHero>
+            <motion.div
+              variants={fadeIn}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start"
+            >
+              {/* Left column */}
+              <div>
+                <div className="mb-10">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/55 dark:bg-white/10 text-forest dark:text-white/80 text-xs font-bold tracking-widest uppercase rounded-full mb-5 border border-white/70 dark:border-white/15">
+                    Research Focus
+                  </div>
+                  <h2 className="font-display font-black text-4xl md:text-5xl text-forest dark:text-white leading-[0.92]">
+                    Graph Theory &amp;
+                    <br />
+                    Network Dynamics.
+                  </h2>
                 </div>
-                <div className="text-center mt-12 text-xs text-stone-600">
-                    &copy; 2025 Tung Vo. All rights reserved.
+                <ExperienceItem
+                  title="University of St. Thomas"
+                  role="Undergraduate Researcher"
+                  date="Current"
+                  location="Supervisor: Dr. Mary Flagg"
+                >
+                  Focusing on graph theory topics such as competing zero forcing sets.
+                  Conducting theoretical analysis and computational modeling of vertex
+                  connectivity across graph families to explore network dynamics and
+                  efficiency.
+                </ExperienceItem>
+              </div>
+
+              {/* Right column */}
+              <div>
+                <div className="mb-10">
+                  <h2 className="font-display font-black text-4xl md:text-5xl text-forest dark:text-white leading-[0.92]">
+                    Sustainability &amp;
+                    <br />
+                    Public Policy.
+                  </h2>
                 </div>
-            </footer>
+                <ExperienceItem
+                  title="Rice University"
+                  role="Undergraduate Researcher"
+                  date="Spring 2025"
+                  location="Supervisors: Dr. Carrie Masiello, Dr. Risa Myers, Dr. Canek Phillips"
+                  documentData={ricePoster}
+                  onOpenDocument={(doc) => setActiveDocument(doc)}
+                >
+                  Exploring the vast world of Data Science within the lens of
+                  sustainability. Using scientific methods, programming skills, and
+                  mathematics to extract insight regarding food webs, data visualization,
+                  and the ethics of data centers.
+                </ExperienceItem>
+                <ExperienceItem
+                  title="Lone Star College Honors College"
+                  role="Researcher – Vietnam War Analysis"
+                  date="Fall 2024"
+                  location="Supervisor: Dr. Kelly Phillips"
+                  documentData={histPaper}
+                  onOpenDocument={(doc) => setActiveDocument(doc)}
+                >
+                  Explored differences in recruitment tactics and desertion motivations
+                  among U.S. and Viet Cong soldiers. Aimed to understand the relationship
+                  between recruitment tactics and wartime desertion rates.
+                </ExperienceItem>
+                <ExperienceItem
+                  title="National Model United Nations (NMUN)"
+                  role="Delegate &amp; Researcher"
+                  date="Spring 2024"
+                  location="New York, NY | Supervisors: Dr. Tiffee &amp; Prof. Garcia"
+                  documentData={nmunPaper}
+                  onOpenDocument={(doc) => setActiveDocument(doc)}
+                >
+                  Conducted an autoethnographic study on intercultural communication and
+                  leadership dynamics at NMUN. Analyzed relational leadership theory and
+                  public speaking strategies, resulting in a 'Best in Committee' award.
+                </ExperienceItem>
+                <ExperienceItem
+                  title="Lone Star College Honors College"
+                  role="Researcher – Air Pollution"
+                  date="Spring 2024"
+                  location="Supervisor: Dr. Dana Van De Walker"
+                  documentData={govtPaper}
+                  onOpenDocument={(doc) => setActiveDocument(doc)}
+                >
+                  Compared and analyzed major air polluters (US and Chad) to identify
+                  factors decreasing life expectancy. Investigated correlations between air
+                  pollution levels and public health outcomes.
+                </ExperienceItem>
+              </div>
+            </motion.div>
+          </motion.main>
+        )}
+
+        {/* ── Leadership ──────────────────────────────────────── */}
+        {activeTab === 'leadership' && (
+          <motion.main
+            key="leadership"
+            variants={pageTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="tab-content pt-24 pb-24 px-6 md:px-16"
+          >
+            <TabHero>Leadership.</TabHero>
+            <div className="overflow-hidden">
+              <StaircaseCard
+                title="Community, Action, and Social Entrepreneurship"
+                role="Finalist"
+                shortDate="Summer '25"
+                location="Amideast Education Abroad Connect"
+                offset={getStaircaseOffset(0, 7)}
+              >
+                An 8-day guided program in Tunisia. Selected finalists are introduced to
+                civil society organizations through daily presentations, panel discussions,
+                community service, and engagement with local peers.
+              </StaircaseCard>
+              <StaircaseCard
+                title="Honors College Student Advisory Board"
+                role="Campus Representative"
+                shortDate="'24–'25"
+                location="Lone Star College Houston-North"
+                offset={getStaircaseOffset(1, 7)}
+              >
+                Met with the Associate Vice Chancellor of Honors and International
+                Education biannually. Collaborated to provide student perspectives on
+                Honors College programming and system-wide activities.
+              </StaircaseCard>
+              <StaircaseCard
+                title="HIE Emissary"
+                role="System Liaison Emeritus"
+                shortDate="Spring '25"
+                location="Lone Star College"
+                offset={getStaircaseOffset(2, 7)}
+              >
+                As Emeritus, collaborated with the current System Liaison Emissary and
+                mentored them while promoting programs within The Honors College and
+                International Education branch.
+              </StaircaseCard>
+              <StaircaseCard
+                title="HIE Emissary"
+                role="System Liaison"
+                shortDate="Fall '24"
+                location="Lone Star College"
+                offset={getStaircaseOffset(3, 7)}
+              >
+                Promoted The Honors College throughout the semester, collaborating with
+                campus liaisons for system-wide events. Also promoted the Rice University
+                Take Flight program, NMUN team, and scholarships.
+              </StaircaseCard>
+              <StaircaseCard
+                title="Global Leadership Program"
+                role="Member"
+                shortDate="'24–'25"
+                location="Lone Star College"
+                offset={getStaircaseOffset(4, 7)}
+              >
+                Cultivated ethical, inclusive leadership skills in a global context through
+                international diplomacy training, conference participation, and partnerships
+                with local and national organizations.
+              </StaircaseCard>
+              <StaircaseCard
+                title="Distinguished Global Scholar"
+                role="Member"
+                shortDate="'24–'25"
+                location="Lone Star College"
+                offset={getStaircaseOffset(5, 7)}
+              >
+                Selected from ~100 applicants as one of eight cohort members. Coursework
+                includes International Study (IS) designated classes that add an
+                international scope to the curriculum.
+              </StaircaseCard>
+              <StaircaseCard
+                title="Texas Boys State"
+                role="Press Team Member and Statesman"
+                shortDate="Summer '22"
+                location="The American Legion"
+                offset={getStaircaseOffset(6, 7)}
+              >
+                One of two students nominated from Jersey Village High School. Attended
+                mock House of Representatives meetings, conceptualized social media
+                campaigns, and composed website articles on current events.
+              </StaircaseCard>
+            </div>
+          </motion.main>
+        )}
+
+        {/* ── Work ────────────────────────────────────────────── */}
+        {activeTab === 'work' && (
+          <motion.main
+            key="work"
+            variants={pageTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="tab-content pt-24 pb-24 px-6 md:px-16"
+          >
+            <TabHero>Work.</TabHero>
+            <div className="overflow-hidden">
+              <StaircaseCard
+                title="Geospace Technology"
+                role="Electro-Mechanical Assembler"
+                shortDate="'25–"
+                location="Houston, Texas"
+                offset={getStaircaseOffset(0, 3)}
+              >
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>
+                    Operate coiling machinery to assemble water cable; troubleshoot minor
+                    mechanical issues.
+                  </li>
+                  <li>
+                    Enter coil data into systems and follow electrical schematics to ensure
+                    correct cable builds.
+                  </li>
+                  <li>
+                    Maintain clean, safe workstation and adhere to safety protocols.
+                  </li>
+                </ul>
+              </StaircaseCard>
+              <StaircaseCard
+                title="Lone Star College – CyFair"
+                role="College Relations Intern"
+                shortDate="'24–'25"
+                location="Cypress, Texas"
+                offset={getStaircaseOffset(1, 3)}
+              >
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>Drafted and planned campus-wide events.</li>
+                  <li>
+                    Coordinated and managed social media platforms and posts.
+                  </li>
+                  <li>
+                    Conceptualized social media campaigns across X, Instagram, and
+                    Facebook.
+                  </li>
+                </ul>
+              </StaircaseCard>
+              <StaircaseCard
+                title="East Aldine BakerRipley"
+                role="Front Desk Volunteer"
+                shortDate="'24–'25"
+                location="Aldine, Texas"
+                offset={getStaircaseOffset(2, 3)}
+              >
+                <ul className="list-disc pl-4 space-y-1">
+                  <li>
+                    Answered incoming calls and routed inquiries appropriately.
+                  </li>
+                  <li>
+                    Greeted residents and visitors, providing a welcoming environment.
+                  </li>
+                  <li>
+                    Assisted with administrative tasks to ensure smooth front-desk
+                    operations.
+                  </li>
+                </ul>
+              </StaircaseCard>
+            </div>
+          </motion.main>
+        )}
+
+        {/* ── Honors ──────────────────────────────────────────── */}
+        {activeTab === 'honors' && (
+          <motion.main
+            key="honors"
+            variants={pageTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="tab-content pt-24 pb-24 px-6 md:px-16"
+          >
+            <TabHero>Honors.</TabHero>
+            <motion.div
+              variants={fadeIn}
+              className="mb-6 text-center text-forest/60 dark:text-white/50 text-base max-w-xl mx-auto"
+            >
+              Selected competitive accomplishments and scholarships.
+            </motion.div>
+            <motion.div
+              variants={fadeIn}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            >
+              {honorData.map((h) => (
+                <HonorCard
+                  key={h.title}
+                  title={h.title}
+                  org={h.org}
+                  date={h.date}
+                  color={h.color}
+                />
+              ))}
+            </motion.div>
+
+            <motion.div variants={fadeIn} className="mt-16 text-center">
+              <h3 className="font-display font-bold text-2xl text-forest dark:text-white mb-6">
+                Certifications &amp; Memberships
+              </h3>
+              <div className="flex flex-wrap justify-center gap-3">
+                {[
+                  'Micro-Credential: Environmental Data Science (Rice)',
+                  'Google Data Analytics (Coursera)',
+                  'OSHA 10',
+                  'Phi Theta Kappa Member',
+                  'Rice Take Flight Program',
+                  'Global Scholar',
+                ].map((cert) => (
+                  <span
+                    key={cert}
+                    className="px-4 py-2 bg-[#EDEAE2] dark:bg-white/15 border border-stone-200 dark:border-white/25 rounded-full text-sm text-forest/70 dark:text-white/85 font-medium"
+                  >
+                    {cert}
+                  </span>
+                ))}
+              </div>
+            </motion.div>
+          </motion.main>
+        )}
+      </AnimatePresence>
+
+      {/* ── Footer ─────────────────────────────────────────── */}
+      <footer className="bg-forest text-white/70 py-16">
+        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="text-center md:text-left">
+            <div className="text-white font-display font-black text-3xl mb-1">
+              Tung (TJ) Vo.
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <a
+              href="mailto:vo.tung@stthom.edu"
+              className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+            >
+              <Mail size={18} />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/tung-vo-4728b7235/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+            >
+              <Linkedin size={18} />
+            </a>
+          </div>
         </div>
-    );
+        <div className="text-center mt-10 text-xs text-white/25">
+          © 2025 Tung Vo. All rights reserved.
+        </div>
+      </footer>
+    </div>
+  );
 };
 
 export default App;

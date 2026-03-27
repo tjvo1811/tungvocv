@@ -2,35 +2,110 @@
 @tailwind components;
 @tailwind utilities;
 
-.reveal {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+/* ── Unified page surface ────────────────────────────────────────── */
+.site-shell {
+  background-color: #edeae2;
+}
+.dark .site-shell {
+  background-color: #0c1a11;
 }
 
-.reveal.is-visible,
-.is-visible .reveal {
-    opacity: 1;
-    transform: translateY(0);
+/* ── Hero bottom fade ────────────────────────────────────────────── */
+.hero-fade::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 28vh;
+  min-height: 160px;
+  pointer-events: none;
+  z-index: 2;
+  background: linear-gradient(180deg,
+    rgba(237, 234, 226, 0) 0%,
+    rgba(237, 234, 226, 0.6) 40%,
+    #edeae2 100%);
+}
+.dark .hero-fade::after {
+  background: linear-gradient(180deg,
+    rgba(12, 26, 17, 0) 0%,
+    rgba(12, 26, 17, 0.7) 40%,
+    #0c1a11 100%);
 }
 
-.reveal-delay-1 {
-    transition-delay: 0.08s;
+/* ── Tab content area ────────────────────────────────────────────── */
+.tab-content {
+  min-height: 100vh;
 }
 
-.reveal-delay-2 {
-    transition-delay: 0.16s;
+/* ── Staircase timeline ──────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .staircase-step {
+    padding-left: 0 !important;
+  }
+  .staircase-step > div {
+    max-width: 100%;
+  }
 }
 
-.reveal-delay-3 {
-    transition-delay: 0.24s;
+/* ── Mesh gradient hero ─────────────────────────────────────────── */
+.mesh-gradient {
+  background-color: #d8efe2;
+  background-image:
+    radial-gradient(at 30% 20%, rgba(198, 240, 220, 0.96) 0px, transparent 55%),
+    radial-gradient(at 78% 12%, rgba(249, 228, 152, 0.48) 0px, transparent 50%),
+    radial-gradient(at 6% 58%, rgba(232, 213, 245, 0.52) 0px, transparent 50%),
+    radial-gradient(at 92% 62%, rgba(255, 213, 181, 0.46) 0px, transparent 50%),
+    radial-gradient(at 50% 92%, rgba(191, 219, 254, 0.34) 0px, transparent 48%),
+    radial-gradient(at 18% 88%, rgba(196, 240, 218, 0.26) 0px, transparent 40%);
+}
+.dark .mesh-gradient {
+  background-color: #0d2218;
+  background-image:
+    radial-gradient(at 30% 20%, rgba(15, 63, 37, 0.95) 0px, transparent 55%),
+    radial-gradient(at 78% 12%, rgba(33, 79, 54, 0.42) 0px, transparent 50%),
+    radial-gradient(at 6% 58%, rgba(27, 14, 46, 0.36) 0px, transparent 50%),
+    radial-gradient(at 92% 62%, rgba(44, 23, 12, 0.3) 0px, transparent 50%),
+    radial-gradient(at 50% 92%, rgba(11, 24, 42, 0.24) 0px, transparent 48%),
+    radial-gradient(at 18% 88%, rgba(13, 60, 35, 0.18) 0px, transparent 40%);
 }
 
-.reveal-delay-4 {
-    transition-delay: 0.32s;
+/* ── Sparkle animations ─────────────────────────────────────────── */
+@keyframes sparkle-rock {
+  0%   { transform: translate(0px,    0px)   rotate(-18deg) scale(1);    }
+  25%  { transform: translate(4px,   -8px)   rotate(5deg)   scale(1.05); }
+  50%  { transform: translate(0px,  -14px)   rotate(20deg)  scale(1);    }
+  75%  { transform: translate(-4px,  -8px)   rotate(8deg)   scale(0.97); }
+  100% { transform: translate(0px,    0px)   rotate(-18deg) scale(1);    }
+}
+@keyframes sparkle-rock-b {
+  0%   { transform: translate(0px,    0px)   rotate(12deg)  scale(1);    }
+  25%  { transform: translate(-5px,  -6px)   rotate(-6deg)  scale(1.04); }
+  50%  { transform: translate(0px,  -12px)   rotate(-22deg) scale(1);    }
+  75%  { transform: translate(5px,   -6px)   rotate(-5deg)  scale(0.96); }
+  100% { transform: translate(0px,    0px)   rotate(12deg)  scale(1);    }
 }
 
-.reveal-delay-5 {
-    transition-delay: 0.40s;
+.sparkle-anim {
+  animation: sparkle-rock 6s ease-in-out infinite;
+  transform-origin: center center;
 }
+.sparkle-anim-rev {
+  animation: sparkle-rock-b 8s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+/* ── Hero entrance animation ────────────────────────────────────── */
+@keyframes hero-pop {
+  0%   { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: translateY(0);    }
+}
+.hero-pop {
+  opacity: 0;
+  animation: hero-pop 0.55s ease-out forwards;
+}
+.hero-pop-1  { animation-delay: 0.10s; }
+.hero-pop-2  { animation-delay: 0.25s; }
+.hero-pop-3  { animation-delay: 0.40s; }
+.hero-pop-4  { animation-delay: 0.55s; }
+.hero-pop-5  { animation-delay: 0.68s; }
