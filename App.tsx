@@ -701,7 +701,7 @@ const App: React.FC = () => {
                   and the ethics of data centers.
                 </ExperienceItem>
                 <ExperienceItem
-                  title="Lone Star College Honors College"
+                  title="Lone Star College | The Honors College"
                   role="Researcher – Vietnam War Analysis"
                   date="Fall 2024"
                   location="Supervisor: Dr. Kelly Phillips"
@@ -726,7 +726,7 @@ const App: React.FC = () => {
                   public speaking strategies, resulting in a 'Best in Committee' award.
                 </ExperienceItem>
                 <ExperienceItem
-                  title="Lone Star College Honors College"
+                  title="Lone Star College | The Honors College"
                   role="Researcher – Air Pollution"
                   date="Spring 2024"
                   location="Supervisor: Dr. Dana Van De Walker"
