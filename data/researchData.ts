@@ -154,6 +154,14 @@ export const histPaper: ResearchDocument = {
   ]
 };
 
+export const histPoster: ResearchDocument = {
+  id: 'hist-poster',
+  title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War',
+  type: 'Poster',
+  pdfUrl: '/documents/Vietnam_War_IEB_Poster.pdf',
+  content: [],
+};
+
 export const nmunPaper: ResearchDocument = {
   id: 'nmun-paper',
   title: '"Genuine": The power of intercultural communication at National Model United Nations',

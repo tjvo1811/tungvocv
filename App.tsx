@@ -4,9 +4,9 @@
 */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowDown, Menu, X, Mail, Linkedin, FileText, Moon, Sun } from 'lucide-react';
+import { ArrowDown, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, Moon, Sun, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { govtPaper, ricePoster, histPaper, nmunPaper, ResearchDocument } from './data/researchData';
+import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
 
 type TabId = 'home' | 'about' | 'research' | 'leadership' | 'work' | 'honors';
@@ -36,17 +36,25 @@ const fadeIn = {
 /* ─── Static data ─────────────────────────────────────────────────── */
 const educationData = [
   { school: 'University of St. Thomas', degree: 'B.S. Applied Mathematics', date: 'Expected May 2027', honor: 'Minor: Data Analytics', url: 'https://stthom.edu/', color: 'bg-[#d4e8dc] dark:bg-[#1a3d2b]/40' },
-  { school: 'Lone Star College', degree: 'Honors A.S. / General', date: 'May 2025', honor: 'Summa Cum Laude', url: 'https://www.lonestar.edu/', color: 'bg-[#e0d6f0] dark:bg-[#2a1e46]/40' },
+  { school: 'Lone Star College', degree: 'Honors A.S. / General', date: 'May 2025', honor: 'Summa Cum Laude | Distinguished Global Scholars', url: 'https://www.lonestar.edu/', color: 'bg-[#e0d6f0] dark:bg-[#2a1e46]/40' },
   { school: 'Jersey Village High School', degree: 'High School Diploma', date: 'May 2023', honor: 'Cum Laude', url: 'https://jerseyvillage.cfisd.net/', color: 'bg-[#f0dcd4] dark:bg-[#3e2218]/40' },
 ];
 
 const honorData = [
   { title: 'Monaghan Excellence Scholarship', org: 'University of St. Thomas', date: 'Fall 2025 – Spring 2027', color: 'bg-[#d4e8dc] dark:bg-[#1a3d2b]/30' },
+  { title: 'CASE Finalist', org: 'Amideast Education Abroad Connect', date: 'Summer 2025', color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/30' },
+  { title: 'Distinguished Global Scholar Study Abroad Scholarship', org: 'Lone Star College Houston-North', date: 'Summer 2025', color: 'bg-[#d4e0e8] dark:bg-[#1a2e3d]/30' },
   { title: 'Distinguished Global Scholar', org: 'Lone Star College', date: 'Fall 2024 – Spring 2025', color: 'bg-[#e0d6f0] dark:bg-[#2a1e46]/30' },
+  { title: 'Global Scholar Language Scholarship', org: 'Lone Star College Houston-North', date: 'Fall 2024 – Spring 2025', color: 'bg-[#f0e0d6] dark:bg-[#3e2a1e]/30' },
   { title: 'Best In Committee Award', org: 'National Model United Nations, NY', date: '2024', color: 'bg-[#f0dcd4] dark:bg-[#3e2218]/30' },
   { title: 'Outstanding Delegation Award', org: 'National Model United Nations, NY', date: '2024', color: 'bg-[#d4dce8] dark:bg-[#1a2a3e]/30' },
   { title: 'Global Scholar Award', org: 'Lone Star College Houston-North', date: 'Fall 2023 – Spring 2025', color: 'bg-[#f0e8d4] dark:bg-[#3e3218]/30' },
   { title: "President's List", org: 'Lone Star College', date: '2023 – 2025', color: 'bg-[#d4e8e4] dark:bg-[#1a3d35]/30' },
+  { title: 'Academic All-American Award', org: 'National Speech and Debate Association', date: 'Fall 2022', color: 'bg-[#e8dce0] dark:bg-[#3d1a2e]/30' },
+  { title: '6x Tournament Champion', org: 'Speech and Debate, Houston, TX', date: 'High School', color: 'bg-[#d6e0d4] dark:bg-[#1e2a1a]/30' },
+  { title: '2x State TFA Qualifier', org: 'Texas Forensics Association', date: 'High School', color: 'bg-[#e0d4e8] dark:bg-[#2a1a3d]/30' },
+  { title: 'TFA Quarter Finalists', org: 'Texas Forensics Association', date: 'High School', color: 'bg-[#d4e8dc] dark:bg-[#1a3d2b]/30' },
+  { title: 'NIETOC Qualifier', org: 'National Individual Events Tournament of Champions', date: 'High School', color: 'bg-[#e8e0d4] dark:bg-[#3d351a]/30' },
 ];
 
 /* ─── Utility ─────────────────────────────────────────────────────── */
@@ -126,6 +134,7 @@ const ExperienceItem = ({
   children,
   location,
   documentData,
+  posterData,
   onOpenDocument,
 }: {
   title: string;
@@ -134,6 +143,7 @@ const ExperienceItem = ({
   children: React.ReactNode;
   location?: string;
   documentData?: ResearchDocument;
+  posterData?: ResearchDocument;
   onOpenDocument?: (doc: ResearchDocument) => void;
 }) => (
   <motion.div
@@ -153,6 +163,16 @@ const ExperienceItem = ({
           >
             <FileText size={13} className="group-hover:scale-110 transition-transform" />
             <span className="hidden sm:inline">View {documentData.type}</span>
+          </button>
+        )}
+        {posterData && onOpenDocument && (
+          <button
+            onClick={() => onOpenDocument(posterData)}
+            className="flex items-center gap-1.5 px-3 py-1 bg-white/70 dark:bg-white/10 border border-forest/20 dark:border-white/15 rounded-full text-forest dark:text-white/80 hover:bg-forest dark:hover:bg-white hover:text-white dark:hover:text-forest transition-all duration-300 text-xs uppercase font-bold tracking-wider group"
+            title="View Poster"
+          >
+            <LayoutTemplate size={13} className="group-hover:scale-110 transition-transform" />
+            <span className="hidden sm:inline">View Poster</span>
           </button>
         )}
       </div>
@@ -284,6 +304,8 @@ const App: React.FC = () => {
   const [activeDocument, setActiveDocument] = useState<ResearchDocument | null>(null);
   const [isDark, setIsDark] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>('home');
+  const [navResearchOpen, setNavResearchOpen] = useState(false);
+  const navResearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
@@ -314,9 +336,16 @@ const App: React.FC = () => {
     }
   }, [hoveredId, activeTab]);
 
-  const switchTab = (id: TabId) => {
+  const switchTab = (id: TabId, scrollTo?: string) => {
     setActiveTab(id);
     setMenuOpen(false);
+    setNavResearchOpen(false);
+    if (scrollTo) {
+      // Wait for the tab transition to finish, then scroll
+      setTimeout(() => {
+        document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 450);
+    }
   };
 
   return (
@@ -353,24 +382,84 @@ const App: React.FC = () => {
           >
             T
           </button>
-          {NAV_LINKS.map(({ id, label }) => (
-            <button
-              key={id}
-              ref={(el) => {
-                linkRefs.current[id] = el;
-              }}
-              onClick={() => switchTab(id)}
-              onMouseEnter={() => setHoveredId(id)}
-              onMouseLeave={() => setHoveredId(null)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors cursor-pointer whitespace-nowrap relative z-10 ${
-                activeTab === id
-                  ? 'text-forest dark:text-white'
-                  : 'text-forest/70 dark:text-white/70 hover:text-forest dark:hover:text-white'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+          {NAV_LINKS.map(({ id, label }) =>
+            id === 'research' ? (
+              <div
+                key={id}
+                className="relative z-20"
+                onMouseEnter={() => {
+                  if (navResearchTimer.current) clearTimeout(navResearchTimer.current);
+                  setHoveredId(id);
+                  setNavResearchOpen(true);
+                }}
+                onMouseLeave={() => {
+                  setHoveredId(null);
+                  navResearchTimer.current = setTimeout(() => setNavResearchOpen(false), 120);
+                }}
+              >
+                <button
+                  ref={(el) => { linkRefs.current[id] = el; }}
+                  onClick={() => switchTab(id)}
+                  className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1 ${
+                    activeTab === id
+                      ? 'text-forest dark:text-white'
+                      : 'text-forest/70 dark:text-white/70 hover:text-forest dark:hover:text-white'
+                  }`}
+                >
+                  {label}
+                  <ChevronDown
+                    size={12}
+                    className={`transition-transform duration-200 ${navResearchOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                <AnimatePresence>
+                  {navResearchOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.15 } }}
+                      exit={{ opacity: 0, y: -6, scale: 0.96, transition: { duration: 0.1 } }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 bg-white/95 dark:bg-[#0f2919]/95 backdrop-blur-md border border-white/80 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden"
+                      onMouseEnter={() => {
+                        if (navResearchTimer.current) clearTimeout(navResearchTimer.current);
+                      }}
+                      onMouseLeave={() => {
+                        navResearchTimer.current = setTimeout(() => setNavResearchOpen(false), 120);
+                      }}
+                    >
+                      <button
+                        onClick={() => switchTab('research')}
+                        className="w-full text-left px-4 py-3 text-sm font-medium text-forest/70 dark:text-white/60 hover:bg-forest/5 dark:hover:bg-white/8 transition-colors"
+                      >
+                        Research Experience
+                      </button>
+                      <div className="mx-4 h-px bg-forest/8 dark:bg-white/8" />
+                      <button
+                        onClick={() => switchTab('research', 'research-presentations')}
+                        className="w-full text-left px-4 py-3 text-sm font-medium text-forest/70 dark:text-white/60 hover:bg-forest/5 dark:hover:bg-white/8 transition-colors"
+                      >
+                        Conference Presentations
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <button
+                key={id}
+                ref={(el) => { linkRefs.current[id] = el; }}
+                onClick={() => switchTab(id)}
+                onMouseEnter={() => setHoveredId(id)}
+                onMouseLeave={() => setHoveredId(null)}
+                className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors cursor-pointer whitespace-nowrap relative z-10 ${
+                  activeTab === id
+                    ? 'text-forest dark:text-white'
+                    : 'text-forest/70 dark:text-white/70 hover:text-forest dark:hover:text-white'
+                }`}
+              >
+                {label}
+              </button>
+            )
+          )}
           <a
             href="https://www.linkedin.com/in/tung-vo-4728b7235/"
             target="_blank"
@@ -558,6 +647,8 @@ const App: React.FC = () => {
             className="tab-content pt-24 pb-24 px-6 md:px-16"
           >
             <TabHero>Research.</TabHero>
+
+            {/* Research experience */}
             <motion.div
               variants={fadeIn}
               className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start"
@@ -577,7 +668,7 @@ const App: React.FC = () => {
                 <ExperienceItem
                   title="University of St. Thomas"
                   role="Undergraduate Researcher"
-                  date="Current"
+                  date="Fall 2025 – Current"
                   location="Supervisor: Dr. Mary Flagg"
                 >
                   Focusing on graph theory topics such as competing zero forcing sets.
@@ -615,6 +706,7 @@ const App: React.FC = () => {
                   date="Fall 2024"
                   location="Supervisor: Dr. Kelly Phillips"
                   documentData={histPaper}
+                  posterData={histPoster}
                   onOpenDocument={(doc) => setActiveDocument(doc)}
                 >
                   Explored differences in recruitment tactics and desertion motivations
@@ -625,7 +717,7 @@ const App: React.FC = () => {
                   title="National Model United Nations (NMUN)"
                   role="Delegate &amp; Researcher"
                   date="Spring 2024"
-                  location="New York, NY | Supervisors: Dr. Tiffee &amp; Prof. Garcia"
+                  location="New York, NY | Supervisors: Dr. Sean Tiffee, Dr. Rebecca Howard, Dr. Peggy Lambert, Prof. Casey Garcia"
                   documentData={nmunPaper}
                   onOpenDocument={(doc) => setActiveDocument(doc)}
                 >
@@ -645,6 +737,48 @@ const App: React.FC = () => {
                   factors decreasing life expectancy. Investigated correlations between air
                   pollution levels and public health outcomes.
                 </ExperienceItem>
+              </div>
+            </motion.div>
+
+            {/* Conference Presentations */}
+            <motion.div
+              id="research-presentations"
+              variants={fadeIn}
+              className="mt-20 scroll-mt-24"
+            >
+              <SectionHeading
+                label="Presentations"
+                heading="Conference Presentations."
+                center
+              />
+              <div className="max-w-3xl mx-auto space-y-4">
+                {[
+                  { title: '"A Systemic Approach to Understanding the Natural World"', venue: "Rice University's Environmental Data Academy Poster Session", location: 'Houston, TX', year: '2025' },
+                  { title: '"A Systemic Approach to Understanding the Natural World"', venue: 'Spring Honors and International Education Conference', location: 'Houston, TX', year: '2025' },
+                  { title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War', venue: 'World History Association of Texas Annual Conference', location: 'Commerce, TX', year: '2025' },
+                  { title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War', venue: 'Fall Honors and International Education Conference', location: 'Houston, TX', year: '2024' },
+                  { title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War', venue: 'International Ed Biennial Conference', location: 'Houston, TX', year: '2024' },
+                  { title: '"Life Expectancy and Air Pollution: A Comparative Analysis of the United States and Chad"', venue: 'Spring Honors and International Education Conference', location: 'Houston, TX', year: '2024' },
+                  { title: 'National Model United Nations – New York Panelist', venue: 'Spring Honors and International Education Conference', location: 'Houston, TX', year: '2024' },
+                ].map((p, i) => (
+                  <motion.div
+                    key={i}
+                    variants={fadeIn}
+                    className="flex gap-4 items-start p-5 bg-white/50 dark:bg-white/5 border border-white/60 dark:border-white/10 rounded-2xl hover:shadow-md transition-all duration-300"
+                  >
+                    <span className="flex-shrink-0 mt-1 font-display font-black text-lg text-forest/30 dark:text-white/25 w-6 text-right">
+                      {i + 1}
+                    </span>
+                    <div>
+                      <h4 className="font-display font-bold text-forest dark:text-white leading-snug text-base">
+                        {p.title}
+                      </h4>
+                      <p className="text-sm text-forest/60 dark:text-white/50 mt-1">
+                        {p.venue} — {p.location}, {p.year}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             </motion.div>
           </motion.main>
@@ -857,7 +991,9 @@ const App: React.FC = () => {
               <div className="flex flex-wrap justify-center gap-3">
                 {[
                   'Micro-Credential: Environmental Data Science (Rice)',
-                  'Google Data Analytics (Coursera)',
+                  'Foundations: Data, Data, Everywhere (Coursera)',
+                  'Ask Questions to Make Data-Driven Decisions (Coursera)',
+                  'Prepare Data for Explorations (Coursera)',
                   'OSHA 10',
                   'Phi Theta Kappa Member',
                   'Rice Take Flight Program',
