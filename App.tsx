@@ -4,7 +4,7 @@
 */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowDown, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, Moon, Sun, ChevronDown } from 'lucide-react';
+import { ArrowDown, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
@@ -135,6 +135,7 @@ const ExperienceItem = ({
   location,
   documentData,
   posterData,
+  toolUrl,
   onOpenDocument,
 }: {
   title: string;
@@ -144,6 +145,7 @@ const ExperienceItem = ({
   location?: string;
   documentData?: ResearchDocument;
   posterData?: ResearchDocument;
+  toolUrl?: string;
   onOpenDocument?: (doc: ResearchDocument) => void;
 }) => (
   <motion.div
@@ -174,6 +176,17 @@ const ExperienceItem = ({
             <LayoutTemplate size={13} className="group-hover:scale-110 transition-transform" />
             <span className="hidden sm:inline">View Poster</span>
           </button>
+        )}
+        {toolUrl && (
+          <a
+            href={toolUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-1 bg-white/70 dark:bg-white/10 border border-forest/20 dark:border-white/15 rounded-full text-forest dark:text-white/80 hover:bg-forest dark:hover:bg-white hover:text-white dark:hover:text-forest transition-all duration-300 text-xs uppercase font-bold tracking-wider group"
+          >
+            <ExternalLink size={13} className="group-hover:scale-110 transition-transform" />
+            <span className="hidden sm:inline">Live Tool</span>
+          </a>
         )}
       </div>
       <span className="text-xs text-forest/50 dark:text-white/40 font-mono whitespace-nowrap mt-1 md:mt-0 md:ml-4 bg-white/50 dark:bg-white/8 px-2 py-0.5 rounded-full">
@@ -670,6 +683,7 @@ const App: React.FC = () => {
                   role="Undergraduate Researcher"
                   date="Fall 2025 – Current"
                   location="Supervisor: Dr. Mary Flagg"
+                  toolUrl="https://zeroforcingsetanalyzer.netlify.app/"
                 >
                   Focusing on graph theory topics such as competing zero forcing sets.
                   Conducting theoretical analysis and computational modeling of vertex
@@ -682,24 +696,11 @@ const App: React.FC = () => {
               <div>
                 <div className="mb-10">
                   <h2 className="font-display font-black text-4xl md:text-5xl text-forest dark:text-white leading-[0.92]">
-                    Sustainability &amp;
+                    History &amp;
                     <br />
                     Public Policy.
                   </h2>
                 </div>
-                <ExperienceItem
-                  title="Rice University"
-                  role="Undergraduate Researcher"
-                  date="Spring 2025"
-                  location="Supervisors: Dr. Carrie Masiello, Dr. Risa Myers, Dr. Canek Phillips"
-                  documentData={ricePoster}
-                  onOpenDocument={(doc) => setActiveDocument(doc)}
-                >
-                  Exploring the vast world of Data Science within the lens of
-                  sustainability. Using scientific methods, programming skills, and
-                  mathematics to extract insight regarding food webs, data visualization,
-                  and the ethics of data centers.
-                </ExperienceItem>
                 <ExperienceItem
                   title="Lone Star College | The Honors College"
                   role="Researcher – Vietnam War Analysis"
@@ -753,11 +754,11 @@ const App: React.FC = () => {
               />
               <div className="max-w-3xl mx-auto space-y-4">
                 {[
-                  { title: '"A Systemic Approach to Understanding the Natural World"', venue: "Rice University's Environmental Data Academy Poster Session", location: 'Houston, TX', year: '2025' },
-                  { title: '"A Systemic Approach to Understanding the Natural World"', venue: 'Spring Honors and International Education Conference', location: 'Houston, TX', year: '2025' },
-                  { title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War', venue: 'World History Association of Texas Annual Conference', location: 'Commerce, TX', year: '2025' },
-                  { title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War', venue: 'Fall Honors and International Education Conference', location: 'Houston, TX', year: '2024' },
-                  { title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War', venue: 'International Ed Biennial Conference', location: 'Houston, TX', year: '2024' },
+                  { title: '"A Systemic Approach to Understanding the Natural World"', venue: "Rice University's Environmental Data Academy Poster Session", location: 'Houston, TX', year: '2025', poster: ricePoster },
+                  { title: '"A Systemic Approach to Understanding the Natural World"', venue: 'Spring Honors and International Education Conference', location: 'Houston, TX', year: '2025', poster: ricePoster },
+                  { title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War', venue: 'World History Association of Texas Annual Conference', location: 'Commerce, TX', year: '2025', poster: histPoster },
+                  { title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War', venue: 'Fall Honors and International Education Conference', location: 'Houston, TX', year: '2024', poster: histPoster },
+                  { title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War', venue: 'International Ed Biennial Conference', location: 'Houston, TX', year: '2024', poster: histPoster },
                   { title: '"Life Expectancy and Air Pollution: A Comparative Analysis of the United States and Chad"', venue: 'Spring Honors and International Education Conference', location: 'Houston, TX', year: '2024' },
                   { title: 'National Model United Nations – New York Panelist', venue: 'Spring Honors and International Education Conference', location: 'Houston, TX', year: '2024' },
                 ].map((p, i) => (
@@ -769,11 +770,22 @@ const App: React.FC = () => {
                     <span className="flex-shrink-0 mt-1 font-display font-black text-lg text-forest/30 dark:text-white/25 w-6 text-right">
                       {i + 1}
                     </span>
-                    <div>
-                      <h4 className="font-display font-bold text-forest dark:text-white leading-snug text-base">
-                        {p.title}
-                      </h4>
-                      <p className="text-sm text-forest/60 dark:text-white/50 mt-1">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-3 mb-1">
+                        <h4 className="font-display font-bold text-forest dark:text-white leading-snug text-base">
+                          {p.title}
+                        </h4>
+                        {'poster' in p && p.poster && (
+                          <button
+                            onClick={() => setActiveDocument(p.poster!)}
+                            className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1 bg-white/70 dark:bg-white/10 border border-forest/20 dark:border-white/15 rounded-full text-forest dark:text-white/80 hover:bg-forest dark:hover:bg-white hover:text-white dark:hover:text-forest transition-all duration-300 text-xs uppercase font-bold tracking-wider group"
+                          >
+                            <LayoutTemplate size={12} className="group-hover:scale-110 transition-transform" />
+                            <span>View Poster</span>
+                          </button>
+                        )}
+                      </div>
+                      <p className="text-sm text-forest/60 dark:text-white/50">
                         {p.venue} — {p.location}, {p.year}
                       </p>
                     </div>
