@@ -685,10 +685,10 @@ const App: React.FC = () => {
                   location="Supervisor: Dr. Mary Flagg"
                   toolUrl="https://zeroforcingsetanalyzer.netlify.app/"
                 >
-                  Focusing on graph theory topics such as competing zero forcing sets.
-                  Conducting theoretical analysis and computational modeling of vertex
-                  connectivity across graph families to explore network dynamics and
-                  efficiency.
+                  NSF PRIMES PAIR-funded research under Dr. Mary Flagg on competitive zero
+                  forcing sets in graph theory. Conducted theoretical analysis and
+                  computational experiments across graph families to study propagation
+                  dynamics in competing zero forcing processes.
                 </ExperienceItem>
               </div>
 
