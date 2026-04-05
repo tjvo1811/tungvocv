@@ -82,7 +82,7 @@ const Sparkle = ({
     style={style}
   >
     <path
-      d="M18 0 C10 3 3 10 0 18 C3 26 10 33 18 36 C26 33 33 26 36 18 C33 10 26 3 18 0 Z"
+      d="M18.00,4.00C20.07,4.00 21.36,8.33 23.76,10.07C26.16,11.81 30.67,11.70 31.31,13.67C31.96,15.65 28.24,18.21 27.32,21.03C26.40,23.85 27.91,28.11 26.23,29.33C24.55,30.55 20.96,27.80 18.00,27.80C15.04,27.80 11.45,30.55 9.77,29.33C8.09,28.11 9.60,23.85 8.68,21.03C7.76,18.21 4.04,15.65 4.69,13.67C5.33,11.70 9.84,11.81 12.24,10.07C14.64,8.33 15.93,4.00 18.00,4.00Z"
       fill="currentColor"
     />
   </svg>
@@ -563,28 +563,86 @@ const App: React.FC = () => {
           >
             <header className="hero-fade relative min-h-screen pb-28 md:pb-36 flex items-center justify-center overflow-hidden mesh-gradient">
               <span
-                className="absolute hero-pop pointer-events-none"
+                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_6px_rgba(26,61,43,0.12)] dark:drop-shadow-[0_1px_8px_rgba(0,0,0,0.35)]"
                 style={{ top: '16%', left: '9%', animationDelay: '0.35s' }}
               >
-                <Sparkle className="text-white/80 sparkle-anim" size={60} style={{ animationDuration: '9s' }} />
+                <Sparkle
+                  className="text-forest/95 dark:text-white/92 sparkle-anim"
+                  size={64}
+                  style={{ animationDuration: '24s' }}
+                />
               </span>
               <span
-                className="absolute hero-pop pointer-events-none"
+                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(197,160,89,0.35)] dark:drop-shadow-[0_1px_10px_rgba(197,160,89,0.25)]"
                 style={{ top: '19%', right: '8%', animationDelay: '0.55s' }}
               >
-                <Sparkle className="text-white/65 sparkle-anim-rev" size={38} style={{ animationDuration: '13s' }} />
+                <Sparkle
+                  className="text-nobel-gold dark:text-nobel-gold sparkle-anim-rev"
+                  size={44}
+                  style={{ animationDuration: '29s' }}
+                />
               </span>
               <span
-                className="absolute hero-pop pointer-events-none"
+                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(26,61,43,0.14)] dark:drop-shadow-[0_1px_8px_rgba(0,0,0,0.35)]"
                 style={{ bottom: '26%', left: '7%', animationDelay: '0.70s' }}
               >
-                <Sparkle className="text-white/45 sparkle-anim" size={26} style={{ animationDuration: '7s' }} />
+                <Sparkle
+                  className="text-forest/95 dark:text-white/90 sparkle-anim"
+                  size={34}
+                  style={{ animationDuration: '20s' }}
+                />
               </span>
               <span
-                className="absolute hero-pop pointer-events-none"
+                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(197,160,89,0.32)] dark:drop-shadow-[0_1px_10px_rgba(197,160,89,0.22)]"
                 style={{ bottom: '31%', right: '10%', animationDelay: '0.50s' }}
               >
-                <Sparkle className="text-white/50 sparkle-anim-rev" size={20} style={{ animationDuration: '11s' }} />
+                <Sparkle
+                  className="text-nobel-gold dark:text-nobel-gold sparkle-anim-rev"
+                  size={28}
+                  style={{ animationDuration: '26s' }}
+                />
+              </span>
+              <span
+                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(26,61,43,0.12)] dark:drop-shadow-[0_1px_8px_rgba(0,0,0,0.32)]"
+                style={{ top: '10%', left: '50%', animationDelay: '0.22s' }}
+              >
+                <span className="block -translate-x-1/2">
+                  <Sparkle
+                    className="text-forest/92 dark:text-white/88 sparkle-anim-rev"
+                    size={30}
+                    style={{ animationDuration: '22s' }}
+                  />
+                </span>
+              </span>
+              <span
+                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(197,160,89,0.3)] dark:drop-shadow-[0_1px_10px_rgba(197,160,89,0.2)]"
+                style={{ top: '44%', left: '2%', animationDelay: '0.42s' }}
+              >
+                <Sparkle
+                  className="text-nobel-gold dark:text-nobel-gold sparkle-anim"
+                  size={38}
+                  style={{ animationDuration: '31s' }}
+                />
+              </span>
+              <span
+                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(26,61,43,0.14)] dark:drop-shadow-[0_1px_8px_rgba(0,0,0,0.35)]"
+                style={{ top: '40%', right: '2%', animationDelay: '0.33s' }}
+              >
+                <Sparkle
+                  className="text-forest/95 dark:text-white/90 sparkle-anim-rev"
+                  size={32}
+                  style={{ animationDuration: '21s' }}
+                />
+              </span>
+              <span
+                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(197,160,89,0.3)] dark:drop-shadow-[0_1px_10px_rgba(197,160,89,0.2)]"
+                style={{ bottom: '20%', left: '18%', animationDelay: '0.62s' }}
+              >
+                <Sparkle
+                  className="text-nobel-gold dark:text-nobel-gold sparkle-anim"
+                  size={36}
+                  style={{ animationDuration: '27s' }}
+                />
               </span>
 
               <div className="relative z-10 container mx-auto px-6 text-center">
