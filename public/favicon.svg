@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="T">
+  <circle cx="16" cy="16" r="16" fill="#1a3d2b"/>
+  <!-- Thick T: white on forest (#1a3d2b), same as nav avatar button -->
+  <path fill="#ffffff" d="M5 7h22v6h-7v13h-8V13H5V7z"/>
+</svg>
