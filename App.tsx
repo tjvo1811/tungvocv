@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
 import { HeroBioWeather } from './components/HeroBioWeather';
+import { BrandMark } from './components/BrandMark';
 
 type TabId = 'home' | 'about' | 'research' | 'leadership' | 'work' | 'honors';
 
@@ -416,10 +417,12 @@ const App: React.FC = () => {
           />
 
           <button
+            type="button"
             onClick={() => switchTab('home')}
-            className="w-8 h-8 bg-forest dark:bg-white rounded-full flex items-center justify-center text-white dark:text-forest font-display font-black text-sm mr-1 flex-shrink-0 hover:bg-forest/80 dark:hover:bg-white/90 transition-colors relative z-10"
+            className="group w-8 h-8 p-0 rounded-full mr-1 flex-shrink-0 relative z-10 border-0 bg-transparent cursor-pointer"
+            aria-label="Home"
           >
-            T
+            <BrandMark className="w-full h-full" />
           </button>
           {NAV_LINKS.map(({ id, label }) =>
             id === 'research' ? (
@@ -530,9 +533,7 @@ const App: React.FC = () => {
             onClick={() => switchTab('home')}
             className="flex items-center gap-2 px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10"
           >
-            <div className="w-7 h-7 bg-forest dark:bg-white rounded-full flex items-center justify-center text-white dark:text-forest font-display font-black text-sm">
-              T
-            </div>
+            <BrandMark className="w-7 h-7 flex-shrink-0" />
             <span className="font-display font-black text-forest dark:text-white text-sm">
               TJ Vo
             </span>
