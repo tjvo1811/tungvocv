@@ -8,6 +8,7 @@ import { ArrowDown, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalL
 import { motion, AnimatePresence } from 'framer-motion';
 import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
+import { HeroBioWeather } from './components/HeroBioWeather';
 
 type TabId = 'home' | 'about' | 'research' | 'leadership' | 'work' | 'honors';
 
@@ -452,6 +453,13 @@ const App: React.FC = () => {
                       >
                         Conference Presentations
                       </button>
+                      <div className="mx-4 h-px bg-forest/8 dark:bg-white/8" />
+                      <button
+                        onClick={() => switchTab('research', 'research-projects')}
+                        className="w-full text-left px-4 py-3 text-sm font-medium text-forest/70 dark:text-white/60 hover:bg-forest/5 dark:hover:bg-white/8 transition-colors"
+                      >
+                        Personal Projects
+                      </button>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -585,11 +593,13 @@ const App: React.FC = () => {
                 </div>
 
                 <h1
-                  className="hero-pop hero-pop-2 font-display font-black text-forest dark:text-white leading-[0.88] mb-8"
+                  className="hero-pop hero-pop-2 font-display font-black text-forest dark:text-white leading-[0.88] mb-4 md:mb-5"
                   style={{ fontSize: 'clamp(3.2rem, 10.5vw, 8.5rem)' }}
                 >
                   Hi. I'm TJ.
                 </h1>
+
+                <HeroBioWeather />
 
                 <div className="hero-pop hero-pop-3 flex flex-col sm:flex-row justify-center items-center gap-3">
                   <a
@@ -599,9 +609,6 @@ const App: React.FC = () => {
                     <Mail size={15} />
                     vo.tung@stthom.edu
                   </a>
-                  <div className="px-7 py-3 border-2 border-white/55 dark:border-white/20 rounded-full text-forest/75 dark:text-white/60 bg-white/35 dark:bg-white/5 backdrop-blur-sm text-sm font-medium">
-                    Houston, Texas
-                  </div>
                 </div>
 
                 <div className="hero-pop hero-pop-4 absolute bottom-10 left-0 right-0 flex justify-center animate-bounce">
@@ -786,10 +793,66 @@ const App: React.FC = () => {
                         )}
                       </div>
                       <p className="text-sm text-forest/60 dark:text-white/50">
-                        {p.venue} — {p.location}, {p.year}
+                        {p.venue} · {p.location}, {p.year}
                       </p>
                     </div>
                   </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Personal projects: public extensions of prior research */}
+            <motion.div
+              id="research-projects"
+              variants={fadeIn}
+              className="mt-20 scroll-mt-24"
+            >
+              <SectionHeading
+                label="Personal projects"
+                heading="Research, for everyone."
+                sub="These sites grow out of earlier Honors papers, reimagined as full websites with data visualization so more people can explore the evidence and ideas behind the work."
+                center
+              />
+              <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5">
+                {[
+                  {
+                    title: 'The Fortunes of War',
+                    blurb:
+                      'An interactive follow-up to Vietnam War recruitment and desertion research, with charts and narrative built for a general audience.',
+                    url: 'https://thefortunesofwar.netlify.app/',
+                    color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/35',
+                  },
+                  {
+                    title: 'The Pollution Paradox',
+                    blurb:
+                      'A public companion to the US vs. Chad air pollution and life expectancy paper, with data stories that highlight the paradox between pollution and outcomes.',
+                    url: 'https://thepollutionparadox.netlify.app/',
+                    color: 'bg-[#d4e0e8] dark:bg-[#1a2e3d]/35',
+                  },
+                ].map((proj) => (
+                  <motion.a
+                    key={proj.url}
+                    href={proj.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variants={fadeIn}
+                    className={`group block p-6 ${proj.color} rounded-2xl border border-white/50 dark:border-white/10 hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <h3 className="font-display font-bold text-lg text-forest dark:text-white leading-snug">
+                        {proj.title}
+                      </h3>
+                      <span className="flex-shrink-0 p-2 rounded-full bg-white/60 dark:bg-white/10 text-forest dark:text-white/80 group-hover:bg-forest group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-forest transition-colors">
+                        <ExternalLink size={16} aria-hidden />
+                      </span>
+                    </div>
+                    <p className="text-sm text-forest/70 dark:text-white/55 leading-relaxed">
+                      {proj.blurb}
+                    </p>
+                    <span className="mt-4 block text-xs font-bold uppercase tracking-wider text-forest/50 dark:text-white/40 group-hover:text-forest dark:group-hover:text-white transition-colors">
+                      Visit site →
+                    </span>
+                  </motion.a>
                 ))}
               </div>
             </motion.div>
