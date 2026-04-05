@@ -15,15 +15,13 @@ type TabId = 'home' | 'about' | 'research' | 'leadership' | 'work' | 'honors';
 /* ─── Animation variants ──────────────────────────────────────────── */
 const cubicEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
-const pageTransition = {
-  initial: { opacity: 0, y: 24 },
-  animate: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: cubicEase, staggerChildren: 0.07 },
-  },
-  exit: { opacity: 0, y: -10, transition: { duration: 0.2 } },
+/** Tab shell only — no `variants` here so children are not forced to animate on tab switch. */
+const tabShellTransition = {
+  duration: 0.4,
+  ease: cubicEase,
 };
+
+const tabShellExit = { duration: 0.2 };
 
 const fadeIn = {
   initial: { opacity: 0, y: 16 },
@@ -32,6 +30,29 @@ const fadeIn = {
     y: 0,
     transition: { duration: 0.45, ease: cubicEase },
   },
+};
+
+const scrollViewport = { once: true, amount: 0.14, margin: '0px 0px -52px 0px' } as const;
+
+const scrollReveal = {
+  initial: 'initial' as const,
+  whileInView: 'animate' as const,
+  viewport: scrollViewport,
+  variants: fadeIn,
+};
+
+/** For grids/lists: stagger children when the block enters the viewport. */
+const staggerContainer = {
+  initial: {},
+  animate: {
+    transition: { staggerChildren: 0.06, delayChildren: 0.04 },
+  },
+};
+
+const mainTabMotion = {
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0, transition: tabShellTransition },
+  exit: { opacity: 0, y: -10, transition: tabShellExit },
 };
 
 /* ─── Static data ─────────────────────────────────────────────────── */
@@ -90,7 +111,7 @@ const Sparkle = ({
 
 /* ─── Tab hero heading (like seanhalpin.xyz) ──────────────────────── */
 const TabHero = ({ children }: { children: React.ReactNode }) => (
-  <motion.div variants={fadeIn} className="text-center mb-16 pt-4">
+  <motion.div {...scrollReveal} className="text-center mb-16 pt-4">
     <h1
       className="font-display font-black text-forest dark:text-white leading-[0.88]"
       style={{ fontSize: 'clamp(3.5rem, 10vw, 8rem)' }}
@@ -150,7 +171,7 @@ const ExperienceItem = ({
   onOpenDocument?: (doc: ResearchDocument) => void;
 }) => (
   <motion.div
-    variants={fadeIn}
+    {...scrollReveal}
     className="mb-12 border-l-2 border-forest/20 dark:border-white/15 pl-6 relative"
   >
     <div className="absolute w-3 h-3 bg-forest dark:bg-white/70 rounded-full -left-[6.5px] top-1.5 ring-2 ring-white/80 dark:ring-black/30" />
@@ -216,7 +237,7 @@ const SectionHeading = ({
   center?: boolean;
 }) => (
   <motion.div
-    variants={fadeIn}
+    {...scrollReveal}
     className={`mb-12 ${center ? 'text-center' : ''}`}
   >
     <div className="inline-block mb-3 text-xs font-bold tracking-[0.2em] text-forest/50 dark:text-white/40 uppercase">
@@ -248,7 +269,7 @@ const StaircaseCard = ({
   children?: React.ReactNode;
 }) => (
   <motion.div
-    variants={fadeIn}
+    {...scrollReveal}
     className="mb-3 staircase-step"
     style={{ paddingLeft: `${offset}%` }}
   >
@@ -277,15 +298,19 @@ const StaircaseCard = ({
 /* ─── Education cards (reused on home + Education tab) ────────────── */
 const EducationCards = () => (
   <motion.div
-    variants={fadeIn}
+    variants={staggerContainer}
+    initial="initial"
+    whileInView="animate"
+    viewport={scrollViewport}
     className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto"
   >
     {educationData.map((item) => (
-      <a
+      <motion.a
         key={item.school}
         href={item.url}
         target="_blank"
         rel="noopener noreferrer"
+        variants={fadeIn}
         className={`p-6 ${item.color} rounded-2xl border border-white/40 dark:border-white/10 hover:shadow-md hover:-translate-y-1 transition-all duration-300 text-center block`}
       >
         <h4 className="font-display font-black text-forest dark:text-white text-lg mb-2">
@@ -298,7 +323,7 @@ const EducationCards = () => (
         <p className="text-xs text-forest/60 dark:text-white/50 mt-2 uppercase tracking-wide font-bold">
           {item.honor}
         </p>
-      </a>
+      </motion.a>
     ))}
   </motion.div>
 );
@@ -685,17 +710,10 @@ const App: React.FC = () => {
             </header>
 
             {/* Education below hero */}
-            <motion.section
-              id="home-education"
-              className="py-24 px-6 md:px-16"
-              initial="initial"
-              whileInView="animate"
-              viewport={{ once: true, amount: 0.15 }}
-              variants={pageTransition}
-            >
+            <section id="home-education" className="py-24 px-6 md:px-16">
               <SectionHeading label="Education" heading="Academic Foundation." center />
               <EducationCards />
-            </motion.section>
+            </section>
           </motion.div>
         )}
 
@@ -703,10 +721,7 @@ const App: React.FC = () => {
         {activeTab === 'about' && (
           <motion.main
             key="about"
-            variants={pageTransition}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            {...mainTabMotion}
             className="tab-content pt-24 pb-24 px-6 md:px-16"
           >
             <TabHero>Education.</TabHero>
@@ -718,22 +733,16 @@ const App: React.FC = () => {
         {activeTab === 'research' && (
           <motion.main
             key="research"
-            variants={pageTransition}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            {...mainTabMotion}
             className="tab-content pt-24 pb-24 px-6 md:px-16"
           >
             <TabHero>Research.</TabHero>
 
             {/* Research experience */}
-            <motion.div
-              variants={fadeIn}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start"
-            >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
               {/* Left column */}
               <div>
-                <div className="mb-10">
+                <motion.div {...scrollReveal} className="mb-10">
                   <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/55 dark:bg-white/10 text-forest dark:text-white/80 text-xs font-bold tracking-widest uppercase rounded-full mb-5 border border-white/70 dark:border-white/15">
                     Research Focus
                   </div>
@@ -742,7 +751,7 @@ const App: React.FC = () => {
                     <br />
                     Network Dynamics.
                   </h2>
-                </div>
+                </motion.div>
                 <ExperienceItem
                   title="University of St. Thomas"
                   role="Undergraduate Researcher"
@@ -759,13 +768,13 @@ const App: React.FC = () => {
 
               {/* Right column */}
               <div>
-                <div className="mb-10">
+                <motion.div {...scrollReveal} className="mb-10">
                   <h2 className="font-display font-black text-4xl md:text-5xl text-forest dark:text-white leading-[0.92]">
                     History &amp;
                     <br />
                     Public Policy.
                   </h2>
-                </div>
+                </motion.div>
                 <ExperienceItem
                   title="Lone Star College | The Honors College"
                   role="Researcher – Vietnam War Analysis"
@@ -804,14 +813,10 @@ const App: React.FC = () => {
                   pollution levels and public health outcomes.
                 </ExperienceItem>
               </div>
-            </motion.div>
+            </div>
 
             {/* Conference Presentations */}
-            <motion.div
-              id="research-presentations"
-              variants={fadeIn}
-              className="mt-20 scroll-mt-24"
-            >
+            <div id="research-presentations" className="mt-20 scroll-mt-24">
               <SectionHeading
                 label="Presentations"
                 heading="Conference Presentations."
@@ -829,7 +834,7 @@ const App: React.FC = () => {
                 ].map((p, i) => (
                   <motion.div
                     key={i}
-                    variants={fadeIn}
+                    {...scrollReveal}
                     className="flex gap-4 items-start p-5 bg-white/50 dark:bg-white/5 border border-white/60 dark:border-white/10 rounded-2xl hover:shadow-md transition-all duration-300"
                   >
                     <span className="flex-shrink-0 mt-1 font-display font-black text-lg text-forest/30 dark:text-white/25 w-6 text-right">
@@ -857,14 +862,10 @@ const App: React.FC = () => {
                   </motion.div>
                 ))}
               </div>
-            </motion.div>
+            </div>
 
             {/* Personal projects: public extensions of prior research */}
-            <motion.div
-              id="research-projects"
-              variants={fadeIn}
-              className="mt-20 scroll-mt-24"
-            >
+            <div id="research-projects" className="mt-20 scroll-mt-24">
               <SectionHeading
                 label="Personal projects"
                 heading="Research, for everyone."
@@ -887,13 +888,20 @@ const App: React.FC = () => {
                     url: 'https://thepollutionparadox.netlify.app/',
                     color: 'bg-[#d4e0e8] dark:bg-[#1a2e3d]/35',
                   },
+                  {
+                    title: 'Genuine',
+                    blurb:
+                      'A follow-on to the NMUN autoethnography on intercultural communication and relational leadership—reimagined as a site where visitors can explore the ideas beyond the PDF.',
+                    url: 'https://genuinenmun.netlify.app/',
+                    color: 'bg-[#e4e8e0] dark:bg-[#222d24]/35',
+                  },
                 ].map((proj) => (
                   <motion.a
                     key={proj.url}
                     href={proj.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    variants={fadeIn}
+                    {...scrollReveal}
                     className={`group block p-6 ${proj.color} rounded-2xl border border-white/50 dark:border-white/10 hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
                   >
                     <div className="flex items-start justify-between gap-3 mb-3">
@@ -913,7 +921,7 @@ const App: React.FC = () => {
                   </motion.a>
                 ))}
               </div>
-            </motion.div>
+            </div>
           </motion.main>
         )}
 
@@ -921,10 +929,7 @@ const App: React.FC = () => {
         {activeTab === 'leadership' && (
           <motion.main
             key="leadership"
-            variants={pageTransition}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            {...mainTabMotion}
             className="tab-content pt-24 pb-24 px-6 md:px-16"
           >
             <TabHero>Leadership.</TabHero>
@@ -1014,10 +1019,7 @@ const App: React.FC = () => {
         {activeTab === 'work' && (
           <motion.main
             key="work"
-            variants={pageTransition}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            {...mainTabMotion}
             className="tab-content pt-24 pb-24 px-6 md:px-16"
           >
             <TabHero>Work.</TabHero>
@@ -1089,21 +1091,18 @@ const App: React.FC = () => {
         {activeTab === 'honors' && (
           <motion.main
             key="honors"
-            variants={pageTransition}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            {...mainTabMotion}
             className="tab-content pt-24 pb-24 px-6 md:px-16"
           >
             <TabHero>Honors.</TabHero>
-            <motion.div
-              variants={fadeIn}
-              className="mb-6 text-center text-forest/60 dark:text-white/50 text-base max-w-xl mx-auto"
-            >
+            <motion.div {...scrollReveal} className="mb-6 text-center text-forest/60 dark:text-white/50 text-base max-w-xl mx-auto">
               Selected competitive accomplishments and scholarships.
             </motion.div>
             <motion.div
-              variants={fadeIn}
+              variants={staggerContainer}
+              initial="initial"
+              whileInView="animate"
+              viewport={scrollViewport}
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
             >
               {honorData.map((h) => (
@@ -1117,7 +1116,7 @@ const App: React.FC = () => {
               ))}
             </motion.div>
 
-            <motion.div variants={fadeIn} className="mt-16 text-center">
+            <motion.div {...scrollReveal} className="mt-16 text-center">
               <h3 className="font-display font-bold text-2xl text-forest dark:text-white mb-6">
                 Certifications &amp; Memberships
               </h3>
@@ -1147,32 +1146,34 @@ const App: React.FC = () => {
 
       {/* ── Footer ─────────────────────────────────────────── */}
       <footer className="bg-forest text-white/70 py-16">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-center md:text-left">
-            <div className="text-white font-display font-black text-3xl mb-1">
-              Tung (TJ) Vo.
+        <motion.div {...scrollReveal}>
+          <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div className="text-center md:text-left">
+              <div className="text-white font-display font-black text-3xl mb-1">
+                Tung (TJ) Vo.
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <a
+                href="mailto:vo.tung@stthom.edu"
+                className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <Mail size={18} />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/tung-vo-4728b7235/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <Linkedin size={18} />
+              </a>
             </div>
           </div>
-          <div className="flex gap-3">
-            <a
-              href="mailto:vo.tung@stthom.edu"
-              className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              <Mail size={18} />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/tung-vo-4728b7235/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-            >
-              <Linkedin size={18} />
-            </a>
+          <div className="text-center mt-10 text-xs text-white/25">
+            © 2025 Tung Vo. All rights reserved.
           </div>
-        </div>
-        <div className="text-center mt-10 text-xs text-white/25">
-          © 2025 Tung Vo. All rights reserved.
-        </div>
+        </motion.div>
       </footer>
     </div>
   );
