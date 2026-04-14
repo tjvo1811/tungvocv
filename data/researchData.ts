@@ -121,7 +121,7 @@ export const ustGraphTheoryPoster: ResearchDocument = {
   id: 'ust-graph-theory-poster',
   title: 'Competitive Zero Forcing Sets in Graph Theory',
   type: 'Poster',
-  pdfUrl: '/documents/UST_Spring26_Poster_Final.pdf',
+  pdfUrl: '/documents/USTPosterSpring26.pdf',
   content: [],
 };
 
