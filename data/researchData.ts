@@ -117,6 +117,14 @@ Academically, I believe that this experience contributed to my passion in learni
   ]
 };
 
+export const ustGraphTheoryPoster: ResearchDocument = {
+  id: 'ust-graph-theory-poster',
+  title: 'Competitive Zero Forcing Sets in Graph Theory',
+  type: 'Poster',
+  pdfUrl: '/documents/UST_Graph_Theory_Research_Poster.pdf',
+  content: [],
+};
+
 export const histPaper: ResearchDocument = {
   id: 'hist-paper',
   title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War',
