@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowDown, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ustGraphTheoryPoster, ResearchDocument } from './data/researchData';
+import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
 import { HeroBioWeather } from './components/HeroBioWeather';
 import { BrandMark } from './components/BrandMark';
@@ -758,9 +758,6 @@ const App: React.FC = () => {
                   role="Undergraduate Researcher"
                   date="Fall 2025 – Current"
                   location="Supervisor: Dr. Mary Flagg"
-                  posterData={ustGraphTheoryPoster}
-                  onOpenDocument={(doc) => setActiveDocument(doc)}
-                  toolUrl="https://zeroforcingsetanalyzer.netlify.app/"
                 >
                   NSF PRIMES PAIR-funded research under Dr. Mary Flagg on competitive zero
                   forcing sets in graph theory. Conducted theoretical analysis and
