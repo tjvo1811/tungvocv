@@ -119,7 +119,7 @@ Academically, I believe that this experience contributed to my passion in learni
 
 export const ustGraphTheoryPoster: ResearchDocument = {
   id: 'ust-graph-theory-poster',
-  title: 'Competitive Zero Forcing Sets in Graph Theory',
+  title: 'Competitive Zero Forcing: A Novel Two-Player Graph Coloring Game',
   type: 'Poster',
   pdfUrl: '/documents/USTPosterSpring26.pdf',
   content: [],

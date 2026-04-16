@@ -826,6 +826,7 @@ const App: React.FC = () => {
               />
               <div className="max-w-3xl mx-auto space-y-4">
                 {[
+                  { title: '"Competitive Zero Forcing: A Novel Two-Player Graph Coloring Game"', venue: 'University of St. Thomas - Houston Research Symposium', location: 'Houston, Texas', year: '2026', poster: ustGraphTheoryPoster },
                   { title: '"A Systemic Approach to Understanding the Natural World"', venue: "Rice University's Environmental Data Academy Poster Session", location: 'Houston, TX', year: '2025', poster: ricePoster },
                   { title: '"A Systemic Approach to Understanding the Natural World"', venue: 'Spring Honors and International Education Conference', location: 'Houston, TX', year: '2025', poster: ricePoster },
                   { title: '"The Fortunes of War or the Luck of the Draw": Examining the Influence of Recruitment Tactics on Desertion Rates During the Vietnam War', venue: 'World History Association of Texas Annual Conference', location: 'Commerce, TX', year: '2025', poster: histPoster },
