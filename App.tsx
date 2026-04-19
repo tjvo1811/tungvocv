@@ -58,26 +58,38 @@ const mainTabMotion = {
 
 /* ─── Static data ─────────────────────────────────────────────────── */
 const educationData = [
-  { school: 'University of St. Thomas', degree: 'B.S. Applied Mathematics', date: 'Expected May 2027', honor: 'Minor: Data Analytics', url: 'https://stthom.edu/', color: 'bg-[#d4e8dc] dark:bg-[#1a3d2b]/40' },
-  { school: 'Lone Star College', degree: 'Honors A.S. / General', date: 'May 2025', honor: 'Summa Cum Laude | Distinguished Global Scholars', url: 'https://www.lonestar.edu/', color: 'bg-[#e0d6f0] dark:bg-[#2a1e46]/40' },
-  { school: 'Jersey Village High School', degree: 'High School Diploma', date: 'May 2023', honor: 'Cum Laude', url: 'https://jerseyvillage.cfisd.net/', color: 'bg-[#f0dcd4] dark:bg-[#3e2218]/40' },
+  {
+    school: 'University of St. Thomas',
+    degree: 'B.S. Applied Mathematics',
+    date: 'Expected May 2027',
+    honor: 'Minor: Data Analytics',
+    url: 'https://stthom.edu/',
+    color: 'bg-[#ebd6d8] dark:bg-[#7B1113]/50',
+  },
+  { school: 'Lone Star College', degree: 'Honors A.S. / General', date: 'May 2025', honor: 'Summa Cum Laude | Distinguished Global Scholars', url: 'https://www.lonestar.edu/', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/45' },
+  { school: 'Jersey Village High School', degree: 'High School Diploma', date: 'May 2023', honor: 'Cum Laude', url: 'https://jerseyvillage.cfisd.net/', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/45' },
 ];
 
 const honorData = [
-  { title: 'Monaghan Excellence Scholarship', org: 'University of St. Thomas', date: 'Fall 2025 – Spring 2027', color: 'bg-[#d4e8dc] dark:bg-[#1a3d2b]/30' },
+  {
+    title: 'Monaghan Excellence Scholarship',
+    org: 'University of St. Thomas',
+    date: 'Fall 2025 – Spring 2027',
+    color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42',
+  },
   { title: 'CASE Finalist', org: 'Amideast Education Abroad Connect', date: 'Summer 2025', color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/30' },
-  { title: 'Distinguished Global Scholar Study Abroad Scholarship', org: 'Lone Star College Houston-North', date: 'Summer 2025', color: 'bg-[#d4e0e8] dark:bg-[#1a2e3d]/30' },
-  { title: 'Distinguished Global Scholar', org: 'Lone Star College', date: 'Fall 2024 – Spring 2025', color: 'bg-[#e0d6f0] dark:bg-[#2a1e46]/30' },
-  { title: 'Global Scholar Language Scholarship', org: 'Lone Star College Houston-North', date: 'Fall 2024 – Spring 2025', color: 'bg-[#f0e0d6] dark:bg-[#3e2a1e]/30' },
+  { title: 'Distinguished Global Scholar Study Abroad Scholarship', org: 'Lone Star College Houston-North', date: 'Summer 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
+  { title: 'Distinguished Global Scholar', org: 'Lone Star College', date: 'Fall 2024 – Spring 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
+  { title: 'Global Scholar Language Scholarship', org: 'Lone Star College Houston-North', date: 'Fall 2024 – Spring 2025', color: 'bg-[#e8eef8] dark:bg-[#0c2347]/35' },
   { title: 'Best In Committee Award', org: 'National Model United Nations, NY', date: '2024', color: 'bg-[#f0dcd4] dark:bg-[#3e2218]/30' },
   { title: 'Outstanding Delegation Award', org: 'National Model United Nations, NY', date: '2024', color: 'bg-[#d4dce8] dark:bg-[#1a2a3e]/30' },
-  { title: 'Global Scholar Award', org: 'Lone Star College Houston-North', date: 'Fall 2023 – Spring 2025', color: 'bg-[#f0e8d4] dark:bg-[#3e3218]/30' },
-  { title: "President's List", org: 'Lone Star College', date: '2023 – 2025', color: 'bg-[#d4e8e4] dark:bg-[#1a3d35]/30' },
-  { title: 'Academic All-American Award', org: 'National Speech and Debate Association', date: 'Fall 2022', color: 'bg-[#e8dce0] dark:bg-[#3d1a2e]/30' },
-  { title: '6x Tournament Champion', org: 'Speech and Debate, Houston, TX', date: 'High School', color: 'bg-[#d6e0d4] dark:bg-[#1e2a1a]/30' },
-  { title: '2x State TFA Qualifier', org: 'Texas Forensics Association', date: 'High School', color: 'bg-[#e0d4e8] dark:bg-[#2a1a3d]/30' },
-  { title: 'TFA Quarter Finalists', org: 'Texas Forensics Association', date: 'High School', color: 'bg-[#d4e8dc] dark:bg-[#1a3d2b]/30' },
-  { title: 'NIETOC Qualifier', org: 'National Individual Events Tournament of Champions', date: 'High School', color: 'bg-[#e8e0d4] dark:bg-[#3d351a]/30' },
+  { title: 'Global Scholar Award', org: 'Lone Star College Houston-North', date: 'Fall 2023 – Spring 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
+  { title: "President's List", org: 'Lone Star College', date: '2023 – 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
+  { title: 'Academic All-American Award', org: 'National Speech and Debate Association', date: 'Fall 2022', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+  { title: '6x Tournament Champion', org: 'Speech and Debate, Houston, TX', date: 'High School', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+  { title: '2x State TFA Qualifier', org: 'Texas Forensics Association', date: 'High School', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+  { title: 'TFA Quarter Finalists', org: 'Texas Forensics Association', date: 'High School', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+  { title: 'NIETOC Qualifier', org: 'National Individual Events Tournament of Champions', date: 'High School', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
 ];
 
 /* ─── Utility ─────────────────────────────────────────────────────── */
