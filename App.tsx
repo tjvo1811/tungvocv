@@ -77,6 +77,7 @@ const honorData = [
     date: 'Fall 2025 – Spring 2027',
     color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42',
   },
+  { title: 'Hispanic Serving Institution STEM (Dunn) Endowed Scholarship', org: 'University of St. Thomas', date: '2025', color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42' },
   { title: 'CASE Finalist', org: 'Amideast Education Abroad Connect', date: 'Summer 2025', color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/30' },
   { title: 'Distinguished Global Scholar Study Abroad Scholarship', org: 'Lone Star College Houston-North', date: 'Summer 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
   { title: 'Distinguished Global Scholar', org: 'Lone Star College', date: 'Fall 2024 – Spring 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
