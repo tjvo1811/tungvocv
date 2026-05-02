@@ -1762,7 +1762,7 @@ const App: React.FC = () => {
                 <span>{language === 'en' ? '🇻🇳' : '🇺🇸'}</span>
                 <span>
                   {language === 'en'
-                    ? 'Trang này cũng có bằng tiếng Việt'
+                    ? 'Có Tiếng Việt, Bấm đây để thay đổi'
                     : 'This page is also available in English'}
                 </span>
               </button>
