@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { X, FileText, LayoutTemplate, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ResearchDocument } from '../data/researchData';
@@ -15,11 +15,32 @@ interface DocumentModalProps {
 }
 
 export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, document }) => {
-  if (!document) return null;
+  // Retain the last document during the exit animation so AnimatePresence can
+  // fade it out cleanly even after the parent has cleared `document` to null.
+  const lastDocRef = useRef<ResearchDocument | null>(null);
+  if (document) lastDocRef.current = document;
+  const doc = document ?? lastDocRef.current;
 
-  const isPoster = document.type === 'Poster';
-  const hasPdf = !!document.pdfUrl;
-  
+  // Close on Escape and lock body scroll while the modal is open.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    const prevOverflow = window.document.body.style.overflow;
+    window.document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      window.document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen, onClose]);
+
+  if (!doc) return null;
+
+  const isPoster = doc.type === 'Poster';
+  const hasPdf = !!doc.pdfUrl;
+
   const showVisual = hasPdf;
 
   return (
@@ -45,10 +66,10 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
               <div className="pr-8">
                 <div className="flex items-center gap-2 mb-2 text-nobel-gold font-bold text-xs uppercase tracking-widest">
                   {isPoster ? <LayoutTemplate size={13} /> : <FileText size={13} />}
-                  {document.type} Viewer
+                  {doc.type} Viewer
                 </div>
                 <h2 className="font-display font-bold text-xl md:text-2xl text-forest dark:text-white leading-tight">
-                  {document.title}
+                  {doc.title}
                 </h2>
               </div>
               <button
@@ -64,7 +85,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
               {hasPdf ? (
                 <div className="flex-1 w-full h-full relative">
                   <iframe
-                    src={document.pdfUrl}
+                    src={doc.pdfUrl}
                     className="w-full h-full"
                     title="PDF Viewer"
                   >
@@ -72,10 +93,10 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
                       <FileText size={48} className="text-forest/20 dark:text-white/20 mb-4" />
                       <h3 className="font-display font-bold text-xl text-forest dark:text-white mb-2">Unable to display PDF</h3>
                       <p className="mb-6 max-w-md mx-auto text-sm">
-                        The PDF file could not be loaded directly. Please check if the file <b>{document.pdfUrl?.split('/').pop()}</b> exists in your <b>public/documents/</b> folder.
+                        The PDF file could not be loaded directly. Please check if the file <b>{doc.pdfUrl?.split('/').pop()}</b> exists in your <b>public/documents/</b> folder.
                       </p>
                       <a
-                        href={document.pdfUrl}
+                        href={doc.pdfUrl}
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center gap-2 px-6 py-3 bg-forest dark:bg-white text-white dark:text-forest rounded-full hover:bg-forest/85 dark:hover:bg-white/90 transition-colors font-medium text-sm"
@@ -91,8 +112,8 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
                     /* POSTER LAYOUT - GRID */
                     <div className="p-6 md:p-8">
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-min">
-                        {document.content.map((section, idx) => (
-                          <div key={idx} className={`bg-white/60 dark:bg-white/5 p-6 rounded-2xl border border-white/70 dark:border-white/10 ${idx === 0 || idx === document.content.length - 1 ? 'md:col-span-3 lg:col-span-1' : ''}`}>
+                        {doc.content.map((section, idx) => (
+                          <div key={idx} className={`bg-white/60 dark:bg-white/5 p-6 rounded-2xl border border-white/70 dark:border-white/10 ${idx === 0 || idx === doc.content.length - 1 ? 'md:col-span-3 lg:col-span-1' : ''}`}>
                             {section.heading && (
                               <div className="mb-3 pb-2 border-b-2 border-nobel-gold/30">
                                 <h3 className="font-display font-bold text-lg text-forest dark:text-white">{section.heading}</h3>
@@ -108,7 +129,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
                   ) : (
                     /* PAPER LAYOUT - SINGLE COLUMN */
                     <div className="p-8 md:p-16 max-w-3xl mx-auto bg-white/60 dark:bg-white/5 min-h-full border-x border-white/50 dark:border-white/8">
-                      {document.content.map((section, idx) => (
+                      {doc.content.map((section, idx) => (
                         <div key={idx} className="mb-10">
                           {section.heading && (
                             <h3 className="font-display font-bold text-base text-forest dark:text-white mb-4 uppercase tracking-widest">{section.heading}</h3>
@@ -131,7 +152,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
             <div className="p-4 border-t border-white/50 dark:border-white/10 bg-white/40 dark:bg-white/5 flex justify-end gap-3">
               {hasPdf && (
                 <a
-                  href={document.pdfUrl}
+                  href={doc.pdfUrl}
                   download
                   className="flex items-center gap-2 px-5 py-2 border border-forest/20 dark:border-white/15 text-forest/70 dark:text-white/70 rounded-full hover:bg-forest/8 dark:hover:bg-white/8 transition-colors font-medium text-sm"
                 >

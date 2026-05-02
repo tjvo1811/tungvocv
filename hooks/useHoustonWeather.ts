@@ -56,10 +56,22 @@ export function useHoustonWeather(pollMs: number = HOUSTON_WEATHER_POLL_MS): {
     };
 
     void load();
-    const id = window.setInterval(load, pollMs);
+    let id = window.setInterval(load, pollMs);
+
+    // Pause polling while the tab is hidden; refresh once on return.
+    const onVisibility = () => {
+      window.clearInterval(id);
+      if (document.visibilityState === 'visible') {
+        void load();
+        id = window.setInterval(load, pollMs);
+      }
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+
     return () => {
       cancelled = true;
       window.clearInterval(id);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [pollMs]);
 
