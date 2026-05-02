@@ -801,6 +801,7 @@ const App: React.FC = () => {
   const navResearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [langHintVisible, setLangHintVisible] = useState(false);
   const [langHintDismissed, setLangHintDismissed] = useState(false);
+  const [langBtnHighlight, setLangBtnHighlight] = useState(false);
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
@@ -828,6 +829,15 @@ const App: React.FC = () => {
   const dismissLangHint = () => {
     setLangHintVisible(false);
     setLangHintDismissed(true);
+  };
+
+  const pointToLangBtn = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // After scroll completes, flash a highlight ring on the nav language button.
+    setTimeout(() => {
+      setLangBtnHighlight(true);
+      setTimeout(() => setLangBtnHighlight(false), 2000);
+    }, 500);
   };
 
   useEffect(() => {
@@ -1038,9 +1048,12 @@ const App: React.FC = () => {
             )
           )}
           <div className="relative ml-1 flex-shrink-0 z-10">
+            {langBtnHighlight && (
+              <span className="absolute inset-0 rounded-full animate-ping bg-nobel-gold/50 pointer-events-none" />
+            )}
             <button
               onClick={handleLanguageToggle}
-              className="relative px-3 py-1.5 border border-forest/20 dark:border-white/20 text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-colors overflow-hidden"
+              className={`relative px-3 py-1.5 border text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-all overflow-hidden ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-forest/20 dark:border-white/20'}`}
               aria-label="Toggle language"
             >
               <span
@@ -1126,8 +1139,11 @@ const App: React.FC = () => {
           </button>
           <div className="flex items-center gap-1.5">
             <div className="relative">
+              {langBtnHighlight && (
+                <span className="absolute inset-0 rounded-full animate-ping bg-nobel-gold/50 pointer-events-none" />
+              )}
               <button
-                className="px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white/70 text-xs font-bold overflow-hidden"
+                className={`px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border text-forest dark:text-white/70 text-xs font-bold overflow-hidden transition-all ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-white/70 dark:border-white/10'}`}
                 onClick={handleLanguageToggle}
                 aria-label="Toggle language"
               >
@@ -1733,7 +1749,7 @@ const App: React.FC = () => {
           <div className="text-center mt-4 flex flex-col items-center gap-1">
             <ArrowUp size={14} className="text-white/30 animate-bounce" style={{ animationDuration: '1.8s' }} />
             <button
-              onClick={handleLanguageToggle}
+              onClick={pointToLangBtn}
               className="flex items-center gap-2 text-xs text-white/55 hover:text-white/90 transition-colors group"
             >
               <span className="underline underline-offset-2 decoration-white/30 group-hover:decoration-white/60">
