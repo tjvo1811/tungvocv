@@ -800,7 +800,7 @@ const App: React.FC = () => {
   const [navResearchOpen, setNavResearchOpen] = useState(false);
   const navResearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [langHintVisible, setLangHintVisible] = useState(false);
-  const [langHintDismissed, setLangHintDismissed] = useState(true);
+  const [langHintDismissed, setLangHintDismissed] = useState(false);
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
@@ -818,34 +818,16 @@ const App: React.FC = () => {
     document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
 
-  // Show a one-time pulsing hint on the language toggle so visitors know a
-  // translation exists. Persist dismissal in localStorage so returning users
-  // aren't pestered.
+  // Show a pulsing hint on the language toggle on every visit.
+  // Dismissal is session-only — no localStorage — so it reappears on each load.
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    let dismissed = false;
-    try {
-      dismissed = window.localStorage.getItem('langHintDismissed') === '1';
-    } catch {
-      // Ignore storage errors (private mode, etc.) and just show the hint.
-    }
-    setLangHintDismissed(dismissed);
-    if (!dismissed) {
-      const showTimer = setTimeout(() => setLangHintVisible(true), 1200);
-      // Nav tooltip stays visible until the user interacts with the toggle;
-      // the hero banner provides the primary persistent indicator.
-      return () => clearTimeout(showTimer);
-    }
+    const showTimer = setTimeout(() => setLangHintVisible(true), 1200);
+    return () => clearTimeout(showTimer);
   }, []);
 
   const dismissLangHint = () => {
     setLangHintVisible(false);
     setLangHintDismissed(true);
-    try {
-      window.localStorage.setItem('langHintDismissed', '1');
-    } catch {
-      // No-op if storage is unavailable.
-    }
   };
 
   useEffect(() => {
@@ -1748,18 +1730,18 @@ const App: React.FC = () => {
           <div className="text-center mt-10 text-xs text-white/25">
             {uiStrings[language].rightsReserved}
           </div>
-          <div className="text-center mt-3 flex flex-col items-center gap-1.5">
+          <div className="text-center mt-4 flex flex-col items-center gap-1">
+            <ArrowUp size={14} className="text-white/30 animate-bounce" style={{ animationDuration: '1.8s' }} />
             <button
               onClick={handleLanguageToggle}
-              className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white/65 transition-colors group"
+              className="flex items-center gap-2 text-xs text-white/55 hover:text-white/90 transition-colors group"
             >
-              <ArrowUp size={11} className="opacity-60 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-              <span className="underline underline-offset-2 decoration-white/20 group-hover:decoration-white/50">
+              <span className="underline underline-offset-2 decoration-white/30 group-hover:decoration-white/60">
                 {language === 'en'
                   ? 'Trang này cũng có bằng tiếng Việt'
                   : 'This page is also available in English'}
               </span>
-              <span className="px-1.5 py-0.5 rounded border border-white/20 font-bold text-[10px] tracking-wide no-underline flex-shrink-0">
+              <span className="px-1.5 py-0.5 rounded border border-white/35 group-hover:border-white/60 font-bold text-[10px] tracking-wide flex-shrink-0 transition-colors">
                 {language === 'en' ? 'VI' : 'EN'}
               </span>
             </button>
