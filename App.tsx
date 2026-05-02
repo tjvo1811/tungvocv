@@ -4,7 +4,7 @@
 */
 
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { ArrowDown, ArrowUp, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun, ChevronDown } from 'lucide-react';
+import { ArrowDown, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ustGraphTheoryPoster, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
@@ -1746,21 +1746,29 @@ const App: React.FC = () => {
           <div className="text-center mt-10 text-xs text-white/25">
             {uiStrings[language].rightsReserved}
           </div>
-          <div className="text-center mt-4 flex flex-col items-center gap-1">
-            <ArrowUp size={14} className="text-white/30 animate-bounce" style={{ animationDuration: '1.8s' }} />
-            <button
-              onClick={pointToLangBtn}
-              className="flex items-center gap-2 text-xs text-white/55 hover:text-white/90 transition-colors group"
-            >
-              <span className="underline underline-offset-2 decoration-white/30 group-hover:decoration-white/60">
-                {language === 'en'
-                  ? 'Trang này cũng có bằng tiếng Việt'
-                  : 'This page is also available in English'}
-              </span>
-              <span className="px-1.5 py-0.5 rounded border border-white/35 group-hover:border-white/60 font-bold text-[10px] tracking-wide flex-shrink-0 transition-colors">
-                {language === 'en' ? 'VI' : 'EN'}
-              </span>
-            </button>
+          <div className="mt-6 flex flex-col items-center gap-0">
+            {/* Caret pointing up toward the nav VI/EN button */}
+            <span className="w-0 h-0 border-l-[7px] border-r-[7px] border-b-[7px] border-l-transparent border-r-transparent border-b-white/15" />
+            <div className="flex items-center gap-1 bg-white/10 rounded-full px-4 py-2 text-xs text-white/70">
+              <button
+                onClick={pointToLangBtn}
+                className="flex items-center gap-2 hover:text-white transition-colors"
+              >
+                <span>{language === 'en' ? '🇻🇳' : '🇺🇸'}</span>
+                <span>
+                  {language === 'en'
+                    ? 'Trang này cũng có bằng tiếng Việt'
+                    : 'This page is also available in English'}
+                </span>
+              </button>
+              <button
+                onClick={dismissLangHint}
+                className="ml-1 text-white/40 hover:text-white/80 transition-colors leading-none"
+                aria-label="Dismiss"
+              >
+                <X size={11} />
+              </button>
+            </div>
           </div>
         </motion.div>
       </footer>
