@@ -818,6 +818,36 @@ const App: React.FC = () => {
     document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
 
+  // Show a one-time pulsing hint on the language toggle so visitors know a
+  // translation exists. Persist dismissal in localStorage so returning users
+  // aren't pestered.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    let dismissed = false;
+    try {
+      dismissed = window.localStorage.getItem('langHintDismissed') === '1';
+    } catch {
+      // Ignore storage errors (private mode, etc.) and just show the hint.
+    }
+    setLangHintDismissed(dismissed);
+    if (!dismissed) {
+      const showTimer = setTimeout(() => setLangHintVisible(true), 1200);
+      // Nav tooltip stays visible until the user interacts with the toggle;
+      // the hero banner provides the primary persistent indicator.
+      return () => clearTimeout(showTimer);
+    }
+  }, []);
+
+  const dismissLangHint = () => {
+    setLangHintVisible(false);
+    setLangHintDismissed(true);
+    try {
+      window.localStorage.setItem('langHintDismissed', '1');
+    } catch {
+      // No-op if storage is unavailable.
+    }
+  };
+
   useEffect(() => {
     if (isMobile) return;
     window.scrollTo({ top: 0 });
@@ -889,10 +919,17 @@ const App: React.FC = () => {
 
   const handleLanguageToggle = () => {
     if (langTransition) return;
+    if (!langHintDismissed) dismissLangHint();
     setLangTransition(true);
     setTimeout(() => setLanguage((prev) => (prev === 'en' ? 'vi' : 'en')), 190);
     setTimeout(() => setLangTransition(false), 390);
   };
+
+  // Localized hint copy: tell EN users about the VI version and vice versa.
+  const langHintText = language === 'en'
+    ? 'Cũng có bằng tiếng Việt — bấm vào đây.'
+    : 'Also available in English — click here.';
+  const showLangHint = langHintVisible && !langHintDismissed;
 
   const navLinks = NAV_LINKS[language];
   const localizedName = language === 'vi' ? 'Võ Sơn Tùng' : 'TJ Vo';
@@ -1018,22 +1055,64 @@ const App: React.FC = () => {
               </button>
             )
           )}
-          <button
-            onClick={handleLanguageToggle}
-            className="ml-1 px-3 py-1.5 border border-forest/20 dark:border-white/20 text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-colors flex-shrink-0 relative z-10 overflow-hidden"
-            aria-label="Toggle language"
-          >
-            <span
-              style={{
-                display: 'inline-block',
-                transition: 'transform 0.19s cubic-bezier(0.4,0,0.2,1), opacity 0.19s ease',
-                transform: langTransition ? 'translateY(-6px) scale(0.8)' : 'translateY(0) scale(1)',
-                opacity: langTransition ? 0 : 1,
-              }}
+          <div className="relative ml-1 flex-shrink-0 z-10">
+            <button
+              onClick={handleLanguageToggle}
+              className="relative px-3 py-1.5 border border-forest/20 dark:border-white/20 text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-colors overflow-hidden"
+              aria-label="Toggle language"
             >
-              {language === 'en' ? 'VI' : 'EN'}
-            </span>
-          </button>
+              <span
+                style={{
+                  display: 'inline-block',
+                  transition: 'transform 0.19s cubic-bezier(0.4,0,0.2,1), opacity 0.19s ease',
+                  transform: langTransition ? 'translateY(-6px) scale(0.8)' : 'translateY(0) scale(1)',
+                  opacity: langTransition ? 0 : 1,
+                }}
+              >
+                {language === 'en' ? 'VI' : 'EN'}
+              </span>
+            </button>
+            {!langHintDismissed && (
+              <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 pointer-events-none">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-70 animate-ping" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-nobel-gold ring-2 ring-white/80 dark:ring-forest" />
+              </span>
+            )}
+            <AnimatePresence>
+              {showLangHint && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.2 } }}
+                  exit={{ opacity: 0, y: -6, scale: 0.96, transition: { duration: 0.15 } }}
+                  className="absolute top-full right-0 mt-3 w-56 rounded-2xl bg-forest text-white dark:bg-white dark:text-forest shadow-xl text-xs leading-snug overflow-hidden"
+                  role="status"
+                >
+                  <button
+                    type="button"
+                    onClick={handleLanguageToggle}
+                    className="w-full text-left px-4 pt-3 pb-2.5 hover:bg-white/10 dark:hover:bg-forest/10 transition-colors"
+                  >
+                    <div className="font-bold mb-0.5">
+                      {language === 'en' ? 'Tiếng Việt' : 'English'}
+                    </div>
+                    <div className="opacity-80 pr-5">{langHintText}</div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={dismissLangHint}
+                    aria-label="Dismiss"
+                    className="absolute top-1.5 right-1.5 p-1 rounded-full text-white/70 hover:text-white dark:text-forest/60 dark:hover:text-forest"
+                  >
+                    <X size={11} />
+                  </button>
+                  <span
+                    aria-hidden
+                    className="absolute -top-1.5 right-4 w-3 h-3 rotate-45 bg-forest dark:bg-white"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
           <a
             href="https://www.linkedin.com/in/tung-vo-4728b7235/"
             target="_blank"
@@ -1064,22 +1143,64 @@ const App: React.FC = () => {
             </span>
           </button>
           <div className="flex items-center gap-1.5">
-            <button
-              className="px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white/70 text-xs font-bold overflow-hidden"
-              onClick={handleLanguageToggle}
-              aria-label="Toggle language"
-            >
-              <span
-                style={{
-                  display: 'inline-block',
-                  transition: 'transform 0.19s cubic-bezier(0.4,0,0.2,1), opacity 0.19s ease',
-                  transform: langTransition ? 'translateY(-6px) scale(0.8)' : 'translateY(0) scale(1)',
-                  opacity: langTransition ? 0 : 1,
-                }}
+            <div className="relative">
+              <button
+                className="px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white/70 text-xs font-bold overflow-hidden"
+                onClick={handleLanguageToggle}
+                aria-label="Toggle language"
               >
-                {language === 'en' ? 'VI' : 'EN'}
-              </span>
-            </button>
+                <span
+                  style={{
+                    display: 'inline-block',
+                    transition: 'transform 0.19s cubic-bezier(0.4,0,0.2,1), opacity 0.19s ease',
+                    transform: langTransition ? 'translateY(-6px) scale(0.8)' : 'translateY(0) scale(1)',
+                    opacity: langTransition ? 0 : 1,
+                  }}
+                >
+                  {language === 'en' ? 'VI' : 'EN'}
+                </span>
+              </button>
+              {!langHintDismissed && (
+                <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 pointer-events-none">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-70 animate-ping" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-nobel-gold ring-2 ring-white/80 dark:ring-forest" />
+                </span>
+              )}
+              <AnimatePresence>
+                {showLangHint && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.2 } }}
+                    exit={{ opacity: 0, y: -6, scale: 0.96, transition: { duration: 0.15 } }}
+                    className="absolute top-full right-0 mt-2 w-52 rounded-2xl bg-forest text-white dark:bg-white dark:text-forest shadow-xl text-xs leading-snug z-50 overflow-hidden"
+                    role="status"
+                  >
+                    <button
+                      type="button"
+                      onClick={handleLanguageToggle}
+                      className="w-full text-left px-4 pt-3 pb-2.5 hover:bg-white/10 dark:hover:bg-forest/10 transition-colors"
+                    >
+                      <div className="font-bold mb-0.5">
+                        {language === 'en' ? 'Tiếng Việt' : 'English'}
+                      </div>
+                      <div className="opacity-80 pr-5">{langHintText}</div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={dismissLangHint}
+                      aria-label="Dismiss"
+                      className="absolute top-1.5 right-1.5 p-1 rounded-full text-white/70 hover:text-white dark:text-forest/60 dark:hover:text-forest"
+                    >
+                      <X size={11} />
+                    </button>
+                    <span
+                      aria-hidden
+                      className="absolute -top-1.5 right-4 w-3 h-3 rotate-45 bg-forest dark:bg-white"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             <button
               className="p-2.5 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white/60"
               onClick={() => setIsDark(!isDark)}
@@ -1244,6 +1365,43 @@ const App: React.FC = () => {
                     vo.tung@stthom.edu
                   </a>
                 </div>
+
+                {/* Language availability banner — visible in hero until user switches or dismisses */}
+                <AnimatePresence>
+                  {!langHintDismissed && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0, transition: { delay: 1.3, duration: 0.45 } }}
+                      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                      className="mt-5 flex justify-center"
+                    >
+                      <div className="flex items-center bg-white/45 dark:bg-white/10 backdrop-blur-sm border border-white/60 dark:border-white/20 rounded-full shadow-sm overflow-hidden">
+                        <button
+                          onClick={handleLanguageToggle}
+                          className="flex items-center gap-2.5 pl-4 pr-3 py-2.5 text-xs font-medium text-forest/75 dark:text-white/65 hover:text-forest dark:hover:text-white transition-colors"
+                          aria-label={language === 'en' ? 'Switch to Vietnamese' : 'Switch to English'}
+                        >
+                          <span className="relative flex h-2 w-2 flex-shrink-0">
+                            <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-75 animate-ping" />
+                            <span className="relative inline-flex h-2 w-2 rounded-full bg-nobel-gold" />
+                          </span>
+                          <span>
+                            {language === 'en'
+                              ? 'Cũng có bằng tiếng Việt — bấm để đổi.'
+                              : 'Also available in English — click to switch.'}
+                          </span>
+                        </button>
+                        <button
+                          onClick={dismissLangHint}
+                          className="px-2.5 py-2.5 text-forest/35 dark:text-white/30 hover:text-forest/60 dark:hover:text-white/55 transition-colors border-l border-white/40 dark:border-white/15 flex-shrink-0"
+                          aria-label="Dismiss language hint"
+                        >
+                          <X size={11} />
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <div className="hero-pop hero-pop-4 absolute bottom-10 left-0 right-0 flex justify-center animate-bounce">
                   <button
@@ -1589,6 +1747,16 @@ const App: React.FC = () => {
           </div>
           <div className="text-center mt-10 text-xs text-white/25">
             {uiStrings[language].rightsReserved}
+          </div>
+          <div className="text-center mt-3">
+            <button
+              onClick={handleLanguageToggle}
+              className="text-xs text-white/35 hover:text-white/65 transition-colors underline underline-offset-2 decoration-white/20 hover:decoration-white/50"
+            >
+              {language === 'en'
+                ? 'Trang này cũng có bằng tiếng Việt →'
+                : 'This page is also available in English →'}
+            </button>
           </div>
         </motion.div>
       </footer>
