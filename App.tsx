@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { ArrowDown, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ustGraphTheoryPoster, ResearchDocument } from './data/researchData';
@@ -748,26 +748,51 @@ const EducationCards = ({ language }: { language: Language }) => (
 );
 
 /* ─── Nav links ──────────────────────────────────────────────────── */
-const NAV_LINKS: Record<Language, { id: TabId; label: string }[]> = {
+const NAV_LINKS: Record<Language, { id: TabId; label: string; altLabel: string }[]> = {
   en: [
-    { id: 'about', label: 'Education' },
-    { id: 'research', label: 'Research' },
-    { id: 'leadership', label: 'Leadership' },
-    { id: 'work', label: 'Work' },
-    { id: 'honors', label: 'Honors' },
+    { id: 'about', label: 'Education', altLabel: 'Học vấn' },
+    { id: 'research', label: 'Research', altLabel: 'Nghiên cứu' },
+    { id: 'leadership', label: 'Leadership', altLabel: 'Lãnh đạo' },
+    { id: 'work', label: 'Work', altLabel: 'Kinh nghiệm' },
+    { id: 'honors', label: 'Honors', altLabel: 'Thành tích' },
   ],
   vi: [
-    { id: 'about', label: 'Học vấn' },
-    { id: 'research', label: 'Nghiên cứu' },
-    { id: 'leadership', label: 'Lãnh đạo' },
-    { id: 'work', label: 'Kinh nghiệm' },
-    { id: 'honors', label: 'Thành tích' },
+    { id: 'about', label: 'Học vấn', altLabel: 'Education' },
+    { id: 'research', label: 'Nghiên cứu', altLabel: 'Research' },
+    { id: 'leadership', label: 'Lãnh đạo', altLabel: 'Leadership' },
+    { id: 'work', label: 'Kinh nghiệm', altLabel: 'Work' },
+    { id: 'honors', label: 'Thành tích', altLabel: 'Honors' },
   ],
 };
 
+/**
+ * Renders a nav-link label that reserves space for both the EN and VI text,
+ * so toggling languages doesn't reflow the nav (and the sliding pill stays
+ * aligned). The longer of the two labels invisibly reserves the width.
+ */
+const NavLabel: React.FC<{ label: string; altLabel: string }> = ({ label, altLabel }) => (
+  <span className="relative inline-block align-middle">
+    {/* Width reservation: render both labels stacked; the longer one defines the box. */}
+    <span aria-hidden="true" className="invisible block whitespace-nowrap">
+      {label.length >= altLabel.length ? label : altLabel}
+    </span>
+    <span className="absolute inset-0 flex items-center justify-center whitespace-nowrap">
+      {label}
+    </span>
+  </span>
+);
+
 /* ─── App ────────────────────────────────────────────────────────── */
 const App: React.FC = () => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>(() => {
+    if (typeof navigator === 'undefined') return 'en';
+    const langs = [
+      ...(navigator.languages ?? []),
+      navigator.language,
+    ].filter(Boolean) as string[];
+    return langs.some((l) => l.toLowerCase().startsWith('vi')) ? 'vi' : 'en';
+  });
+  const [langTransition, setLangTransition] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDocument, setActiveDocument] = useState<ResearchDocument | null>(null);
   const [isDark, setIsDark] = useState(false);
@@ -789,20 +814,32 @@ const App: React.FC = () => {
   const linkRefs = useRef<Record<string, HTMLElement | null>>({});
   const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, visible: false });
 
-  useEffect(() => {
-    const targetId = hoveredId ?? (activeTab !== 'home' ? activeTab : null);
-    if (targetId && navRef.current && linkRefs.current[targetId]) {
-      const navRect = navRef.current.getBoundingClientRect();
-      const linkRect = linkRefs.current[targetId]!.getBoundingClientRect();
-      setPillStyle({
-        left: linkRect.left - navRect.left,
-        width: linkRect.width,
-        visible: true,
-      });
-    } else {
-      setPillStyle((prev) => ({ ...prev, visible: false }));
-    }
-  }, [hoveredId, activeTab]);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const targetId = hoveredId ?? (activeTab !== 'home' ? activeTab : null);
+      if (targetId && navRef.current && linkRefs.current[targetId]) {
+        const navRect = navRef.current.getBoundingClientRect();
+        const linkRect = linkRefs.current[targetId]!.getBoundingClientRect();
+        setPillStyle({
+          left: linkRect.left - navRect.left,
+          width: linkRect.width,
+          visible: true,
+        });
+      } else {
+        setPillStyle((prev) => ({ ...prev, visible: false }));
+      }
+    };
+
+    measure();
+    // Re-measure once fonts settle / after the next frame, since label widths
+    // change when toggling language and the first measurement can race the layout.
+    const raf = requestAnimationFrame(measure);
+    window.addEventListener('resize', measure);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', measure);
+    };
+  }, [hoveredId, activeTab, language]);
 
   const switchTab = (id: TabId, scrollTo?: string) => {
     setActiveTab(id);
@@ -814,6 +851,13 @@ const App: React.FC = () => {
         document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 450);
     }
+  };
+
+  const handleLanguageToggle = () => {
+    if (langTransition) return;
+    setLangTransition(true);
+    setTimeout(() => setLanguage((prev) => (prev === 'en' ? 'vi' : 'en')), 190);
+    setTimeout(() => setLangTransition(false), 390);
   };
 
   const navLinks = NAV_LINKS[language];
@@ -855,7 +899,7 @@ const App: React.FC = () => {
           >
             <BrandMark className="w-full h-full" />
           </button>
-          {navLinks.map(({ id, label }) =>
+          {navLinks.map(({ id, label, altLabel }) =>
             id === 'research' ? (
               <div
                 key={id}
@@ -879,7 +923,7 @@ const App: React.FC = () => {
                       : 'text-forest/70 dark:text-white/70 hover:text-forest dark:hover:text-white'
                   }`}
                 >
-                  {label}
+                  <NavLabel label={label} altLabel={altLabel} />
                   <ChevronDown
                     size={12}
                     className={`transition-transform duration-200 ${navResearchOpen ? 'rotate-180' : ''}`}
@@ -936,16 +980,25 @@ const App: React.FC = () => {
                     : 'text-forest/70 dark:text-white/70 hover:text-forest dark:hover:text-white'
                 }`}
               >
-                {label}
+                <NavLabel label={label} altLabel={altLabel} />
               </button>
             )
           )}
           <button
-            onClick={() => setLanguage((prev) => (prev === 'en' ? 'vi' : 'en'))}
-            className="ml-1 px-3 py-1.5 border border-forest/20 dark:border-white/20 text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-colors flex-shrink-0 relative z-10"
+            onClick={handleLanguageToggle}
+            className="ml-1 px-3 py-1.5 border border-forest/20 dark:border-white/20 text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-colors flex-shrink-0 relative z-10 overflow-hidden"
             aria-label="Toggle language"
           >
-            {language === 'en' ? 'VI' : 'EN'}
+            <span
+              style={{
+                display: 'inline-block',
+                transition: 'transform 0.19s cubic-bezier(0.4,0,0.2,1), opacity 0.19s ease',
+                transform: langTransition ? 'translateY(-6px) scale(0.8)' : 'translateY(0) scale(1)',
+                opacity: langTransition ? 0 : 1,
+              }}
+            >
+              {language === 'en' ? 'VI' : 'EN'}
+            </span>
           </button>
           <a
             href="https://www.linkedin.com/in/tung-vo-4728b7235/"
@@ -978,11 +1031,20 @@ const App: React.FC = () => {
           </button>
           <div className="flex items-center gap-1.5">
             <button
-              className="px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white/70 text-xs font-bold"
-              onClick={() => setLanguage((prev) => (prev === 'en' ? 'vi' : 'en'))}
+              className="px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white/70 text-xs font-bold overflow-hidden"
+              onClick={handleLanguageToggle}
               aria-label="Toggle language"
             >
-              {language === 'en' ? 'VI' : 'EN'}
+              <span
+                style={{
+                  display: 'inline-block',
+                  transition: 'transform 0.19s cubic-bezier(0.4,0,0.2,1), opacity 0.19s ease',
+                  transform: langTransition ? 'translateY(-6px) scale(0.8)' : 'translateY(0) scale(1)',
+                  opacity: langTransition ? 0 : 1,
+                }}
+              >
+                {language === 'en' ? 'VI' : 'EN'}
+              </span>
             </button>
             <button
               className="p-2.5 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white/60"
@@ -1023,6 +1085,15 @@ const App: React.FC = () => {
       )}
 
       {/* ── Content area ─────────────────────────────────────── */}
+      <div
+        style={{
+          transition: 'opacity 0.19s ease, filter 0.19s ease, transform 0.19s ease',
+          opacity: langTransition ? 0 : 1,
+          filter: langTransition ? 'blur(6px)' : 'blur(0px)',
+          transform: langTransition ? 'scale(0.988)' : 'scale(1)',
+          willChange: 'opacity, filter, transform',
+        }}
+      >
       <AnimatePresence mode="wait">
         {/* ── Home (Hero + Education) ──────────────────────── */}
         {activeTab === 'home' && (
@@ -1482,6 +1553,7 @@ const App: React.FC = () => {
           </div>
         </motion.div>
       </footer>
+      </div>{/* end lang-transition wrapper */}
     </div>
   );
 };
