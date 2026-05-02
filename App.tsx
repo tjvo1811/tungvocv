@@ -924,8 +924,8 @@ const App: React.FC = () => {
 
   // Localized hint copy: tell EN users about the VI version and vice versa.
   const langHintText = language === 'en'
-    ? 'Cũng có bằng tiếng Việt — bấm vào đây.'
-    : 'Also available in English — click here.';
+    ? '🇻🇳 Có Tiếng Việt, Bấm đây để thay đổi'
+    : '🇺🇸 Also available in English — click to switch.';
   const showLangHint = langHintVisible && !langHintDismissed;
 
   const navLinks = NAV_LINKS[language];
@@ -1092,10 +1092,7 @@ const App: React.FC = () => {
                     onClick={handleLanguageToggle}
                     className="w-full text-left px-4 pt-3 pb-2.5 hover:bg-white/10 dark:hover:bg-forest/10 transition-colors"
                   >
-                    <div className="font-bold mb-0.5">
-                      {language === 'en' ? 'Tiếng Việt' : 'English'}
-                    </div>
-                    <div className="opacity-80 pr-5">{langHintText}</div>
+                    <div className="font-medium pr-5">{langHintText}</div>
                   </button>
                   <button
                     type="button"
@@ -1183,10 +1180,7 @@ const App: React.FC = () => {
                       onClick={handleLanguageToggle}
                       className="w-full text-left px-4 pt-3 pb-2.5 hover:bg-white/10 dark:hover:bg-forest/10 transition-colors"
                     >
-                      <div className="font-bold mb-0.5">
-                        {language === 'en' ? 'Tiếng Việt' : 'English'}
-                      </div>
-                      <div className="opacity-80 pr-5">{langHintText}</div>
+                      <div className="font-medium pr-5">{langHintText}</div>
                     </button>
                     <button
                       type="button"
@@ -1390,8 +1384,8 @@ const App: React.FC = () => {
                           </span>
                           <span>
                             {language === 'en'
-                              ? 'Cũng có bằng tiếng Việt — bấm để đổi.'
-                              : 'Also available in English — click to switch.'}
+                              ? '🇻🇳 Có Tiếng Việt, Bấm đây để thay đổi'
+                              : '🇺🇸 Also available in English — click to switch.'}
                           </span>
                         </button>
                         <button
