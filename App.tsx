@@ -1072,7 +1072,7 @@ const App: React.FC = () => {
                 {language === 'en' ? 'VI' : 'EN'}
               </span>
             </button>
-            {(showLangHint || langBtnHighlight) && (
+            {showLangHint && (
               <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 pointer-events-none">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-70 animate-ping" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-nobel-gold ring-2 ring-white/80 dark:ring-forest" />
@@ -1160,7 +1160,7 @@ const App: React.FC = () => {
                   {language === 'en' ? 'VI' : 'EN'}
                 </span>
               </button>
-              {(showLangHint || langBtnHighlight) && (
+              {showLangHint && (
                 <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 pointer-events-none">
                   <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-70 animate-ping" />
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-nobel-gold ring-2 ring-white/80 dark:ring-forest" />
@@ -1748,7 +1748,11 @@ const App: React.FC = () => {
           <div className="mt-6 flex flex-col items-center gap-0">
             {/* Caret pointing up toward the nav VI/EN button */}
             <span className="w-0 h-0 border-l-[7px] border-r-[7px] border-b-[7px] border-l-transparent border-r-transparent border-b-white/15" />
-            <div className="flex items-center gap-1 bg-white/10 rounded-full px-4 py-2 text-xs text-white/70">
+            <div className="relative">
+              {showLangHint && (
+                <span className="absolute inset-0 rounded-full bg-nobel-gold/25 animate-ping pointer-events-none" />
+              )}
+            <div className="relative flex items-center gap-1 bg-white/10 rounded-full px-4 py-2 text-xs text-white/70">
               <button
                 onClick={pointToLangBtn}
                 className="flex items-center gap-2 hover:text-white transition-colors"
@@ -1767,6 +1771,7 @@ const App: React.FC = () => {
               >
                 <X size={11} />
               </button>
+            </div>
             </div>
           </div>
         </motion.div>
