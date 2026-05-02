@@ -819,11 +819,16 @@ const App: React.FC = () => {
     document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
 
-  // Show a pulsing hint on the language toggle on every visit.
+  // Show hints on every visit; auto-dismiss footer pill after 3 s.
   // Dismissal is session-only — no localStorage — so it reappears on each load.
   useEffect(() => {
     const showTimer = setTimeout(() => setLangHintVisible(true), 1200);
-    return () => clearTimeout(showTimer);
+    const hideTimer = setTimeout(() => dismissLangHint(), 4200); // 1.2 s delay + 3 s visible
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const dismissLangHint = () => {
