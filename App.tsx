@@ -4,7 +4,7 @@
 */
 
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { ArrowDown, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun, ChevronDown } from 'lucide-react';
+import { ArrowDown, ArrowUp, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ustGraphTheoryPoster, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
@@ -1748,14 +1748,20 @@ const App: React.FC = () => {
           <div className="text-center mt-10 text-xs text-white/25">
             {uiStrings[language].rightsReserved}
           </div>
-          <div className="text-center mt-3">
+          <div className="text-center mt-3 flex flex-col items-center gap-1.5">
             <button
               onClick={handleLanguageToggle}
-              className="text-xs text-white/35 hover:text-white/65 transition-colors underline underline-offset-2 decoration-white/20 hover:decoration-white/50"
+              className="flex items-center gap-1.5 text-xs text-white/35 hover:text-white/65 transition-colors group"
             >
-              {language === 'en'
-                ? 'Trang này cũng có bằng tiếng Việt →'
-                : 'This page is also available in English →'}
+              <ArrowUp size={11} className="opacity-60 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+              <span className="underline underline-offset-2 decoration-white/20 group-hover:decoration-white/50">
+                {language === 'en'
+                  ? 'Trang này cũng có bằng tiếng Việt'
+                  : 'This page is also available in English'}
+              </span>
+              <span className="px-1.5 py-0.5 rounded border border-white/20 font-bold text-[10px] tracking-wide no-underline flex-shrink-0">
+                {language === 'en' ? 'VI' : 'EN'}
+              </span>
             </button>
           </div>
         </motion.div>
