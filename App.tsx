@@ -1072,7 +1072,7 @@ const App: React.FC = () => {
                 {language === 'en' ? 'VI' : 'EN'}
               </span>
             </button>
-            {!langHintDismissed && (
+            {showLangHint && (
               <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 pointer-events-none">
                 <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-70 animate-ping" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-nobel-gold ring-2 ring-white/80 dark:ring-forest" />
@@ -1160,7 +1160,7 @@ const App: React.FC = () => {
                   {language === 'en' ? 'VI' : 'EN'}
                 </span>
               </button>
-              {!langHintDismissed && (
+              {showLangHint && (
                 <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 pointer-events-none">
                   <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-70 animate-ping" />
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-nobel-gold ring-2 ring-white/80 dark:ring-forest" />
