@@ -723,9 +723,9 @@ const EducationCards = ({ language }: { language: Language }) => (
     viewport={scrollViewport}
     className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto"
   >
-    {educationData[language].map((item) => (
+    {educationData[language].map((item, i) => (
       <motion.a
-        key={item.school}
+        key={`edu-${i}`}
         href={item.url}
         target="_blank"
         rel="noopener noreferrer"
