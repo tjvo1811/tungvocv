@@ -799,14 +799,29 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabId>('home');
   const [navResearchOpen, setNavResearchOpen] = useState(false);
   const navResearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [langHintVisible, setLangHintVisible] = useState(false);
+  const [langHintDismissed, setLangHintDismissed] = useState(true);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(max-width: 767px)').matches;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
 
   useEffect(() => {
+    if (isMobile) return;
     window.scrollTo({ top: 0 });
-  }, [activeTab]);
+  }, [activeTab, isMobile]);
 
   /* sliding nav pill */
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -842,11 +857,30 @@ const App: React.FC = () => {
   }, [hoveredId, activeTab, language]);
 
   const switchTab = (id: TabId, scrollTo?: string) => {
-    setActiveTab(id);
     setMenuOpen(false);
     setNavResearchOpen(false);
+
+    if (isMobile) {
+      // On mobile, everything is rendered as a continuous scroll.
+      // Tab clicks just scroll to the corresponding section.
+      const targetId = scrollTo
+        ? scrollTo
+        : id === 'home'
+          ? null
+          : `section-${id}`;
+      if (targetId === null) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        // Defer slightly so the menu close animation doesn't fight the scroll.
+        setTimeout(() => {
+          document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+      }
+      return;
+    }
+
+    setActiveTab(id);
     if (scrollTo) {
-      // Wait for the tab transition to finish, then scroll
       setTimeout(() => {
         document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 450);
@@ -1094,9 +1128,9 @@ const App: React.FC = () => {
           willChange: 'opacity, filter, transform',
         }}
       >
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode={isMobile ? 'sync' : 'wait'}>
         {/* ── Home (Hero + Education) ──────────────────────── */}
-        {activeTab === 'home' && (
+        {(isMobile || activeTab === 'home') && (
           <motion.div
             key="hero-page"
             initial={{ opacity: 0 }}
@@ -1215,7 +1249,7 @@ const App: React.FC = () => {
                   <button
                     onClick={() =>
                       document
-                        .getElementById('home-education')
+                        .getElementById(isMobile ? 'section-about' : 'home-education')
                         ?.scrollIntoView({ behavior: 'smooth' })
                     }
                     className="text-forest/40 hover:text-forest transition-colors cursor-pointer"
@@ -1226,8 +1260,8 @@ const App: React.FC = () => {
               </div>
             </header>
 
-            {/* Education below hero */}
-            <section id="home-education" className="py-24 px-6 md:px-16">
+            {/* Education below hero — hidden on mobile since the Education section below renders these cards in continuous-scroll mode. */}
+            <section id="home-education" className="py-24 px-6 md:px-16 hidden md:block">
               <SectionHeading
                 label={language === 'vi' ? 'Học vấn' : 'Education'}
                 heading={language === 'vi' ? 'Nền tảng học thuật.' : 'Academic Foundation.'}
@@ -1239,11 +1273,12 @@ const App: React.FC = () => {
         )}
 
         {/* ── Education ───────────────────────────────────────── */}
-        {activeTab === 'about' && (
+        {(isMobile || activeTab === 'about') && (
           <motion.main
             key="about"
+            id="section-about"
             {...mainTabMotion}
-            className="tab-content pt-24 pb-24 px-6 md:px-16"
+            className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
             <TabHero>{language === 'vi' ? 'Học vấn.' : 'Education.'}</TabHero>
             <EducationCards language={language} />
@@ -1251,11 +1286,12 @@ const App: React.FC = () => {
         )}
 
         {/* ── Research ────────────────────────────────────────── */}
-        {activeTab === 'research' && (
+        {(isMobile || activeTab === 'research') && (
           <motion.main
             key="research"
+            id="section-research"
             {...mainTabMotion}
-            className="tab-content pt-24 pb-24 px-6 md:px-16"
+            className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
             <TabHero>{language === 'vi' ? 'Nghiên cứu.' : 'Research.'}</TabHero>
 
@@ -1425,11 +1461,12 @@ const App: React.FC = () => {
         )}
 
         {/* ── Leadership ──────────────────────────────────────── */}
-        {activeTab === 'leadership' && (
+        {(isMobile || activeTab === 'leadership') && (
           <motion.main
             key="leadership"
+            id="section-leadership"
             {...mainTabMotion}
-            className="tab-content pt-24 pb-24 px-6 md:px-16"
+            className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
             <TabHero>{language === 'vi' ? 'Lãnh đạo.' : 'Leadership.'}</TabHero>
             <div className="overflow-hidden">
@@ -1450,11 +1487,12 @@ const App: React.FC = () => {
         )}
 
         {/* ── Work ────────────────────────────────────────────── */}
-        {activeTab === 'work' && (
+        {(isMobile || activeTab === 'work') && (
           <motion.main
             key="work"
+            id="section-work"
             {...mainTabMotion}
-            className="tab-content pt-24 pb-24 px-6 md:px-16"
+            className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
             <TabHero>{language === 'vi' ? 'Kinh nghiệm.' : 'Work.'}</TabHero>
             <div className="overflow-hidden">
@@ -1475,11 +1513,12 @@ const App: React.FC = () => {
         )}
 
         {/* ── Honors ──────────────────────────────────────────── */}
-        {activeTab === 'honors' && (
+        {(isMobile || activeTab === 'honors') && (
           <motion.main
             key="honors"
+            id="section-honors"
             {...mainTabMotion}
-            className="tab-content pt-24 pb-24 px-6 md:px-16"
+            className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
             <TabHero>{language === 'vi' ? 'Thành tích.' : 'Honors.'}</TabHero>
             <motion.div {...scrollReveal} className="mb-6 text-center text-forest/60 dark:text-white/50 text-base max-w-xl mx-auto">
