@@ -72,7 +72,7 @@ function AnimatedDegree({
 const lineClass =
   'text-[0.95rem] sm:text-lg leading-relaxed text-forest/72 dark:text-white/58';
 
-export const HeroBioWeather: React.FC = () => {
+export const HeroBioWeather: React.FC<{ language: 'en' | 'vi' }> = ({ language }) => {
   const { status, tempC, weatherCode } = useHoustonWeather();
   const tempF = tempC !== null ? cToF(tempC) : null;
 
@@ -81,11 +81,15 @@ export const HeroBioWeather: React.FC = () => {
   return (
     <div className="hero-pop hero-pop-2b max-w-2xl mx-auto mb-8 px-2 text-center">
       <p className={`${lineClass} mb-3 sm:mb-3.5`}>
-        <span className="font-semibold text-forest/88 dark:text-white/70">Major:</span>{' '}
-        Applied Mathematics
+        <span className="font-semibold text-forest/88 dark:text-white/70">
+          {language === 'vi' ? 'Ngành chính:' : 'Major:'}
+        </span>{' '}
+        {language === 'vi' ? 'Toán học Ứng dụng' : 'Applied Mathematics'}
         <span className="mx-2.5 sm:mx-3 text-forest/35 dark:text-white/30">·</span>
-        <span className="font-semibold text-forest/88 dark:text-white/70">Minor:</span>{' '}
-        Data Analytics
+        <span className="font-semibold text-forest/88 dark:text-white/70">
+          {language === 'vi' ? 'Ngành phụ:' : 'Minor:'}
+        </span>{' '}
+        {language === 'vi' ? 'Phân tích Dữ liệu' : 'Data Analytics'}
       </p>
 
       <p
@@ -94,34 +98,65 @@ export const HeroBioWeather: React.FC = () => {
         aria-live="polite"
         aria-label={
           live
-            ? `Based in Houston, Texas; about ${Math.round(tempF!)} degrees Fahrenheit and ${Math.round(tempC!)} degrees Celsius`
-            : 'Based in Houston, Texas'
+            ? language === 'vi'
+              ? `Sinh sống tại Houston, Texas; khoảng ${Math.round(tempF!)} độ F và ${Math.round(tempC!)} độ C`
+              : `Based in Houston, Texas; about ${Math.round(tempF!)} degrees Fahrenheit and ${Math.round(tempC!)} degrees Celsius`
+            : language === 'vi'
+              ? 'Sinh sống tại Houston, Texas'
+              : 'Based in Houston, Texas'
         }
       >
-        I&apos;m based in{' '}
+        {language === 'vi' ? 'Hiện tôi sống ở ' : "I'm based in "}
         {status === 'loading' && (
           <>
-            <span className="text-forest/45 dark:text-white/40 tabular-nums">
-              …°F · …°C
-            </span>{' '}
-            <span className="font-medium text-forest/90 dark:text-white/75">
-              Houston, Texas
-            </span>
+            {language === 'vi' ? (
+              <>
+                <span className="font-medium text-forest/90 dark:text-white/75">
+                  Houston, Texas
+                </span>
+                <span className="mx-1 text-forest/50 dark:text-white/35">·</span>
+                <span className="text-forest/45 dark:text-white/40 tabular-nums">
+                  …°F · …°C
+                </span>{' '}
+              </>
+            ) : (
+              <>
+                <span className="text-forest/45 dark:text-white/40 tabular-nums">
+                  …°F · …°C
+                </span>{' '}
+                <span className="font-medium text-forest/90 dark:text-white/75">
+                  Houston, Texas
+                </span>
+              </>
+            )}
             <span className="text-forest/45 dark:text-white/40 text-sm sm:text-base">
               {' '}
-              — live read incoming
+              {language === 'vi' ? '— đang cập nhật thời tiết trực tiếp' : '— live read incoming'}
             </span>
           </>
         )}
         {live && (
           <>
-            <AnimatedDegree value={tempF} unit="F" />
-            <span className="mx-1 text-forest/50 dark:text-white/35">·</span>
-            <AnimatedDegree value={tempC} unit="C" />{' '}
-            {weatherIcon(weatherCode)}{' '}
-            <span className="font-medium text-forest/90 dark:text-white/75">
-              Houston, Texas
-            </span>
+            {language === 'vi' ? (
+              <>
+                <span className="font-medium text-forest/90 dark:text-white/75">
+                  Houston, Texas
+                </span>
+                <span className="mx-1 text-forest/50 dark:text-white/35">·</span>
+                <AnimatedDegree value={tempF} unit="F" />
+                <span className="mx-1 text-forest/50 dark:text-white/35">·</span>
+                <AnimatedDegree value={tempC} unit="C" /> {weatherIcon(weatherCode)}
+              </>
+            ) : (
+              <>
+                <AnimatedDegree value={tempF} unit="F" />
+                <span className="mx-1 text-forest/50 dark:text-white/35">·</span>
+                <AnimatedDegree value={tempC} unit="C" /> {weatherIcon(weatherCode)}{' '}
+                <span className="font-medium text-forest/90 dark:text-white/75">
+                  Houston, Texas
+                </span>
+              </>
+            )}
           </>
         )}
         {status === 'error' && (
@@ -131,7 +166,7 @@ export const HeroBioWeather: React.FC = () => {
             </span>
             <span className="text-forest/50 dark:text-white/45">
               {' '}
-              (forecast unavailable right now)
+              {language === 'vi' ? '(không thể tải dự báo lúc này)' : '(forecast unavailable right now)'}
             </span>
           </span>
         )}
