@@ -445,6 +445,8 @@ const uiStrings = {
     researchFocusBadge: 'Research Focus',
     graphTheoryHead1: 'Graph Theory &',
     graphTheoryHead2: 'Network Dynamics.',
+    codingTheoryHead1: 'Coding Theory &',
+    codingTheoryHead2: 'Finite Geometries.',
     historyHead1: 'History &',
     historyHead2: 'Public Policy.',
     presentationsLabel: 'Presentations',
@@ -474,6 +476,8 @@ const uiStrings = {
     researchFocusBadge: 'Trọng tâm Nghiên cứu',
     graphTheoryHead1: 'Lý thuyết Đồ thị &',
     graphTheoryHead2: 'Động lực học Mạng lưới.',
+    codingTheoryHead1: 'Lý thuyết Mã &',
+    codingTheoryHead2: 'Hình học Hữu hạn.',
     historyHead1: 'Lịch sử &',
     historyHead2: 'Chính sách Công.',
     presentationsLabel: 'Báo cáo',
@@ -802,6 +806,7 @@ const App: React.FC = () => {
   const [langHintVisible, setLangHintVisible] = useState(false);
   const [langHintDismissed, setLangHintDismissed] = useState(false);
   const [langBtnHighlight, setLangBtnHighlight] = useState(false);
+  const [langBtnInitPulse, setLangBtnInitPulse] = useState(true);
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
@@ -818,6 +823,11 @@ const App: React.FC = () => {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setLangBtnInitPulse(false), 3000);
+    return () => clearTimeout(t);
+  }, []);
 
   // Show hints on every visit; auto-dismiss footer pill after 3 s.
   // Dismissal is session-only — no localStorage — so it reappears on each load.
@@ -1061,6 +1071,9 @@ const App: React.FC = () => {
               className={`relative px-3 py-1.5 border text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-all overflow-hidden ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-forest/20 dark:border-white/20'}`}
               aria-label="Toggle language"
             >
+              {langBtnInitPulse && (
+                <span className="absolute inset-0 rounded-full bg-yellow-200/70 animate-pulse pointer-events-none" />
+              )}
               <span
                 style={{
                   display: 'inline-block',
@@ -1145,10 +1158,13 @@ const App: React.FC = () => {
                 <span className="absolute inset-0 rounded-full animate-ping bg-nobel-gold/50 pointer-events-none" />
               )}
               <button
-                className={`px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border text-forest dark:text-white/70 text-xs font-bold overflow-hidden transition-all ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-white/70 dark:border-white/10'}`}
+                className={`relative px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border text-forest dark:text-white/70 text-xs font-bold overflow-hidden transition-all ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-white/70 dark:border-white/10'}`}
                 onClick={handleLanguageToggle}
                 aria-label="Toggle language"
               >
+                {langBtnInitPulse && (
+                  <span className="absolute inset-0 rounded-full bg-yellow-200/70 animate-pulse pointer-events-none" />
+                )}
                 <span
                   style={{
                     display: 'inline-block',
@@ -1476,6 +1492,31 @@ const App: React.FC = () => {
                   {language === 'vi'
                     ? 'Nghiên cứu được tài trợ bởi chương trình NSF PRIMES PAIR dưới sự hướng dẫn của Tiến sĩ Mary Flagg về các tập buộc-không cạnh tranh trong lý thuyết đồ thị. Thực hiện phân tích lý thuyết và thực nghiệm tính toán trên các họ đồ thị nhằm nghiên cứu động lực lan truyền trong các quá trình buộc-không cạnh tranh.'
                     : 'NSF PRIMES PAIR-funded research under Dr. Mary Flagg on competitive zero forcing sets in graph theory. Conducted theoretical analysis and computational experiments across graph families to study propagation dynamics in competing zero forcing processes.'}
+                </ExperienceItem>
+
+                <motion.div {...scrollReveal} className="mb-10 mt-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/55 dark:bg-white/10 text-forest dark:text-white/80 text-xs font-bold tracking-widest uppercase rounded-full mb-5 border border-white/70 dark:border-white/15">
+                    {language === 'vi' ? 'Trọng tâm nghiên cứu' : 'Research Focus'}
+                  </div>
+                  <h2 className="font-display font-black text-4xl md:text-5xl text-forest dark:text-white leading-[0.92]">
+                    {uiStrings[language].codingTheoryHead1}
+                    <br />
+                    {uiStrings[language].codingTheoryHead2}
+                  </h2>
+                </motion.div>
+                <ExperienceItem
+                  language={language}
+                  title={
+                    language === 'vi'
+                      ? 'Đại học Puerto Rico – Ponce'
+                      : 'University of Puerto Rico – Ponce'
+                  }
+                  role={language === 'vi' ? 'Thành viên REU sắp tham gia' : 'Incoming REU Participant'}
+                  date={language === 'vi' ? 'Hè 2026' : 'Summer 2026'}
+                >
+                  {language === 'vi'
+                    ? 'Tập trung vào lý thuyết mã hóa, tổ hợp, lý thuyết đồ thị, mã cục bộ phục hồi được và mã từ các hình học hữu hạn.'
+                    : 'Working on coding theory, combinatorics, graph theory, locally recoverable codes, and codes from finite geometries.'}
                 </ExperienceItem>
               </div>
 
