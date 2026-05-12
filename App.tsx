@@ -446,7 +446,7 @@ const uiStrings = {
     graphTheoryHead1: 'Graph Theory &',
     graphTheoryHead2: 'Network Dynamics.',
     codingTheoryHead1: 'Coding Theory &',
-    codingTheoryHead2: 'Finite Geometries.',
+    codingTheoryHead2: 'Combinatorics.',
     historyHead1: 'History &',
     historyHead2: 'Public Policy.',
     presentationsLabel: 'Presentations',
