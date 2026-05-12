@@ -1511,7 +1511,7 @@ const App: React.FC = () => {
                       ? 'Đại học Puerto Rico – Ponce'
                       : 'University of Puerto Rico – Ponce'
                   }
-                  role={language === 'vi' ? 'Thành viên REU sắp tham gia' : 'Incoming REU Participant'}
+                  role={language === 'vi' ? 'Học giả REU sắp tham gia' : 'Incoming REU Fellow'}
                   date={language === 'vi' ? 'Hè 2026' : 'Summer 2026'}
                   location={
                     language === 'vi'
