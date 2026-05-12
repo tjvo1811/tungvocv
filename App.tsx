@@ -1513,6 +1513,11 @@ const App: React.FC = () => {
                   }
                   role={language === 'vi' ? 'Thành viên REU sắp tham gia' : 'Incoming REU Participant'}
                   date={language === 'vi' ? 'Hè 2026' : 'Summer 2026'}
+                  location={
+                    language === 'vi'
+                      ? 'Giảng viên Hướng dẫn: Tiến sĩ Pamela Harris và Tiến sĩ Fernando Pinero'
+                      : 'Supervisor: Dr. Pamela Harris and Dr. Fernando Pinero'
+                  }
                 >
                   {language === 'vi'
                     ? 'Tập trung vào lý thuyết mã hóa, tổ hợp, lý thuyết đồ thị, mã cục bộ phục hồi được và mã từ các hình học hữu hạn.'
