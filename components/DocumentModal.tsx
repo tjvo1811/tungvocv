@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { useEffect, useRef } from 'react';
+import React, { Suspense, lazy, useEffect, useRef } from 'react';
 import { X, FileText, LayoutTemplate, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ResearchDocument } from '../data/researchData';
+
+const PdfViewer = lazy(() => import('./PdfViewer').then((m) => ({ default: m.PdfViewer })));
 
 type Language = 'en' | 'vi';
 
@@ -116,29 +118,19 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
             {/* Content - PDF or Text */}
             <div className="flex-1 overflow-hidden flex flex-col relative">
               {hasPdf ? (
-                <div className="flex-1 w-full h-full relative">
-                  <iframe
-                    src={doc.pdfUrl}
-                    className="w-full h-full"
-                    title={strings.pdfViewer}
-                  >
-                    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-forest/60 dark:text-white/60">
-                      <FileText size={48} className="text-forest/20 dark:text-white/20 mb-4" />
-                      <h3 className="font-display font-bold text-xl text-forest dark:text-white mb-2">{strings.unableToDisplayPdf}</h3>
-                      <p className="mb-6 max-w-md mx-auto text-sm">
-                        {strings.pdfFallback} <b>{doc.pdfUrl?.split('/').pop()}</b> {strings.existsIn} <b>public/documents/</b> {strings.folder}
-                      </p>
-                      <a
-                        href={doc.pdfUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex items-center gap-2 px-6 py-3 bg-forest dark:bg-white text-white dark:text-forest rounded-full hover:bg-forest/85 dark:hover:bg-white/90 transition-colors font-medium text-sm"
-                      >
-                        <Download size={16} /> {strings.downloadPdf}
-                      </a>
+                <Suspense
+                  fallback={
+                    <div className="flex-1 flex items-center justify-center text-forest/50 dark:text-white/50 text-sm">
+                      Loading…
                     </div>
-                  </iframe>
-                </div>
+                  }
+                >
+                  <PdfViewer
+                    url={doc.pdfUrl!}
+                    fitMode={isPoster ? 'page' : 'width'}
+                    className="flex-1"
+                  />
+                </Suspense>
               ) : (
                 <div className="flex-1 overflow-y-auto">
                   {isPoster ? (
