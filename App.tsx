@@ -70,7 +70,7 @@ const educationData: Record<Language, Array<{
   {
     school: 'University of St. Thomas',
     degree: 'B.S. Applied Mathematics',
-    date: 'Expected May 2027',
+    date: 'Expected May 2028',
     honor: 'Minor: Data Analytics',
     url: 'https://stthom.edu/',
     color: 'bg-[#ebd6d8] dark:bg-[#7B1113]/50',
@@ -81,25 +81,25 @@ const educationData: Record<Language, Array<{
   vi: [
     {
       school: 'Đại học St. Thomas',
-      degree: 'Cử nhân Khoa học ngành Toán học Ứng dụng',
-      date: 'Dự kiến tháng 5 năm 2028',
-      honor: 'Chuyên ngành phụ: Phân tích Dữ liệu',
+      degree: 'Cử nhân khoa học ngành toán học ứng dụng',
+      date: 'Dự kiến tốt nghiệp tháng 5 năm 2028',
+      honor: 'Chuyên ngành phụ: Phân tích dữ liệu',
       url: 'https://stthom.edu/',
       color: 'bg-[#ebd6d8] dark:bg-[#7B1113]/50',
     },
     {
       school: 'Trường Cao đẳng Cộng đồng Lone Star',
-      degree: 'Bằng Phó Học sĩ Khoa học / Đại cương',
+      degree: 'Bằng phó học sĩ khoa học / đại cương',
       date: 'Tháng 5 năm 2025',
-      honor: 'Danh hiệu Xuất sắc Tối cao (Summa Cum Laude) | Học giả Toàn cầu Xuất sắc',
+      honor: 'Danh hiệu xuất sắc tối cao (Summa Cum Laude) | Học giả toàn cầu xuất sắc (Distinguished Global Scholar)',
       url: 'https://www.lonestar.edu/',
       color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/45',
     },
     {
       school: 'Trường Trung học Jersey Village',
-      degree: 'Bằng Tốt nghiệp Trung học',
+      degree: 'Bằng tốt nghiệp trung học phổ thông',
       date: 'Tháng 5 năm 2023',
-      honor: 'Danh hiệu Xuất sắc (Cum Laude)',
+      honor: 'Danh hiệu xuất sắc (Cum Laude)',
       url: 'https://jerseyvillage.cfisd.net/',
       color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/45',
     },
@@ -127,21 +127,21 @@ const honorData: Record<Language, HonorEntry[]> = {
     { title: 'NIETOC Qualifier', org: 'National Individual Events Tournament of Champions', date: 'High School', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
   ],
   vi: [
-    { title: 'Học bổng Xuất sắc Monaghan', org: 'Đại học St. Thomas', date: 'Mùa thu 2025 – Mùa xuân 2027', color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42' },
-    { title: 'Học bổng Tài trợ Dunn dành cho Sinh viên STEM thuộc Cơ sở Giáo dục Phục vụ Cộng đồng Gốc Hispanic', org: 'Đại học St. Thomas', date: '2025', color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42' },
-    { title: 'Ứng viên Vào Vòng Chung kết Chương trình CASE', org: 'Chương trình Kết nối Du học Amideast', date: 'Mùa hè 2025', color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/30' },
-    { title: 'Học bổng Du học dành cho Học giả Toàn cầu Xuất sắc', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa hè 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
-    { title: 'Danh hiệu Học giả Toàn cầu Xuất sắc', org: 'Trường Cao đẳng Cộng đồng Lone Star', date: 'Mùa thu 2024 – Mùa xuân 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
-    { title: 'Học bổng Ngoại ngữ dành cho Học giả Toàn cầu', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa thu 2024 – Mùa xuân 2025', color: 'bg-[#e8eef8] dark:bg-[#0c2347]/35' },
-    { title: 'Giải thưởng Đại biểu Xuất sắc nhất Ủy ban', org: 'Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc, New York', date: '2024', color: 'bg-[#f0dcd4] dark:bg-[#3e2218]/30' },
-    { title: 'Giải thưởng Đoàn Đại biểu Xuất sắc', org: 'Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc, New York', date: '2024', color: 'bg-[#d4dce8] dark:bg-[#1a2a3e]/30' },
-    { title: 'Giải thưởng Học giả Toàn cầu', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa thu 2023 – Mùa xuân 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
-    { title: 'Danh sách Tuyên dương của Hiệu trưởng', org: 'Trường Cao đẳng Cộng đồng Lone Star', date: '2023 – 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
-    { title: 'Giải thưởng Học thuật Toàn Hoa Kỳ', org: 'Hiệp hội Hùng biện và Tranh luận Toàn quốc Hoa Kỳ', date: 'Mùa thu 2022', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: 'Sáu lần Vô địch Giải đấu', org: 'Bộ môn Hùng biện và Tranh luận, Houston, Texas', date: 'Bậc Trung học Phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: 'Hai lần Đạt Chuẩn Tham dự Giải Cấp Tiểu bang TFA', org: 'Hiệp hội Hùng biện Tranh luận Tiểu bang Texas', date: 'Bậc Trung học Phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: 'Vào Tứ kết Giải TFA', org: 'Hiệp hội Hùng biện Tranh luận Tiểu bang Texas', date: 'Bậc Trung học Phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: 'Đạt Chuẩn Tham dự Giải NIETOC', org: 'Giải Vô địch Toàn quốc các Nội dung Hùng biện Cá nhân', date: 'Bậc Trung học Phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+    { title: 'Học bổng xuất sắc Monaghan', org: 'Đại học St. Thomas', date: 'Mùa thu 2025 – Mùa xuân 2027', color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42' },
+    { title: 'Học bổng STEM dành cho cơ sở phục vụ cộng đồng gốc Tây Ban Nha (Hispanic Serving Institution) – Quỹ Dunn', org: 'Đại học St. Thomas', date: '2025', color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42' },
+    { title: 'Ứng viên vào vòng chung kết CASE (Cộng đồng, Hành động và Khởi nghiệp Xã hội)', org: 'Chương trình Kết nối Du học Amideast', date: 'Mùa hè 2025', color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/30' },
+    { title: 'Học bổng du học dành cho học giả toàn cầu xuất sắc', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa hè 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
+    { title: 'Danh hiệu học giả toàn cầu xuất sắc', org: 'Trường Cao đẳng Cộng đồng Lone Star', date: 'Mùa thu 2024 – Mùa xuân 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
+    { title: 'Học bổng ngoại ngữ dành cho học giả toàn cầu', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa thu 2024 – Mùa xuân 2025', color: 'bg-[#e8eef8] dark:bg-[#0c2347]/35' },
+    { title: 'Giải thưởng đại biểu xuất sắc nhất ủy ban', org: 'NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc), New York', date: '2024', color: 'bg-[#f0dcd4] dark:bg-[#3e2218]/30' },
+    { title: 'Giải thưởng đoàn đại biểu xuất sắc', org: 'NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc), New York', date: '2024', color: 'bg-[#d4dce8] dark:bg-[#1a2a3e]/30' },
+    { title: 'Giải thưởng học giả toàn cầu', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa thu 2023 – Mùa xuân 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
+    { title: 'Danh sách tuyên dương của hiệu trưởng (President\'s List)', org: 'Trường Cao đẳng Cộng đồng Lone Star', date: '2023 – 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
+    { title: 'Giải thưởng học thuật toàn Hoa Kỳ', org: 'Hiệp hội Hùng biện và Tranh luận Quốc gia Hoa Kỳ (National Speech and Debate Association)', date: 'Mùa thu 2022', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+    { title: 'Sáu lần vô địch giải đấu', org: 'Bộ môn hùng biện và tranh luận, Houston, Texas', date: 'Bậc trung học phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+    { title: 'Hai lần đạt chuẩn tham dự giải cấp tiểu bang TFA (Hiệp hội Hùng biện và Tranh luận Texas)', org: 'Hiệp hội Hùng biện và Tranh luận Texas', date: 'Bậc trung học phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+    { title: 'Vào tứ kết giải TFA (Hiệp hội Hùng biện và Tranh luận Texas)', org: 'Hiệp hội Hùng biện và Tranh luận Texas', date: 'Bậc trung học phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+    { title: 'Đạt chuẩn tham dự giải NIETOC (Giải vô địch toàn quốc các nội dung hùng biện cá nhân)', org: 'Giải vô địch toàn quốc các nội dung hùng biện cá nhân', date: 'Bậc trung học phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
   ],
 };
 
@@ -215,39 +215,39 @@ const leadershipData: Record<Language, StaircaseEntry[]> = {
   ],
   vi: [
     {
-      title: 'Chương trình Cộng đồng, Hành động và Khởi nghiệp Xã hội',
-      role: 'Ứng viên Vào Vòng Chung kết',
+      title: 'Chương trình CASE (Cộng đồng, Hành động và Khởi nghiệp Xã hội)',
+      role: 'Ứng viên vào vòng chung kết',
       shortDate: 'Hè 2025',
       location: 'Chương trình Kết nối Du học Amideast',
       description:
-        'Chương trình học tập có hướng dẫn kéo dài tám ngày tại Cộng hòa Tunisia. Các ứng viên được tuyển chọn vào vòng chung kết được giới thiệu với các tổ chức xã hội dân sự thông qua các buổi thuyết trình hằng ngày, các cuộc thảo luận chuyên đề, hoạt động phục vụ cộng đồng và giao lưu với sinh viên bản địa.',
+        'Chương trình học tập có hướng dẫn kéo dài tám ngày tại Cộng hòa Tunisia. Các ứng viên được tuyển chọn vào vòng chung kết được giới thiệu với các tổ chức xã hội dân sự thông qua các buổi thuyết trình, thảo luận chuyên đề, hoạt động phục vụ cộng đồng và giao lưu với sinh viên bản địa.',
     },
     {
-      title: 'Hội đồng Cố vấn Sinh viên Trường Cao đẳng Danh dự',
-      role: 'Đại diện Cơ sở',
+      title: 'Hội đồng cố vấn sinh viên Trường cao đẳng danh dự',
+      role: 'Đại diện cơ sở',
       shortDate: '2024 – 2025',
       location: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North',
       description:
-        'Định kỳ hai lần mỗi năm tham dự các cuộc họp với Phó Hiệu trưởng Phụ trách Giáo dục Danh dự và Quốc tế. Phối hợp đóng góp quan điểm của sinh viên đối với các chương trình của Trường Cao đẳng Danh dự cũng như các hoạt động trên toàn hệ thống.',
+        'Định kỳ hai lần mỗi năm tham dự các cuộc họp với Phó Hiệu trưởng phụ trách HIE (Giáo dục Danh dự và Quốc tế). Phối hợp đóng góp quan điểm của sinh viên đối với các chương trình của Trường cao đẳng danh dự cũng như các hoạt động trên toàn hệ thống.',
     },
     {
-      title: 'Đại sứ Chương trình HIE',
-      role: 'Đại sứ Liên lạc Hệ thống Danh dự (Emeritus)',
+      title: 'Đại diện HIE (Giáo dục Danh dự và Quốc tế)',
+      role: 'Đại sứ liên lạc hệ thống Emeritus (danh dự)',
       shortDate: 'Mùa xuân 2025',
       location: 'Trường Cao đẳng Cộng đồng Lone Star',
       description:
-        'Với tư cách là Đại sứ Danh dự (Emeritus), phối hợp và cố vấn cho Đại sứ Liên lạc Hệ thống đương nhiệm, đồng thời tiếp tục quảng bá các chương trình thuộc Trường Cao đẳng Danh dự và bộ phận Giáo dục Quốc tế.',
+        'Với tư cách Emeritus (danh dự), phối hợp và cố vấn cho đại sứ liên lạc hệ thống đương nhiệm, đồng thời tiếp tục quảng bá các chương trình thuộc Trường cao đẳng danh dự và bộ phận giáo dục quốc tế.',
     },
     {
-      title: 'Đại sứ Chương trình HIE',
-      role: 'Đại sứ Liên lạc Hệ thống',
+      title: 'Đại diện HIE (Giáo dục Danh dự và Quốc tế)',
+      role: 'Đại sứ liên lạc hệ thống',
       shortDate: 'Mùa thu 2024',
       location: 'Trường Cao đẳng Cộng đồng Lone Star',
       description:
-        'Quảng bá Trường Cao đẳng Danh dự trong suốt học kỳ, phối hợp với các đại diện liên lạc tại các cơ sở để tổ chức các sự kiện trên toàn hệ thống. Đồng thời, giới thiệu chương trình Take Flight của Đại học Rice, đội tuyển NMUN cũng như các chương trình học bổng liên quan.',
+        'Quảng bá Trường cao đẳng danh dự trong suốt học kỳ, phối hợp với các đại diện liên lạc tại các cơ sở để tổ chức các sự kiện trên toàn hệ thống. Đồng thời giới thiệu chương trình Take Flight của Đại học Rice, đội tuyển NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc) cũng như các chương trình học bổng liên quan.',
     },
     {
-      title: 'Chương trình Lãnh đạo Toàn cầu',
+      title: 'Chương trình lãnh đạo toàn cầu',
       role: 'Thành viên',
       shortDate: '2024 – 2025',
       location: 'Trường Cao đẳng Cộng đồng Lone Star',
@@ -255,16 +255,16 @@ const leadershipData: Record<Language, StaircaseEntry[]> = {
         'Trau dồi kỹ năng lãnh đạo có đạo đức và bao trùm trong bối cảnh toàn cầu thông qua các khóa đào tạo về ngoại giao quốc tế, tham dự hội nghị và hợp tác với các tổ chức trong nước và quốc tế.',
     },
     {
-      title: 'Chương trình Học giả Toàn cầu Xuất sắc',
+      title: 'Chương trình học giả toàn cầu xuất sắc',
       role: 'Thành viên',
       shortDate: '2024 – 2025',
       location: 'Trường Cao đẳng Cộng đồng Lone Star',
       description:
-        'Được tuyển chọn từ khoảng một trăm ứng viên, là một trong tám thành viên chính thức của khóa. Chương trình bao gồm các học phần được chỉ định là Học phần Quốc tế (IS), nhằm bổ sung chiều kích quốc tế cho chương trình đào tạo.',
+        'Được tuyển chọn từ khoảng một trăm ứng viên, là một trong tám thành viên chính thức của khóa. Chương trình bao gồm các học phần được chỉ định là IS (Nghiên cứu Quốc tế), nhằm bổ sung chiều kích quốc tế cho chương trình đào tạo.',
     },
     {
       title: 'Chương trình Texas Boys State',
-      role: 'Thành viên Đội Báo chí kiêm Đại biểu (Statesman)',
+      role: 'Thành viên đội báo chí kiêm đại biểu (Statesman)',
       shortDate: 'Hè 2022',
       location: 'Tổ chức Cựu chiến binh Hoa Kỳ (The American Legion)',
       description:
@@ -319,9 +319,9 @@ const workData: Record<Language, StaircaseEntry[]> = {
   vi: [
     {
       title: 'Công ty Geospace Technology',
-      role: 'Kỹ thuật viên Lắp ráp Cơ – Điện',
+      role: 'Kỹ thuật viên lắp ráp cơ – điện',
       shortDate: '2025 – Hiện tại',
-      location: 'Thành phố Houston, Tiểu bang Texas',
+      location: 'Houston, Texas',
       description: (
         <ul className="list-disc pl-4 space-y-1">
           <li>Vận hành máy quấn cáp để lắp ráp cáp truyền dẫn dưới nước; xử lý các sự cố cơ khí ở mức độ thông thường.</li>
@@ -332,22 +332,22 @@ const workData: Record<Language, StaircaseEntry[]> = {
     },
     {
       title: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu CyFair',
-      role: 'Thực tập sinh Quan hệ Đối ngoại',
+      role: 'Thực tập sinh quan hệ đối ngoại',
       shortDate: '2024 – 2025',
-      location: 'Thành phố Cypress, Tiểu bang Texas',
+      location: 'Cypress, Texas',
       description: (
         <ul className="list-disc pl-4 space-y-1">
           <li>Soạn thảo và lập kế hoạch tổ chức các sự kiện trên phạm vi toàn cơ sở.</li>
           <li>Điều phối và quản lý các nền tảng truyền thông xã hội cùng nội dung đăng tải.</li>
-          <li>Xây dựng ý tưởng cho các chiến dịch truyền thông trên các nền tảng X, Instagram và Facebook.</li>
+          <li>Xây dựng ý tưởng cho các chiến dịch truyền thông trên các nền tảng X (Twitter), Instagram và Facebook.</li>
         </ul>
       ),
     },
     {
-      title: 'Tổ chức Cộng đồng East Aldine BakerRipley',
-      role: 'Tình nguyện viên Lễ tân',
+      title: 'Tổ chức cộng đồng East Aldine BakerRipley',
+      role: 'Tình nguyện viên lễ tân',
       shortDate: '2024 – 2025',
-      location: 'Khu Aldine, Tiểu bang Texas',
+      location: 'Aldine, Texas',
       description: (
         <ul className="list-disc pl-4 space-y-1">
           <li>Tiếp nhận các cuộc gọi đến và chuyển hướng yêu cầu đến bộ phận phù hợp.</li>
@@ -380,14 +380,14 @@ const presentationsData: Record<Language, PresentationEntry[]> = {
     { title: 'National Model United Nations – New York Panelist', venue: 'Spring Honors and International Education Conference', location: 'Houston, TX', year: '2024' },
   ],
   vi: [
-    { title: '“Buộc-Không Cạnh Tranh: Một Mô Hình Hai Đối Thủ Mới trong Tô Màu Đồ Thị”', venue: 'Hội nghị Nghiên cứu của Đại học St. Thomas – Houston', location: 'Thành phố Houston, Tiểu bang Texas', year: '2026', poster: ustGraphTheoryPoster },
-    { title: '“Một Cách Tiếp cận Hệ thống nhằm Tìm hiểu Thế giới Tự nhiên”', venue: 'Phiên Trình bày Áp phích – Học viện Dữ liệu Môi trường, Đại học Rice', location: 'Thành phố Houston, Tiểu bang Texas', year: '2025', poster: ricePoster },
-    { title: '“Một Cách Tiếp cận Hệ thống nhằm Tìm hiểu Thế giới Tự nhiên”', venue: 'Hội nghị Giáo dục Danh dự và Quốc tế Mùa Xuân', location: 'Thành phố Houston, Tiểu bang Texas', year: '2025', poster: ricePoster },
-    { title: '“Vận mệnh của Chiến tranh hay Sự May rủi của Số phận”: Khảo cứu Ảnh hưởng của Các Chiến thuật Tuyển quân đối với Tỷ lệ Đào ngũ trong Chiến tranh Việt Nam', venue: 'Hội nghị Thường niên Hiệp hội Lịch sử Thế giới Tiểu bang Texas', location: 'Thành phố Commerce, Tiểu bang Texas', year: '2025', poster: histPoster },
-    { title: '“Vận mệnh của Chiến tranh hay Sự May rủi của Số phận”: Khảo cứu Ảnh hưởng của Các Chiến thuật Tuyển quân đối với Tỷ lệ Đào ngũ trong Chiến tranh Việt Nam', venue: 'Hội nghị Giáo dục Danh dự và Quốc tế Mùa Thu', location: 'Thành phố Houston, Tiểu bang Texas', year: '2024', poster: histPoster },
-    { title: '“Vận mệnh của Chiến tranh hay Sự May rủi của Số phận”: Khảo cứu Ảnh hưởng của Các Chiến thuật Tuyển quân đối với Tỷ lệ Đào ngũ trong Chiến tranh Việt Nam', venue: 'Hội nghị Giáo dục Quốc tế Hai năm Một lần', location: 'Thành phố Houston, Tiểu bang Texas', year: '2024', poster: histPoster },
-    { title: '“Tuổi thọ Bình quân và Ô nhiễm Không khí: Phân tích So sánh giữa Hoa Kỳ và Cộng hòa Chad”', venue: 'Hội nghị Giáo dục Danh dự và Quốc tế Mùa Xuân', location: 'Thành phố Houston, Tiểu bang Texas', year: '2024' },
-    { title: 'Diễn giả Tham luận – Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc tại New York', venue: 'Hội nghị Giáo dục Danh dự và Quốc tế Mùa Xuân', location: 'Thành phố Houston, Tiểu bang Texas', year: '2024' },
+    { title: '“Buộc-không cạnh tranh (competitive zero forcing): Một mô hình trò chơi tô màu đồ thị hai người chơi mới”', venue: 'Hội nghị nghiên cứu Đại học St. Thomas – Houston', location: 'Houston, Texas', year: '2026', poster: ustGraphTheoryPoster },
+    { title: '“Một phương pháp hệ thống để hiểu thế giới tự nhiên”', venue: 'Phiên trình bày áp phích – Học viện Khoa học Dữ liệu Môi trường, Đại học Rice', location: 'Houston, Texas', year: '2025', poster: ricePoster },
+    { title: '“Một phương pháp hệ thống để hiểu thế giới tự nhiên”', venue: 'Hội nghị giáo dục danh dự và quốc tế mùa xuân', location: 'Houston, Texas', year: '2025', poster: ricePoster },
+    { title: '“Vận may trong chiến tranh hay lá số trời định”: Xem xét ảnh hưởng của chiến thuật tuyển quân đến tỷ lệ đào ngũ trong Chiến tranh Việt Nam', venue: 'Hội nghị thường niên Hiệp hội Lịch sử Thế giới Texas', location: 'Commerce, Texas', year: '2025', poster: histPoster },
+    { title: '“Vận may trong chiến tranh hay lá số trời định”: Xem xét ảnh hưởng của chiến thuật tuyển quân đến tỷ lệ đào ngũ trong Chiến tranh Việt Nam', venue: 'Hội nghị giáo dục danh dự và quốc tế mùa thu', location: 'Houston, Texas', year: '2024', poster: histPoster },
+    { title: '“Vận may trong chiến tranh hay lá số trời định”: Xem xét ảnh hưởng của chiến thuật tuyển quân đến tỷ lệ đào ngũ trong Chiến tranh Việt Nam', venue: 'Hội nghị giáo dục quốc tế hai năm một lần', location: 'Houston, Texas', year: '2024', poster: histPoster },
+    { title: '“Tuổi thọ và ô nhiễm không khí: Phân tích so sánh giữa Hoa Kỳ và Cộng hòa Chad”', venue: 'Hội nghị giáo dục danh dự và quốc tế mùa xuân', location: 'Houston, Texas', year: '2024' },
+    { title: 'Diễn giả tham luận – NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc) tại New York', venue: 'Hội nghị giáo dục danh dự và quốc tế mùa xuân', location: 'Houston, Texas', year: '2024' },
   ],
 };
 
@@ -403,7 +403,7 @@ const projectsData: Record<Language, ProjectEntry[]> = {
   vi: [
     { title: 'The Fortunes of War', blurb: 'Một trang điện tử tương tác mở rộng từ công trình nghiên cứu về chiến thuật tuyển quân và hiện tượng đào ngũ trong Chiến tranh Việt Nam, được trình bày qua biểu đồ và lối tự sự dành cho công chúng phổ thông.', url: 'https://thefortunesofwar.netlify.app/', color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/35' },
     { title: 'The Pollution Paradox', blurb: 'Phiên bản công cộng đi kèm bài nghiên cứu so sánh về ô nhiễm không khí và tuổi thọ bình quân giữa Hoa Kỳ và Cộng hòa Chad, sử dụng các câu chuyện dữ liệu nhằm làm nổi bật nghịch lý giữa mức độ ô nhiễm và kết quả về sức khỏe.', url: 'https://thepollutionparadox.netlify.app/', color: 'bg-[#d4e0e8] dark:bg-[#1a2e3d]/35' },
-    { title: 'Genuine', blurb: 'Công trình tiếp nối nghiên cứu tự dân tộc học (autoethnography) tại NMUN về giao tiếp liên văn hóa và lãnh đạo theo quan hệ — được tái hình dung dưới dạng một trang điện tử, nơi độc giả có thể khám phá các luận điểm vượt ra ngoài khuôn khổ của bản PDF.', url: 'https://genuinenmun.netlify.app/', color: 'bg-[#e4e8e0] dark:bg-[#222d24]/35' },
+    { title: 'Genuine', blurb: 'Công trình tiếp nối nghiên cứu tự dân tộc học (autoethnography) tại NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc) về giao tiếp liên văn hóa và lãnh đạo theo quan hệ — được tái hình dung dưới dạng một trang điện tử, nơi độc giả có thể khám phá các luận điểm vượt ra ngoài khuôn khổ của bản PDF.', url: 'https://genuinenmun.netlify.app/', color: 'bg-[#e4e8e0] dark:bg-[#222d24]/35' },
   ],
 };
 
@@ -420,14 +420,14 @@ const certificationsData: Record<Language, string[]> = {
     'Global Scholar',
   ],
   vi: [
-    'Chứng chỉ Vi mô: Khoa học Dữ liệu Môi trường (Đại học Rice)',
-    'Nền tảng: Dữ liệu Hiện diện Khắp nơi (Coursera)',
-    'Đặt Câu hỏi để Ra Quyết định dựa trên Dữ liệu (Coursera)',
-    'Chuẩn bị Dữ liệu cho Quá trình Khảo sát (Coursera)',
-    'Chứng chỉ An toàn Lao động OSHA 10',
+    'Chứng chỉ vi mô: Khoa học dữ liệu môi trường (Đại học Rice)',
+    'Nền tảng: Dữ liệu, dữ liệu, ở khắp nơi (Foundations: Data, Data, Everywhere) — Coursera',
+    'Đặt câu hỏi để ra quyết định dựa trên dữ liệu (Ask Questions to Make Data-Driven Decisions) — Coursera',
+    'Chuẩn bị dữ liệu cho việc khám phá (Prepare Data for Explorations) — Coursera',
+    'Chứng chỉ OSHA 10 (Cơ quan An toàn và Sức khỏe Nghề nghiệp Hoa Kỳ)',
     'Hội viên Hiệp hội Danh dự Phi Theta Kappa',
-    'Chương trình Take Flight của Đại học Rice',
-    'Học giả Toàn cầu',
+    'Chương trình Take Flight – Đại học Rice',
+    'Học giả toàn cầu',
   ],
 };
 
@@ -463,37 +463,57 @@ const uiStrings = {
     liveTool: 'Live Tool',
     rightsReserved: '© 2025 Tung Vo. All rights reserved.',
     fullName: 'Tung (TJ) Vo.',
+    ariaHome: 'Home',
+    ariaToggleLanguage: 'Toggle language',
+    ariaToggleDarkMode: 'Toggle dark mode',
+    ariaDismiss: 'Dismiss',
+    ariaDismissLangHint: 'Dismiss language hint',
+    ariaSwitchToVietnamese: 'Switch to Vietnamese',
+    ariaSwitchToEnglish: 'Switch to English',
+    langHintVi: '🇺🇸 Also available in English — click to switch.',
+    langHintEn: '🇻🇳 Có tiếng Việt — bấm để chuyển đổi.',
+    langHintFooterVi: 'This page is also available in English',
   },
   vi: {
     connect: 'Kết nối',
     contact: 'Liên hệ',
-    portfolioBadge: 'Hồ sơ Cá nhân ✦',
+    portfolioBadge: 'Hồ sơ cá nhân ✦',
     educationLabel: 'Học vấn',
-    educationHeading: 'Nền tảng Học thuật.',
-    researchExperienceMenu: 'Kinh nghiệm Nghiên cứu',
-    conferencePresentationsMenu: 'Báo cáo Hội nghị',
-    personalProjectsMenu: 'Dự án Cá nhân',
-    researchFocusBadge: 'Trọng tâm Nghiên cứu',
-    graphTheoryHead1: 'Lý thuyết Đồ thị &',
-    graphTheoryHead2: 'Động lực học Mạng lưới.',
-    codingTheoryHead1: 'Lý thuyết Mã &',
-    codingTheoryHead2: 'Hình học Hữu hạn.',
+    educationHeading: 'Nền tảng học thuật.',
+    researchExperienceMenu: 'Kinh nghiệm nghiên cứu',
+    conferencePresentationsMenu: 'Báo cáo hội nghị',
+    personalProjectsMenu: 'Dự án cá nhân',
+    researchFocusBadge: 'Trọng tâm nghiên cứu',
+    graphTheoryHead1: 'Lý thuyết đồ thị &',
+    graphTheoryHead2: 'Động lực mạng lưới.',
+    codingTheoryHead1: 'Lý thuyết mã &',
+    codingTheoryHead2: 'Tổ hợp.',
     historyHead1: 'Lịch sử &',
-    historyHead2: 'Chính sách Công.',
+    historyHead2: 'Chính sách công.',
     presentationsLabel: 'Báo cáo',
-    presentationsHeading: 'Báo cáo Hội nghị.',
-    projectsLabel: 'Dự án Cá nhân',
+    presentationsHeading: 'Báo cáo hội nghị.',
+    projectsLabel: 'Dự án cá nhân',
     projectsHeading: 'Nghiên cứu, dành cho tất cả mọi người.',
-    projectsSub: 'Các trang điện tử này được phát triển từ những bài nghiên cứu Danh dự trước đây, được tái hình dung thành các trang web hoàn chỉnh kèm theo công cụ trực quan hóa dữ liệu, nhằm giúp đông đảo công chúng có thể tiếp cận và khảo sát các luận cứ cũng như tư tưởng đằng sau công trình nghiên cứu.',
+    projectsSub: 'Các trang điện tử này được phát triển từ những bài nghiên cứu danh dự trước đây, được tái hình dung thành các trang web hoàn chỉnh kèm theo công cụ trực quan hóa dữ liệu, nhằm giúp đông đảo công chúng có thể tiếp cận và khảo sát các luận cứ cũng như tư tưởng đằng sau công trình nghiên cứu.',
     visitSite: 'Truy cập trang →',
     honorsSub: 'Tuyển chọn các thành tích và học bổng có tính cạnh tranh tiêu biểu.',
-    certHeading: 'Chứng chỉ và Tư cách Hội viên',
-    viewPoster: 'Xem Áp phích',
-    viewPaper: 'Xem Bài Nghiên cứu',
+    certHeading: 'Chứng chỉ và tư cách hội viên',
+    viewPoster: 'Xem áp phích',
+    viewPaper: 'Xem bài nghiên cứu',
     viewDocPrefix: 'Xem ',
-    liveTool: 'Công cụ Trực tuyến',
+    liveTool: 'Công cụ tương tác trực tuyến',
     rightsReserved: '© 2025 Võ Sơn Tùng. Bảo lưu toàn bộ quyền.',
     fullName: 'Võ Sơn Tùng.',
+    ariaHome: 'Trang chủ',
+    ariaToggleLanguage: 'Chuyển ngôn ngữ',
+    ariaToggleDarkMode: 'Chuyển chế độ sáng/tối',
+    ariaDismiss: 'Đóng',
+    ariaDismissLangHint: 'Ẩn gợi ý ngôn ngữ',
+    ariaSwitchToVietnamese: 'Chuyển sang tiếng Việt',
+    ariaSwitchToEnglish: 'Chuyển sang tiếng Anh',
+    langHintVi: '🇺🇸 Trang này cũng có bản tiếng Anh — bấm để chuyển đổi.',
+    langHintEn: '🇻🇳 Có tiếng Việt — bấm để chuyển đổi.',
+    langHintFooterVi: 'Trang này cũng có bản tiếng Anh',
   },
 } as const;
 
@@ -606,10 +626,7 @@ const ExperienceItem = ({
             title={uiStrings[language].viewPaper}
           >
             <FileText size={13} className="group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline">
-              {uiStrings[language].viewDocPrefix}
-              {documentData.type}
-            </span>
+            <span className="hidden sm:inline">{uiStrings[language].viewPaper}</span>
           </button>
         )}
         {posterData && onOpenDocument && (
@@ -825,6 +842,10 @@ const App: React.FC = () => {
   }, [isDark]);
 
   useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
+
+  useEffect(() => {
     const t = setTimeout(() => setLangBtnInitPulse(false), 3000);
     return () => clearTimeout(t);
   }, []);
@@ -934,8 +955,8 @@ const App: React.FC = () => {
 
   // Localized hint copy: tell EN users about the VI version and vice versa.
   const langHintText = language === 'en'
-    ? '🇻🇳 Có Tiếng Việt, Bấm đây để thay đổi'
-    : '🇺🇸 Also available in English — click to switch.';
+    ? uiStrings.en.langHintEn
+    : uiStrings.vi.langHintVi;
   const showLangHint = langHintVisible && !langHintDismissed;
 
   const navLinks = NAV_LINKS[language];
@@ -947,6 +968,7 @@ const App: React.FC = () => {
         isOpen={!!activeDocument}
         onClose={() => setActiveDocument(null)}
         document={activeDocument}
+        language={language}
       />
 
       {/* ── Floating pill nav ──────────────────────────────── */}
@@ -973,7 +995,7 @@ const App: React.FC = () => {
             type="button"
             onClick={() => switchTab('home')}
             className="group w-8 h-8 p-0 rounded-full mr-1 flex-shrink-0 relative z-10 border-0 bg-transparent cursor-pointer"
-            aria-label="Home"
+            aria-label={uiStrings[language].ariaHome}
           >
             <BrandMark className="w-full h-full" />
           </button>
@@ -1025,21 +1047,21 @@ const App: React.FC = () => {
                         onClick={() => switchTab('research')}
                         className="w-full text-left px-4 py-3 text-sm font-medium text-forest/70 dark:text-white/60 hover:bg-forest/5 dark:hover:bg-white/8 transition-colors"
                       >
-                        {language === 'vi' ? 'Kinh nghiệm nghiên cứu' : 'Research Experience'}
+                        {uiStrings[language].researchExperienceMenu}
                       </button>
                       <div className="mx-4 h-px bg-forest/8 dark:bg-white/8" />
                       <button
                         onClick={() => switchTab('research', 'research-presentations')}
                         className="w-full text-left px-4 py-3 text-sm font-medium text-forest/70 dark:text-white/60 hover:bg-forest/5 dark:hover:bg-white/8 transition-colors"
                       >
-                        {language === 'vi' ? 'Báo cáo hội nghị' : 'Conference Presentations'}
+                        {uiStrings[language].conferencePresentationsMenu}
                       </button>
                       <div className="mx-4 h-px bg-forest/8 dark:bg-white/8" />
                       <button
                         onClick={() => switchTab('research', 'research-projects')}
                         className="w-full text-left px-4 py-3 text-sm font-medium text-forest/70 dark:text-white/60 hover:bg-forest/5 dark:hover:bg-white/8 transition-colors"
                       >
-                        {language === 'vi' ? 'Dự án cá nhân' : 'Personal Projects'}
+                        {uiStrings[language].personalProjectsMenu}
                       </button>
                     </motion.div>
                   )}
@@ -1069,7 +1091,7 @@ const App: React.FC = () => {
             <button
               onClick={handleLanguageToggle}
               className={`relative px-3 py-1.5 border text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-all overflow-hidden ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-forest/20 dark:border-white/20'}`}
-              aria-label="Toggle language"
+              aria-label={uiStrings[language].ariaToggleLanguage}
             >
               {langBtnInitPulse && (
                 <span className="absolute inset-0 rounded-full bg-yellow-200/70 animate-pulse pointer-events-none" />
@@ -1110,7 +1132,7 @@ const App: React.FC = () => {
                   <button
                     type="button"
                     onClick={dismissLangHint}
-                    aria-label="Dismiss"
+                    aria-label={uiStrings[language].ariaDismiss}
                     className="absolute top-1.5 right-1.5 p-1 rounded-full text-white/70 hover:text-white dark:text-forest/60 dark:hover:text-forest"
                   >
                     <X size={11} />
@@ -1135,7 +1157,7 @@ const App: React.FC = () => {
           <button
             onClick={() => setIsDark(!isDark)}
             className="w-8 h-8 ml-0.5 rounded-full flex items-center justify-center text-forest/50 hover:text-forest hover:bg-forest/10 dark:text-white/50 dark:hover:text-white dark:hover:bg-white/10 transition-all flex-shrink-0 relative z-10"
-            aria-label="Toggle dark mode"
+            aria-label={uiStrings[language].ariaToggleDarkMode}
           >
             {isDark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
@@ -1160,7 +1182,7 @@ const App: React.FC = () => {
               <button
                 className={`relative px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border text-forest dark:text-white/70 text-xs font-bold overflow-hidden transition-all ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-white/70 dark:border-white/10'}`}
                 onClick={handleLanguageToggle}
-                aria-label="Toggle language"
+                aria-label={uiStrings[language].ariaToggleLanguage}
               >
                 {langBtnInitPulse && (
                   <span className="absolute inset-0 rounded-full bg-yellow-200/70 animate-pulse pointer-events-none" />
@@ -1201,7 +1223,7 @@ const App: React.FC = () => {
                     <button
                       type="button"
                       onClick={dismissLangHint}
-                      aria-label="Dismiss"
+                      aria-label={uiStrings[language].ariaDismiss}
                       className="absolute top-1.5 right-1.5 p-1 rounded-full text-white/70 hover:text-white dark:text-forest/60 dark:hover:text-forest"
                     >
                       <X size={11} />
@@ -1217,7 +1239,7 @@ const App: React.FC = () => {
             <button
               className="p-2.5 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white/60"
               onClick={() => setIsDark(!isDark)}
-              aria-label="Toggle dark mode"
+              aria-label={uiStrings[language].ariaToggleDarkMode}
             >
               {isDark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
@@ -1392,7 +1414,7 @@ const App: React.FC = () => {
                         <button
                           onClick={handleLanguageToggle}
                           className="flex items-center gap-2.5 pl-4 pr-3 py-2.5 text-xs font-medium text-forest/75 dark:text-white/65 hover:text-forest dark:hover:text-white transition-colors"
-                          aria-label={language === 'en' ? 'Switch to Vietnamese' : 'Switch to English'}
+                          aria-label={language === 'en' ? uiStrings.en.ariaSwitchToVietnamese : uiStrings.vi.ariaSwitchToEnglish}
                         >
                           <span className="relative flex h-2 w-2 flex-shrink-0">
                             <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-75 animate-ping" />
@@ -1400,14 +1422,14 @@ const App: React.FC = () => {
                           </span>
                           <span>
                             {language === 'en'
-                              ? '🇻🇳 Có Tiếng Việt, Bấm đây để thay đổi'
-                              : '🇺🇸 Also available in English — click to switch.'}
+                              ? uiStrings.en.langHintEn
+                              : uiStrings.vi.langHintVi}
                           </span>
                         </button>
                         <button
                           onClick={dismissLangHint}
                           className="px-2.5 py-2.5 text-forest/35 dark:text-white/30 hover:text-forest/60 dark:hover:text-white/55 transition-colors border-l border-white/40 dark:border-white/15 flex-shrink-0"
-                          aria-label="Dismiss language hint"
+                          aria-label={uiStrings[language].ariaDismissLangHint}
                         >
                           <X size={11} />
                         </button>
@@ -1483,14 +1505,14 @@ const App: React.FC = () => {
                 <ExperienceItem
                   language={language}
                   title={language === 'vi' ? 'Đại học St. Thomas' : 'University of St. Thomas'}
-                  role={language === 'vi' ? 'Nghiên cứu viên Bậc Đại học' : 'Undergraduate Researcher'}
+                  role={language === 'vi' ? 'Nghiên cứu viên bậc đại học' : 'Undergraduate Researcher'}
                   date={language === 'vi' ? 'Mùa thu 2025 – Hiện tại' : 'Fall 2025 – Current'}
-                  location={language === 'vi' ? 'Giảng viên Hướng dẫn: Tiến sĩ Mary Flagg' : 'Supervisor: Dr. Mary Flagg'}
+                  location={language === 'vi' ? 'Giáo sư hướng dẫn: Tiến sĩ Mary Flagg' : 'Supervisor: Dr. Mary Flagg'}
                   posterData={ustGraphTheoryPoster}
                   onOpenDocument={(doc) => setActiveDocument(doc)}
                 >
                   {language === 'vi'
-                    ? 'Nghiên cứu được tài trợ bởi chương trình NSF PRIMES PAIR dưới sự hướng dẫn của Tiến sĩ Mary Flagg về các tập buộc-không cạnh tranh trong lý thuyết đồ thị. Thực hiện phân tích lý thuyết và thực nghiệm tính toán trên các họ đồ thị nhằm nghiên cứu động lực lan truyền trong các quá trình buộc-không cạnh tranh.'
+                    ? 'Nghiên cứu được tài trợ bởi chương trình NSF PRIMES PAIR (chương trình hỗ trợ nghiên cứu của Quỹ Khoa học Quốc gia Hoa Kỳ) dưới sự hướng dẫn của Tiến sĩ Mary Flagg về các tập buộc-không cạnh tranh (competitive zero forcing) trong lý thuyết đồ thị. Thực hiện phân tích lý thuyết và thực nghiệm tính toán trên các họ đồ thị nhằm nghiên cứu động lực lan truyền trong các quá trình buộc-không cạnh tranh.'
                     : 'NSF PRIMES PAIR-funded research under Dr. Mary Flagg on competitive zero forcing sets in graph theory. Conducted theoretical analysis and computational experiments across graph families to study propagation dynamics in competing zero forcing processes.'}
                 </ExperienceItem>
 
@@ -1511,11 +1533,11 @@ const App: React.FC = () => {
                       ? 'Đại học Puerto Rico – Ponce'
                       : 'University of Puerto Rico – Ponce'
                   }
-                  role={language === 'vi' ? 'Học giả REU sắp tham gia' : 'Incoming REU Fellow'}
+                  role={language === 'vi' ? 'Học giả REU (Chương trình Nghiên cứu Mùa hè dành cho Sinh viên Đại học) dự kiến tham gia' : 'Incoming REU Fellow'}
                   date={language === 'vi' ? 'Hè 2026' : 'Summer 2026'}
                   location={
                     language === 'vi'
-                      ? 'Giảng viên Hướng dẫn: Tiến sĩ Pamela Harris và Tiến sĩ Fernando Pinero'
+                      ? 'Giáo sư hướng dẫn: Tiến sĩ Pamela Harris và Tiến sĩ Fernando Pinero'
                       : 'Supervisor: Dr. Pamela Harris and Dr. Fernando Pinero'
                   }
                 >
@@ -1539,7 +1561,7 @@ const App: React.FC = () => {
                   title={language === 'vi' ? 'Trường Cao đẳng Cộng đồng Lone Star | Trường Cao đẳng Danh dự' : 'Lone Star College | The Honors College'}
                   role={language === 'vi' ? 'Nghiên cứu viên – Phân tích Chiến tranh Việt Nam' : 'Researcher – Vietnam War Analysis'}
                   date={language === 'vi' ? 'Mùa thu 2024' : 'Fall 2024'}
-                  location={language === 'vi' ? 'Giảng viên Hướng dẫn: Tiến sĩ Kelly Phillips' : 'Supervisor: Dr. Kelly Phillips'}
+                  location={language === 'vi' ? 'Giáo sư hướng dẫn: Tiến sĩ Kelly Phillips' : 'Supervisor: Dr. Kelly Phillips'}
                   documentData={histPaper}
                   posterData={histPoster}
                   onOpenDocument={(doc) => setActiveDocument(doc)}
@@ -1550,27 +1572,27 @@ const App: React.FC = () => {
                 </ExperienceItem>
                 <ExperienceItem
                   language={language}
-                  title={language === 'vi' ? 'Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc (NMUN)' : 'National Model United Nations (NMUN)'}
-                  role={language === 'vi' ? 'Đại biểu kiêm Nghiên cứu viên' : 'Delegate & Researcher'}
+                  title={language === 'vi' ? 'NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc)' : 'National Model United Nations (NMUN)'}
+                  role={language === 'vi' ? 'Đại biểu kiêm nghiên cứu viên' : 'Delegate & Researcher'}
                   date={language === 'vi' ? 'Mùa xuân 2024' : 'Spring 2024'}
                   location={
                     language === 'vi'
-                      ? 'Thành phố New York, Tiểu bang New York | Giảng viên Hướng dẫn: Tiến sĩ Sean Tiffee, Tiến sĩ Rebecca Howard, Tiến sĩ Peggy Lambert, Giáo sư Casey Garcia'
+                      ? 'New York, New York | Giáo sư hướng dẫn: Tiến sĩ Sean Tiffee, Tiến sĩ Rebecca Howard, Tiến sĩ Peggy Lambert, Giáo sư Casey Garcia'
                       : 'New York, NY | Supervisors: Dr. Sean Tiffee, Dr. Rebecca Howard, Dr. Peggy Lambert, Prof. Casey Garcia'
                   }
                   documentData={nmunPaper}
                   onOpenDocument={(doc) => setActiveDocument(doc)}
                 >
                   {language === 'vi'
-                    ? 'Thực hiện một nghiên cứu tự dân tộc học về giao tiếp liên văn hóa và động lực lãnh đạo tại Hội nghị NMUN. Phân tích lý thuyết lãnh đạo theo quan hệ cùng các chiến lược thuyết trình trước công chúng; kết quả nghiên cứu đã đạt Giải thưởng “Đại biểu Xuất sắc nhất Ủy ban”.'
+                    ? 'Thực hiện một nghiên cứu tự dân tộc học (autoethnography) về giao tiếp liên văn hóa và động lực lãnh đạo tại NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc). Phân tích lý thuyết lãnh đạo theo quan hệ cùng các chiến lược thuyết trình trước công chúng; kết quả nghiên cứu đạt giải thưởng đại biểu xuất sắc nhất ủy ban.'
                     : "Conducted an autoethnographic study on intercultural communication and leadership dynamics at NMUN. Analyzed relational leadership theory and public speaking strategies, resulting in a 'Best in Committee' award."}
                 </ExperienceItem>
                 <ExperienceItem
                   language={language}
                   title={language === 'vi' ? 'Trường Cao đẳng Cộng đồng Lone Star | Trường Cao đẳng Danh dự' : 'Lone Star College | The Honors College'}
-                  role={language === 'vi' ? 'Nghiên cứu viên – Ô nhiễm Không khí' : 'Researcher – Air Pollution'}
+                  role={language === 'vi' ? 'Nghiên cứu viên – Ô nhiễm không khí' : 'Researcher – Air Pollution'}
                   date={language === 'vi' ? 'Mùa xuân 2024' : 'Spring 2024'}
-                  location={language === 'vi' ? 'Giảng viên Hướng dẫn: Tiến sĩ Dana Van De Walker' : 'Supervisor: Dr. Dana Van De Walker'}
+                  location={language === 'vi' ? 'Giáo sư hướng dẫn: Tiến sĩ Dana Van De Walker' : 'Supervisor: Dr. Dana Van De Walker'}
                   documentData={govtPaper}
                   onOpenDocument={(doc) => setActiveDocument(doc)}
                 >
@@ -1806,14 +1828,14 @@ const App: React.FC = () => {
                 <span>{language === 'en' ? '🇻🇳' : '🇺🇸'}</span>
                 <span>
                   {language === 'en'
-                    ? 'Có Tiếng Việt, Bấm đây để thay đổi'
-                    : 'This page is also available in English'}
+                    ? uiStrings.en.langHintEn.replace('🇻🇳 ', '')
+                    : uiStrings.vi.langHintFooterVi}
                 </span>
               </button>
               <button
                 onClick={dismissLangHint}
                 className="ml-1 text-white/40 hover:text-white/80 transition-colors leading-none"
-                aria-label="Dismiss"
+                aria-label={uiStrings[language].ariaDismiss}
               >
                 <X size={11} />
               </button>

@@ -84,12 +84,12 @@ export const HeroBioWeather: React.FC<{ language: 'en' | 'vi' }> = ({ language }
         <span className="font-semibold text-forest/88 dark:text-white/70">
           {language === 'vi' ? 'Ngành chính:' : 'Major:'}
         </span>{' '}
-        {language === 'vi' ? 'Toán học Ứng dụng' : 'Applied Mathematics'}
+        {language === 'vi' ? 'Toán học ứng dụng' : 'Applied Mathematics'}
         <span className="mx-2.5 sm:mx-3 text-forest/35 dark:text-white/30">·</span>
         <span className="font-semibold text-forest/88 dark:text-white/70">
           {language === 'vi' ? 'Ngành phụ:' : 'Minor:'}
         </span>{' '}
-        {language === 'vi' ? 'Phân tích Dữ liệu' : 'Data Analytics'}
+        {language === 'vi' ? 'Phân tích dữ liệu' : 'Data Analytics'}
       </p>
 
       <p
@@ -131,7 +131,7 @@ export const HeroBioWeather: React.FC<{ language: 'en' | 'vi' }> = ({ language }
             )}
             <span className="text-forest/45 dark:text-white/40 text-sm sm:text-base">
               {' '}
-              {language === 'vi' ? '— đang cập nhật thời tiết trực tiếp' : '— live read incoming'}
+              {language === 'vi' ? '— đang tải thông tin thời tiết' : '— live read incoming'}
             </span>
           </>
         )}

@@ -8,13 +8,46 @@ import { X, FileText, LayoutTemplate, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ResearchDocument } from '../data/researchData';
 
+type Language = 'en' | 'vi';
+
+const modalStrings = {
+  en: {
+    paperViewer: 'Paper Viewer',
+    posterViewer: 'Poster Viewer',
+    pdfViewer: 'PDF Viewer',
+    unableToDisplayPdf: 'Unable to display PDF',
+    pdfFallback:
+      'The PDF file could not be loaded directly. Please check if the file',
+    existsIn: 'exists in your',
+    folder: 'folder.',
+    downloadPdf: 'Download PDF',
+    closeViewer: 'Close Viewer',
+    endOfDocument: '*** End of Document ***',
+  },
+  vi: {
+    paperViewer: 'Trình xem bài nghiên cứu',
+    posterViewer: 'Trình xem áp phích',
+    pdfViewer: 'Trình xem PDF',
+    unableToDisplayPdf: 'Không thể hiển thị tệp PDF',
+    pdfFallback: 'Không thể tải trực tiếp tệp PDF. Vui lòng kiểm tra xem tệp',
+    existsIn: 'có tồn tại trong thư mục',
+    folder: 'của bạn hay không.',
+    downloadPdf: 'Tải tệp PDF',
+    closeViewer: 'Đóng',
+    endOfDocument: '*** Hết tài liệu ***',
+  },
+} as const;
+
 interface DocumentModalProps {
   isOpen: boolean;
   onClose: () => void;
   document: ResearchDocument | null;
+  language: Language;
 }
 
-export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, document }) => {
+export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, document, language }) => {
+  const strings = modalStrings[language];
+
   // Retain the last document during the exit animation so AnimatePresence can
   // fade it out cleanly even after the parent has cleared `document` to null.
   const lastDocRef = useRef<ResearchDocument | null>(null);
@@ -66,7 +99,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
               <div className="pr-8">
                 <div className="flex items-center gap-2 mb-2 text-nobel-gold font-bold text-xs uppercase tracking-widest">
                   {isPoster ? <LayoutTemplate size={13} /> : <FileText size={13} />}
-                  {doc.type} Viewer
+                  {isPoster ? strings.posterViewer : strings.paperViewer}
                 </div>
                 <h2 className="font-display font-bold text-xl md:text-2xl text-forest dark:text-white leading-tight">
                   {doc.title}
@@ -87,13 +120,13 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
                   <iframe
                     src={doc.pdfUrl}
                     className="w-full h-full"
-                    title="PDF Viewer"
+                    title={strings.pdfViewer}
                   >
                     <div className="flex flex-col items-center justify-center h-full p-8 text-center text-forest/60 dark:text-white/60">
                       <FileText size={48} className="text-forest/20 dark:text-white/20 mb-4" />
-                      <h3 className="font-display font-bold text-xl text-forest dark:text-white mb-2">Unable to display PDF</h3>
+                      <h3 className="font-display font-bold text-xl text-forest dark:text-white mb-2">{strings.unableToDisplayPdf}</h3>
                       <p className="mb-6 max-w-md mx-auto text-sm">
-                        The PDF file could not be loaded directly. Please check if the file <b>{doc.pdfUrl?.split('/').pop()}</b> exists in your <b>public/documents/</b> folder.
+                        {strings.pdfFallback} <b>{doc.pdfUrl?.split('/').pop()}</b> {strings.existsIn} <b>public/documents/</b> {strings.folder}
                       </p>
                       <a
                         href={doc.pdfUrl}
@@ -101,7 +134,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
                         rel="noreferrer"
                         className="flex items-center gap-2 px-6 py-3 bg-forest dark:bg-white text-white dark:text-forest rounded-full hover:bg-forest/85 dark:hover:bg-white/90 transition-colors font-medium text-sm"
                       >
-                        <Download size={16} /> Download PDF
+                        <Download size={16} /> {strings.downloadPdf}
                       </a>
                     </div>
                   </iframe>
@@ -140,7 +173,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
                         </div>
                       ))}
                       <div className="pt-12 mt-12 border-t border-forest/10 dark:border-white/10 text-center text-forest/30 dark:text-white/25 italic font-serif text-sm">
-                        *** End of Document ***
+                        {strings.endOfDocument}
                       </div>
                     </div>
                   )}
@@ -156,14 +189,14 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
                   download
                   className="flex items-center gap-2 px-5 py-2 border border-forest/20 dark:border-white/15 text-forest/70 dark:text-white/70 rounded-full hover:bg-forest/8 dark:hover:bg-white/8 transition-colors font-medium text-sm"
                 >
-                  <Download size={15} /> Download PDF
+                  <Download size={15} /> {strings.downloadPdf}
                 </a>
               )}
               <button
                 onClick={onClose}
                 className="px-5 py-2 bg-forest dark:bg-white text-white dark:text-forest rounded-full hover:bg-forest/85 dark:hover:bg-white/90 transition-colors font-medium text-sm"
               >
-                Close Viewer
+                {strings.closeViewer}
               </button>
             </div>
           </motion.div>

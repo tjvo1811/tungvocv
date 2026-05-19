@@ -3,163 +3,165 @@
 
 ---
 
-## HỌC VẤN
+## Học vấn
 
 **Đại học St. Thomas**, Houston, Texas
-Cử nhân Khoa học ngành Toán học Ứng dụng *(Toán ứng dụng)*, dự kiến tốt nghiệp tháng 5 năm 2028.
-Chuyên ngành phụ: Phân tích Dữ liệu.
+Cử nhân khoa học ngành toán học ứng dụng, dự kiến tốt nghiệp tháng 5 năm 2028.
+Chuyên ngành phụ: Phân tích dữ liệu.
 
 **Trường Cao đẳng Cộng đồng Lone Star**, Houston, Texas
-Bằng Phó Học sĩ Khoa học / Đại cương với Danh hiệu Xuất sắc Tối cao *(Summa Cum Laude)*, tháng 5 năm 2025.
-Học giả Toàn cầu Xuất sắc *(Distinguished Global Scholar)*, Lĩnh vực tập trung: Nghiên cứu Quốc tế.
+Bằng phó học sĩ khoa học / đại cương, tháng 5 năm 2025.
+Danh hiệu xuất sắc tối cao (Summa Cum Laude) | Học giả toàn cầu xuất sắc (Distinguished Global Scholar).
 
 **Trường Trung học Jersey Village**, Houston, Texas
-Bằng Tốt nghiệp Trung học với Danh hiệu Xuất sắc *(Cum Laude)*, tháng 5 năm 2023.
+Bằng tốt nghiệp trung học phổ thông, tháng 5 năm 2023.
+Danh hiệu xuất sắc (Cum Laude).
 
 ---
 
-## KINH NGHIỆM NGHIÊN CỨU
+## Kinh nghiệm nghiên cứu
 
 **Đại học St. Thomas**, Houston, Texas — Mùa thu 2025 – Hiện tại
 *Giáo sư hướng dẫn: Tiến sĩ Mary Flagg*
 
-Nghiên cứu được tài trợ bởi chương trình NSF PRIMES PAIR dưới sự hướng dẫn của Tiến sĩ Mary Flagg về các tập buộc-không cạnh tranh *(competitive zero forcing sets)* trong lý thuyết đồ thị. Thực hiện phân tích lý thuyết và thực nghiệm tính toán trên các họ đồ thị nhằm nghiên cứu động lực lan truyền trong các quá trình buộc-không cạnh tranh.
+Nghiên cứu được tài trợ bởi chương trình NSF PRIMES PAIR (chương trình hỗ trợ nghiên cứu của Quỹ Khoa học Quốc gia Hoa Kỳ) dưới sự hướng dẫn của Tiến sĩ Mary Flagg về các tập buộc-không cạnh tranh (competitive zero forcing) trong lý thuyết đồ thị. Thực hiện phân tích lý thuyết và thực nghiệm tính toán trên các họ đồ thị nhằm nghiên cứu động lực lan truyền trong các quá trình buộc-không cạnh tranh.
+
+---
+
+**Đại học Puerto Rico – Ponce** — Hè 2026
+*Giáo sư hướng dẫn: Tiến sĩ Pamela Harris và Tiến sĩ Fernando Pinero*
+
+Học giả REU (Chương trình Nghiên cứu Mùa hè dành cho Sinh viên Đại học) dự kiến tham gia. Tập trung vào lý thuyết mã hóa, tổ hợp, lý thuyết đồ thị, mã cục bộ phục hồi được và mã từ các hình học hữu hạn.
 
 ---
 
 **Trường Cao đẳng Cộng đồng Lone Star | Trường Cao đẳng Danh dự**, Houston, Texas — Mùa thu 2024
 *Giáo sư hướng dẫn: Tiến sĩ Kelly Phillips*
 
-Nghiên cứu khám phá sự khác biệt trong chiến thuật tuyển quân và động cơ đào ngũ của lính Mỹ và lính Việt Cộng trong Chiến tranh Việt Nam. Với mục tiêu làm giảm tỷ lệ đào ngũ trong thời kỳ thực hiện nghĩa vụ quân sự, nghiên cứu nhằm tìm hiểu mối quan hệ giữa chiến thuật tuyển quân và hiện tượng đào ngũ trong thời chiến.
+Nghiên cứu khám phá sự khác biệt trong chiến thuật tuyển quân và động cơ đào ngũ của lính Mỹ và lính Việt Cộng trong Chiến tranh Việt Nam. Mục tiêu là tìm hiểu mối quan hệ giữa chiến thuật tuyển quân và tỷ lệ đào ngũ trong thời chiến.
 
 ---
 
-**Trường Cao đẳng Cộng đồng Lone Star | Trường Cao đẳng Danh dự**, Houston, Texas — Học kỳ Xuân 2024
+**NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc)**, New York, New York — Mùa xuân 2024
 *Giáo sư hướng dẫn: Tiến sĩ Sean Tiffee, Tiến sĩ Rebecca Howard, Tiến sĩ Peggy Lambert, Giáo sư Casey Garcia*
 
-Nghiên cứu này là một bài tự dân tộc chí *(autoethnography)* ghi lại trải nghiệm của bản thân khi tham dự cuộc thi Mô phỏng Liên Hợp Quốc Quốc gia tại New York. Bài nghiên cứu cũng điều tra sức mạnh của kỹ năng thuyết trình trước công chúng và giao tiếp liên văn hóa trong môi trường cạnh tranh cao độ, nơi mọi thí sinh đều được huấn luyện theo cùng một phương pháp.
+Thực hiện một nghiên cứu tự dân tộc học (autoethnography) về giao tiếp liên văn hóa và động lực lãnh đạo tại NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc). Phân tích lý thuyết lãnh đạo theo quan hệ cùng các chiến lược thuyết trình trước công chúng; kết quả nghiên cứu đạt giải thưởng đại biểu xuất sắc nhất ủy ban.
 
 ---
 
-**Trường Cao đẳng Cộng đồng Lone Star | Trường Cao đẳng Danh dự**, Houston, Texas — Học kỳ Xuân 2024
+**Trường Cao đẳng Cộng đồng Lone Star | Trường Cao đẳng Danh dự**, Houston, Texas — Mùa xuân 2024
 *Giáo sư hướng dẫn: Tiến sĩ Dana Van De Walker*
 
-Nghiên cứu so sánh và phân tích hai quốc gia gây ô nhiễm không khí lớn là Hoa Kỳ và Chad. Với mục tiêu xác định các yếu tố làm giảm tuổi thọ trung bình, nghiên cứu tập trung khám phá mối tương quan giữa ô nhiễm không khí và tuổi thọ con người, nhằm đề xuất biện pháp cải thiện.
+So sánh và phân tích các quốc gia có mức phát thải gây ô nhiễm không khí lớn (Hoa Kỳ và Cộng hòa Chad) nhằm xác định các yếu tố làm suy giảm tuổi thọ bình quân. Khảo sát mối tương quan giữa mức độ ô nhiễm không khí và các chỉ số sức khỏe cộng đồng.
 
 ---
 
-## CÁC BÁO CÁO TẠI HỘI THẢO / HỘI NGHỊ
+## Báo cáo hội nghị
 
-Võ Tùng, Stephano Cotsoradis, và Cole Rutherford. *"Buộc-Không Cạnh Tranh: Một Mô Hình Hai Đối Thủ Mới trong Tô Màu Đồ Thị"* — Hội thảo Nghiên cứu Đại học St. Thomas – Houston, Houston, Texas, 2026.
+Võ Sơn Tùng, Stephano Cotsoradis, và Cole Rutherford. *"Buộc-không cạnh tranh (competitive zero forcing): Một mô hình trò chơi tô màu đồ thị hai người chơi mới"* — Hội nghị nghiên cứu Đại học St. Thomas – Houston, Houston, Texas, 2026.
 
-Võ Tùng. *"Một Phương Pháp Hệ Thống để Hiểu Thế Giới Tự Nhiên"* — Buổi trình bày Poster của Học viện Khoa học Dữ liệu Môi trường Đại học Rice, Houston, Texas, 2025.
+Võ Sơn Tùng. *"Một phương pháp hệ thống để hiểu thế giới tự nhiên"* — Phiên trình bày áp phích – Học viện Khoa học Dữ liệu Môi trường, Đại học Rice, Houston, Texas, 2025.
 
-Võ Tùng. *"Một Phương Pháp Hệ Thống để Hiểu Thế Giới Tự Nhiên"* — Hội nghị Danh dự và Giáo dục Quốc tế Học kỳ Xuân, Houston, Texas, 2025.
+Võ Sơn Tùng. *"Một phương pháp hệ thống để hiểu thế giới tự nhiên"* — Hội nghị giáo dục danh dự và quốc tế mùa xuân, Houston, Texas, 2025.
 
-Võ Tùng. *"'Vận May Trong Chiến Tranh hay Lá Số Trời Định': Xem Xét Tác Động Của Chiến Thuật Tuyển Quân Đến Tỷ Lệ Đào Ngũ Trong Chiến Tranh Việt Nam"* — Hội nghị Thường niên Hiệp hội Lịch sử Thế giới Texas, Commerce, Texas, 2025.
+Võ Sơn Tùng. *"'Vận may trong chiến tranh hay lá số trời định': Xem xét ảnh hưởng của chiến thuật tuyển quân đến tỷ lệ đào ngũ trong Chiến tranh Việt Nam"* — Hội nghị thường niên Hiệp hội Lịch sử Thế giới Texas, Commerce, Texas, 2025.
 
-Võ Tùng. *"'Vận May Trong Chiến Tranh hay Lá Số Trời Định': Xem Xét Tác Động Của Chiến Thuật Tuyển Quân Đến Tỷ Lệ Đào Ngũ Trong Chiến Tranh Việt Nam"* — Hội nghị Danh dự và Giáo dục Quốc tế Học kỳ Thu, Houston, Texas, 2024.
+Võ Sơn Tùng. *"'Vận may trong chiến tranh hay lá số trời định': Xem xét ảnh hưởng của chiến thuật tuyển quân đến tỷ lệ đào ngũ trong Chiến tranh Việt Nam"* — Hội nghị giáo dục danh dự và quốc tế mùa thu, Houston, Texas, 2024.
 
-Võ Tùng. *"'Vận May Trong Chiến Tranh hay Lá Số Trời Định': Xem Xét Tác Động Của Chiến Thuật Tuyển Quân Đến Tỷ Lệ Đào Ngũ Trong Chiến Tranh Việt Nam"* — Hội nghị Giáo dục Quốc tế Hai năm một lần, Houston, Texas, 2024.
+Võ Sơn Tùng. *"'Vận may trong chiến tranh hay lá số trời định': Xem xét ảnh hưởng của chiến thuật tuyển quân đến tỷ lệ đào ngũ trong Chiến tranh Việt Nam"* — Hội nghị giáo dục quốc tế hai năm một lần, Houston, Texas, 2024.
 
-Võ Tùng. *"Tuổi Thọ và Ô Nhiễm Không Khí: Phân Tích So Sánh Giữa Hoa Kỳ và Chad"* — Hội nghị Danh dự và Giáo dục Quốc tế Học kỳ Xuân, Houston, Texas, 2024.
+Võ Sơn Tùng. *"Tuổi thọ và ô nhiễm không khí: Phân tích so sánh giữa Hoa Kỳ và Cộng hòa Chad"* — Hội nghị giáo dục danh dự và quốc tế mùa xuân, Houston, Texas, 2024.
 
-Võ Tùng. Diễn giả tại Hội nghị Mô phỏng Liên Hợp Quốc Quốc gia tại New York — Hội nghị Danh dự và Giáo dục Quốc tế Học kỳ Xuân, Houston, Texas, 2024.
+Võ Sơn Tùng. Diễn giả tham luận – NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc) tại New York — Hội nghị giáo dục danh dự và quốc tế mùa xuân, Houston, Texas, 2024.
 
 ---
 
-## THÀNH TÍCH CẠNH TRANH NỔI BẬT
+## Thành tích cạnh tranh nổi bật
 
 **Trường Cao đẳng Cộng đồng Lone Star**
-- Giải Ủy ban Xuất sắc Nhất *(Best In Committee)* — Mô phỏng Liên Hợp Quốc Quốc gia, New York, New York.
-- Giải Phái đoàn Xuất sắc *(Outstanding Delegation Award)* — Mô phỏng Liên Hợp Quốc Quốc gia, New York, New York.
+- Giải thưởng đại biểu xuất sắc nhất ủy ban — NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc), New York, New York.
+- Giải thưởng đoàn đại biểu xuất sắc — NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc), New York, New York.
 
 **Trường Trung học Jersey Village**
-- 6 lần Vô địch Giải đấu – Hùng biện và Tranh luận, Houston, Texas.
-- 2 lần Vòng loại Tiểu bang Hiệp hội Pháp y Texas – Hùng biện và Tranh luận, Texas.
-- Tứ kết Hiệp hội Pháp y Texas – Hùng biện và Tranh luận, Texas.
-- Vòng loại Giải Quốc gia Các Sự kiện Cá nhân *(National Individual Events Tournament of Champions)* — Chanhassen, Minnesota.
+- Sáu lần vô địch giải đấu – Hùng biện và tranh luận, Houston, Texas.
+- Hai lần đạt chuẩn tham dự giải cấp tiểu bang TFA (Hiệp hội Hùng biện và Tranh luận Texas), Texas.
+- Vào tứ kết giải TFA (Hiệp hội Hùng biện và Tranh luận Texas), Texas.
+- Đạt chuẩn tham dự giải NIETOC (Giải vô địch toàn quốc các nội dung hùng biện cá nhân), Chanhassen, Minnesota.
 
 ---
 
-## DANH HIỆU, GIẢI THƯỞNG VÀ HỌC BỔNG
+## Danh hiệu, giải thưởng và học bổng
 
-- Học bổng Tài trợ Danh dự STEM Phục vụ Cộng đồng Gốc Tây Ban Nha *(Hispanic Serving Institution STEM Dunn Endowed Scholarship)* — Đại học St. Thomas, Học kỳ Xuân 2027.
-- Học bổng Xuất sắc Monaghan — Đại học St. Thomas, Mùa thu 2025 – Học kỳ Xuân 2027.
-- Ứng viên Chung kết Chương trình Cộng đồng, Hành động và Khởi nghiệp Xã hội *(CASE)* — Amideast Education Abroad Connect, Hè 2025.
-- Học bổng Du học Học giả Toàn cầu Xuất sắc — Trường Cao đẳng Cộng đồng Lone Star Houston-North, Hè 2025.
-- Danh sách Chủ tịch *(President's List)* — Trường Cao đẳng Cộng đồng Lone Star Houston-North, Mùa thu 2023, Xuân 2024, Mùa thu 2024, và Xuân 2025.
-- Giải thưởng Học giả Toàn cầu — Trường Cao đẳng Cộng đồng Lone Star Houston-North, Mùa thu 2023 – Xuân 2025.
-- Học bổng Ngôn ngữ Học giả Toàn cầu — Trường Cao đẳng Cộng đồng Lone Star Houston-North, Mùa thu 2024 và Xuân 2025.
-- Giải thưởng Học giả Toàn cầu Xuất sắc — Trường Cao đẳng Cộng đồng Lone Star Houston-North, Mùa thu 2024 và Xuân 2025.
-- Giải thưởng Học thuật Toàn Mỹ của Hiệp hội Hùng biện và Tranh luận Quốc gia *(National Speech and Debate Association Academic All-American Award)* — Trường Trung học Jersey Village, Mùa thu 2022.
-
----
-
-## PHÁT TRIỂN LÃNH ĐẠO
-
-**Chương trình Cộng đồng, Hành động và Khởi nghiệp Xã hội** — Ứng viên Chung kết, Amideast Education Abroad Connect, Hè 2025
-
-Chương trình hướng dẫn 8 ngày tại Tunisia. Các ứng viên chung kết được giới thiệu về thế giới của các tổ chức xã hội dân sự ở Tunis và vùng lân cận thông qua các buổi thuyết trình, thảo luận, gặp gỡ đồng nghiệp địa phương, tham quan và phục vụ cộng đồng. Ngoài ra, tương tác với các tổ chức khu vực hàng đầu và các lãnh đạo cộng đồng về các chủ đề như tham gia công dân, bền vững, bản sắc, giới tính, lao động và các vấn đề công lý toàn cầu quan trọng qua lăng kính Tunisia và Bắc Phi.
-
-**Ban Cố vấn Sinh viên Trường Danh dự** — Đại diện Cơ sở, Trường Cao đẳng Cộng đồng Lone Star Houston-North, Mùa thu 2024 – Xuân 2025
-
-Gặp gỡ Phó Hiệu trưởng Phụ trách Danh dự và Giáo dục Quốc tế hai lần mỗi năm với tư cách đại diện cơ sở. Hợp tác với các đại diện cơ sở khác để đóng góp quan điểm sinh viên về chương trình Trường Danh dự, cung cấp khuyến nghị và phản hồi về các hoạt động sinh viên toàn hệ thống.
-
-**Đại diện Danh dự và Giáo dục Quốc tế** — Đặc phái viên Hệ thống Danh dự Emeritus, Trường Cao đẳng Cộng đồng Lone Star, Xuân 2025
-
-Với tư cách Emeritus, chịu trách nhiệm hợp tác với Đặc phái viên Hệ thống hiện tại và hướng dẫn họ. Đồng thời hỗ trợ quảng bá tất cả các chương trình liên quan trong Trường Danh dự và nhánh Giáo dục Quốc tế.
-
-**Đại diện Danh dự và Giáo dục Quốc tế** — Đặc phái viên Hệ thống, Trường Cao đẳng Cộng đồng Lone Star, Mùa thu 2024
-
-Chịu trách nhiệm quảng bá Trường Danh dự trong suốt học kỳ, hợp tác với các đặc phái viên cơ sở khác cho các sự kiện và cơ hội toàn hệ thống. Đồng thời chịu trách nhiệm quảng bá chương trình Take Flight của Đại học Rice, đội Mô phỏng Liên Hợp Quốc Quốc gia và các học bổng.
-
-**Chương trình Lãnh đạo Toàn cầu** — Thành viên, Trường Cao đẳng Cộng đồng Lone Star, Mùa thu 2024 – Xuân 2025
-
-Phát triển kỹ năng lãnh đạo đạo đức và toàn diện trong bối cảnh toàn cầu. Tiếp xúc thực tế với ngoại giao quốc tế và tương tác văn hóa thông qua các trải nghiệm như đào tạo lãnh đạo toàn cầu, tham dự hội nghị và hợp tác với các tổ chức địa phương và quốc gia.
-
-**Học giả Toàn cầu Xuất sắc** — Thành viên, Trường Cao đẳng Cộng đồng Lone Star, Mùa thu 2024 – Xuân 2025
-
-Thông qua quy trình tuyển chọn cạnh tranh với khoảng 100 ứng viên, được chọn vào một trong tám nhóm gồm các sinh viên xuất sắc về học thuật. Là một phần trong cam kết với chương trình và sự quan tâm đến phát triển năng lực văn hóa, chương trình học bao gồm các lớp mang ký hiệu Nghiên cứu Quốc tế (IS), bổ sung các thành phần có tính quốc tế vào chương trình giảng dạy.
-
-**Tiểu bang Texas Boys State** — Thành viên Nhóm Báo chí và Thành viên Đại hội, Đoàn Cựu chiến binh Hoa Kỳ, Hè 2022
-
-Thông qua quy trình tuyển chọn cạnh tranh trong lớp 800 học sinh, được chọn là một trong hai học sinh đại diện Trường Trung học Jersey Village tham dự Texas Boys State. Chịu trách nhiệm tham dự các cuộc họp mô phỏng Hạ viện và xây dựng các chiến dịch truyền thông xã hội. Ngoài ra, viết các bài báo website về các sự kiện thời sự diễn ra trong Hạ viện.
+- Học bổng STEM dành cho cơ sở phục vụ cộng đồng gốc Tây Ban Nha (Hispanic Serving Institution) – Quỹ Dunn — Đại học St. Thomas, 2025.
+- Học bổng xuất sắc Monaghan — Đại học St. Thomas, Mùa thu 2025 – Mùa xuân 2027.
+- Ứng viên vào vòng chung kết CASE (Cộng đồng, Hành động và Khởi nghiệp Xã hội) — Chương trình Kết nối Du học Amideast, Mùa hè 2025.
+- Học bổng du học dành cho học giả toàn cầu xuất sắc — Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North, Mùa hè 2025.
+- Danh hiệu học giả toàn cầu xuất sắc — Trường Cao đẳng Cộng đồng Lone Star, Mùa thu 2024 – Mùa xuân 2025.
+- Học bổng ngoại ngữ dành cho học giả toàn cầu — Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North, Mùa thu 2024 – Mùa xuân 2025.
+- Giải thưởng học giả toàn cầu — Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North, Mùa thu 2023 – Mùa xuân 2025.
+- Danh sách tuyên dương của hiệu trưởng (President's List) — Trường Cao đẳng Cộng đồng Lone Star, 2023 – 2025.
+- Giải thưởng học thuật toàn Hoa Kỳ — Hiệp hội Hùng biện và Tranh luận Quốc gia Hoa Kỳ (National Speech and Debate Association), Mùa thu 2022.
 
 ---
 
-## THÀNH VIÊN HỌC THUẬT
+## Phát triển lãnh đạo
 
-- Chương trình Take Flight – Đại học Rice, Thành viên, Mùa thu 2024 – Xuân 2025.
-- Học giả Toàn cầu Xuất sắc, Thành viên, Mùa thu 2024 – Xuân 2025.
-- Hội Danh dự Phi Theta Kappa *(Phi Theta Kappa Honor Society)*, Thành viên, 2023.
-- Học giả Toàn cầu, Thành viên, Mùa thu 2023 – Xuân 2025.
+**Chương trình CASE (Cộng đồng, Hành động và Khởi nghiệp Xã hội)** — Ứng viên vào vòng chung kết, Chương trình Kết nối Du học Amideast, Mùa hè 2025
+
+Chương trình học tập có hướng dẫn kéo dài tám ngày tại Cộng hòa Tunisia. Các ứng viên được tuyển chọn vào vòng chung kết được giới thiệu với các tổ chức xã hội dân sự thông qua các buổi thuyết trình, thảo luận chuyên đề, hoạt động phục vụ cộng đồng và giao lưu với sinh viên bản địa.
+
+**Hội đồng cố vấn sinh viên Trường cao đẳng danh dự** — Đại diện cơ sở, Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North, 2024 – 2025
+
+Định kỳ hai lần mỗi năm tham dự các cuộc họp với Phó Hiệu trưởng phụ trách HIE (Giáo dục Danh dự và Quốc tế). Phối hợp đóng góp quan điểm của sinh viên đối với các chương trình của Trường cao đẳng danh dự cũng như các hoạt động trên toàn hệ thống.
+
+**Đại diện HIE (Giáo dục Danh dự và Quốc tế)** — Đại sứ liên lạc hệ thống Emeritus (danh dự), Trường Cao đẳng Cộng đồng Lone Star, Mùa xuân 2025
+
+Với tư cách Emeritus (danh dự), phối hợp và cố vấn cho đại sứ liên lạc hệ thống đương nhiệm, đồng thời tiếp tục quảng bá các chương trình thuộc Trường cao đẳng danh dự và bộ phận giáo dục quốc tế.
+
+**Đại diện HIE (Giáo dục Danh dự và Quốc tế)** — Đại sứ liên lạc hệ thống, Trường Cao đẳng Cộng đồng Lone Star, Mùa thu 2024
+
+Quảng bá Trường cao đẳng danh dự trong suốt học kỳ, phối hợp với các đại diện liên lạc tại các cơ sở để tổ chức các sự kiện trên toàn hệ thống. Đồng thời giới thiệu chương trình Take Flight của Đại học Rice, đội tuyển NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc) cũng như các chương trình học bổng liên quan.
+
+**Chương trình lãnh đạo toàn cầu** — Thành viên, Trường Cao đẳng Cộng đồng Lone Star, 2024 – 2025
+
+Trau dồi kỹ năng lãnh đạo có đạo đức và bao trùm trong bối cảnh toàn cầu thông qua các khóa đào tạo về ngoại giao quốc tế, tham dự hội nghị và hợp tác với các tổ chức trong nước và quốc tế.
+
+**Chương trình học giả toàn cầu xuất sắc** — Thành viên, Trường Cao đẳng Cộng đồng Lone Star, 2024 – 2025
+
+Được tuyển chọn từ khoảng một trăm ứng viên, là một trong tám thành viên chính thức của khóa. Chương trình bao gồm các học phần được chỉ định là IS (Nghiên cứu Quốc tế), nhằm bổ sung chiều kích quốc tế cho chương trình đào tạo.
+
+**Chương trình Texas Boys State** — Thành viên đội báo chí kiêm đại biểu (Statesman), Tổ chức Cựu chiến binh Hoa Kỳ (The American Legion), Mùa hè 2022
+
+Là một trong hai học sinh được Trường Trung học Phổ thông Jersey Village đề cử tham dự chương trình. Tham gia các phiên họp mô phỏng Hạ viện, xây dựng ý tưởng cho các chiến dịch truyền thông xã hội và soạn thảo các bài viết về thời sự đăng tải trên trang điện tử của chương trình.
 
 ---
 
-## KINH NGHIỆM LÀM VIỆC
+## Kinh nghiệm làm việc
 
-**Geospace Technology** — Nhân viên Lắp ráp Điện cơ, Houston, Texas, tháng 6 năm 2025 – Hiện tại
-- Vận hành máy cuộn dây để lắp ráp cáp ngầm dưới nước, xử lý các sự cố kỹ thuật nhỏ.
-- Nhập dữ liệu cuộn dây vào hệ thống và tuân theo sơ đồ điện để đảm bảo cáp được lắp ráp đúng kỹ thuật.
-- Duy trì trạm làm việc sạch sẽ, an toàn và tuân thủ các quy trình an toàn lao động.
+**Công ty Geospace Technology** — Kỹ thuật viên lắp ráp cơ – điện, Houston, Texas, 2025 – Hiện tại
+- Vận hành máy quấn cáp để lắp ráp cáp truyền dẫn dưới nước; xử lý các sự cố cơ khí ở mức độ thông thường.
+- Nhập liệu thông số cuộn cáp vào hệ thống và tuân thủ sơ đồ mạch điện nhằm bảo đảm sản phẩm được lắp ráp chính xác.
+- Duy trì khu vực làm việc sạch sẽ, an toàn và tuân thủ nghiêm ngặt các quy định về an toàn lao động.
 
-**Trường Cao đẳng Cộng đồng Lone Star – CyFair** — Thực tập sinh Quan hệ Công chúng Đại học, Cypress, Texas, tháng 3 năm 2024 – tháng 5 năm 2025
-- Soạn thảo và lên kế hoạch tổ chức các sự kiện trong khuôn viên trường.
-- Quản lý và điều phối các nền tảng mạng xã hội và nội dung đăng tải.
-- Xây dựng chiến dịch truyền thông xã hội cho các nền tảng X (Twitter), Instagram và Facebook.
+**Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu CyFair** — Thực tập sinh quan hệ đối ngoại, Cypress, Texas, 2024 – 2025
+- Soạn thảo và lập kế hoạch tổ chức các sự kiện trên phạm vi toàn cơ sở.
+- Điều phối và quản lý các nền tảng truyền thông xã hội cùng nội dung đăng tải.
+- Xây dựng ý tưởng cho các chiến dịch truyền thông trên các nền tảng X (Twitter), Instagram và Facebook.
 
-**East Aldine BakerRipley** — Tình nguyện viên Lễ tân (Không lương), Aldine, Texas, tháng 11 năm 2024 – tháng 5 năm 2025
-- Tiếp nhận và chuyển tiếp các cuộc gọi đến phù hợp.
-- Đón tiếp cư dân và khách đến, tạo môi trường thân thiện và chào đón.
-- Hỗ trợ các công việc hành chính cơ bản, đảm bảo hoạt động lễ tân diễn ra suôn sẻ.
+**Tổ chức cộng đồng East Aldine BakerRipley** — Tình nguyện viên lễ tân, Aldine, Texas, 2024 – 2025
+- Tiếp nhận các cuộc gọi đến và chuyển hướng yêu cầu đến bộ phận phù hợp.
+- Tiếp đón cư dân và khách đến liên hệ, kiến tạo môi trường thân thiện và chuyên nghiệp.
+- Hỗ trợ các công tác hành chính nhằm bảo đảm hoạt động của bộ phận lễ tân được vận hành thông suốt.
 
 ---
 
-## CHỨNG CHỈ
+## Chứng chỉ và tư cách hội viên
 
-- **Chứng chỉ Vi bằng: Học viện Khoa học Dữ liệu Môi trường** — Trường Glasscock Giáo dục Thường xuyên, Đại học Rice, tháng 4 năm 2025.
-- **Chứng chỉ: Nền tảng – Dữ liệu, Dữ liệu, Ở Khắp Nơi** *(Foundations: Data, Data, Everywhere)* — Coursera, tháng 8 năm 2024.
-- **Chứng chỉ: Đặt Câu Hỏi để Đưa Ra Quyết Định Dựa Trên Dữ Liệu** *(Ask Questions to Make Data-Driven Decisions)* — Coursera, tháng 8 năm 2024.
-- **Chứng chỉ: Chuẩn Bị Dữ Liệu để Khám Phá** *(Prepare Data for Explorations)* — Coursera, tháng 8 năm 2024.
-- **Chứng chỉ: OSHA 10** — Cơ quan Quản lý An toàn và Sức khỏe Lao động Hoa Kỳ, Xuân 2020.
+- **Chứng chỉ vi mô: Khoa học dữ liệu môi trường** — Đại học Rice, tháng 4 năm 2025.
+- **Nền tảng: Dữ liệu, dữ liệu, ở khắp nơi (Foundations: Data, Data, Everywhere)** — Coursera, tháng 8 năm 2024.
+- **Đặt câu hỏi để ra quyết định dựa trên dữ liệu (Ask Questions to Make Data-Driven Decisions)** — Coursera, tháng 8 năm 2024.
+- **Chuẩn bị dữ liệu cho việc khám phá (Prepare Data for Explorations)** — Coursera, tháng 8 năm 2024.
+- **Chứng chỉ OSHA 10 (Cơ quan An toàn và Sức khỏe Nghề nghiệp Hoa Kỳ)** — Xuân 2020.
+- **Hội viên Hiệp hội Danh dự Phi Theta Kappa** — 2023.
+- **Chương trình Take Flight – Đại học Rice** — Mùa thu 2024 – Mùa xuân 2025.
+- **Học giả toàn cầu** — Mùa thu 2023 – Mùa xuân 2025.
