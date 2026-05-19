@@ -780,22 +780,12 @@ const NAV_LINKS: Record<Language, { id: TabId; label: string; altLabel: string }
   ],
 };
 
-/**
- * Renders a nav-link label that reserves space for both the EN and VI text,
- * so toggling languages doesn't reflow the nav (and the sliding pill stays
- * aligned). The longer of the two labels invisibly reserves the width.
- */
-const NavLabel: React.FC<{ label: string; altLabel: string }> = ({ label, altLabel }) => (
-  <span className="relative inline-block align-middle">
-    {/* Width reservation: render both labels stacked; the longer one defines the box. */}
-    <span aria-hidden="true" className="invisible block whitespace-nowrap">
-      {label.length >= altLabel.length ? label : altLabel}
-    </span>
-    <span className="absolute inset-0 flex items-center justify-center whitespace-nowrap">
-      {label}
-    </span>
-  </span>
-);
+const navLinkClass = (active: boolean) =>
+  `px-3.5 py-1.5 text-sm font-medium rounded-full transition-colors cursor-pointer whitespace-nowrap relative z-10 ${
+    active
+      ? 'text-forest dark:text-white'
+      : 'text-forest/70 dark:text-white/70 hover:text-forest dark:hover:text-white'
+  }`;
 
 /* ─── App ────────────────────────────────────────────────────────── */
 const App: React.FC = () => {
@@ -993,7 +983,7 @@ const App: React.FC = () => {
         {/* Desktop */}
         <motion.div
           ref={navRef}
-          className="hidden md:flex pointer-events-auto items-center gap-0.5 px-2 py-1.5 relative rounded-full"
+          className="hidden md:flex pointer-events-auto items-center gap-3 px-3 py-1.5 relative rounded-full"
         >
           <motion.div
             aria-hidden
@@ -1017,12 +1007,14 @@ const App: React.FC = () => {
           <button
             type="button"
             onClick={() => switchTab('home')}
-            className="group w-8 h-8 p-0 rounded-full mr-1 flex-shrink-0 relative z-10 border-0 bg-transparent cursor-pointer"
+            className="group w-8 h-8 p-0 rounded-full flex-shrink-0 relative z-10 border-0 bg-transparent cursor-pointer"
             aria-label={uiStrings[language].ariaHome}
           >
             <BrandMark className="w-full h-full" />
           </button>
-          {navLinks.map(({ id, label, altLabel }) =>
+
+          <div className="flex items-center gap-1.5">
+          {navLinks.map(({ id, label }) =>
             id === 'research' ? (
               <div
                 key={id}
@@ -1040,13 +1032,9 @@ const App: React.FC = () => {
                 <button
                   ref={(el) => { linkRefs.current[id] = el; }}
                   onClick={() => switchTab(id)}
-                  className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1 ${
-                    activeTab === id
-                      ? 'text-forest dark:text-white'
-                      : 'text-forest/70 dark:text-white/70 hover:text-forest dark:hover:text-white'
-                  }`}
+                  className={`${navLinkClass(activeTab === id)} flex items-center gap-1`}
                 >
-                  <NavLabel label={label} altLabel={altLabel} />
+                  {label}
                   <ChevronDown
                     size={12}
                     className={`transition-transform duration-200 ${navResearchOpen ? 'rotate-180' : ''}`}
@@ -1097,23 +1085,27 @@ const App: React.FC = () => {
                 onClick={() => switchTab(id)}
                 onMouseEnter={() => setHoveredId(id)}
                 onMouseLeave={() => setHoveredId(null)}
-                className={`px-3 py-1.5 text-sm font-medium rounded-full transition-colors cursor-pointer whitespace-nowrap relative z-10 ${
-                  activeTab === id
-                    ? 'text-forest dark:text-white'
-                    : 'text-forest/70 dark:text-white/70 hover:text-forest dark:hover:text-white'
-                }`}
+                className={navLinkClass(activeTab === id)}
               >
-                <NavLabel label={label} altLabel={altLabel} />
+                {label}
               </button>
             )
           )}
-          <div className="relative ml-1 flex-shrink-0 z-10">
+          </div>
+
+          <div
+            className="w-px h-6 bg-forest/15 dark:bg-white/20 flex-shrink-0"
+            aria-hidden
+          />
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="relative z-10">
             {langBtnHighlight && (
               <span className="absolute inset-0 rounded-full animate-ping bg-nobel-gold/50 pointer-events-none" />
             )}
             <button
               onClick={handleLanguageToggle}
-              className={`relative px-3 py-1.5 border text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-all overflow-hidden ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-forest/20 dark:border-white/20'}`}
+              className={`relative min-w-[2.75rem] px-3 py-1.5 border text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-all overflow-hidden text-center ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-forest/20 dark:border-white/20'}`}
               aria-label={uiStrings[language].ariaToggleLanguage}
             >
               {langBtnInitPulse && (
@@ -1172,18 +1164,19 @@ const App: React.FC = () => {
             href="https://www.linkedin.com/in/tung-vo-4728b7235/"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-1 px-4 py-1.5 bg-forest text-white text-sm font-medium rounded-full hover:bg-forest/80 transition-colors flex items-center gap-1.5 flex-shrink-0 relative z-10"
+            className="px-4 py-1.5 bg-forest text-white text-sm font-medium rounded-full hover:bg-forest/80 transition-colors flex items-center gap-1.5 flex-shrink-0 relative z-10 whitespace-nowrap"
           >
             <Linkedin size={13} />
             {uiStrings[language].connect}
           </a>
           <button
             onClick={() => setIsDark(!isDark)}
-            className="w-8 h-8 ml-0.5 rounded-full flex items-center justify-center text-forest/50 hover:text-forest hover:bg-forest/10 dark:text-white/50 dark:hover:text-white dark:hover:bg-white/10 transition-all flex-shrink-0 relative z-10"
+            className="w-8 h-8 rounded-full flex items-center justify-center text-forest/50 hover:text-forest hover:bg-forest/10 dark:text-white/50 dark:hover:text-white dark:hover:bg-white/10 transition-all flex-shrink-0 relative z-10"
             aria-label={uiStrings[language].ariaToggleDarkMode}
           >
             {isDark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
+          </div>
         </motion.div>
 
         {/* Mobile */}
