@@ -56,7 +56,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
   if (document) lastDocRef.current = document;
   const doc = document ?? lastDocRef.current;
 
-  // Close on Escape and lock body scroll while the modal is open.
+  // Close on Escape, lock body scroll, and prevent page pinch-zoom while open.
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -65,9 +65,20 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
     window.addEventListener('keydown', onKey);
     const prevOverflow = window.document.body.style.overflow;
     window.document.body.style.overflow = 'hidden';
+
+    const viewportMeta = window.document.querySelector('meta[name="viewport"]');
+    const prevViewport = viewportMeta?.getAttribute('content') ?? null;
+    viewportMeta?.setAttribute(
+      'content',
+      'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+    );
+
     return () => {
       window.removeEventListener('keydown', onKey);
       window.document.body.style.overflow = prevOverflow;
+      if (viewportMeta && prevViewport) {
+        viewportMeta.setAttribute('content', prevViewport);
+      }
     };
   }, [isOpen, onClose]);
 
@@ -116,7 +127,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
             </div>
 
             {/* Content - PDF or Text */}
-            <div className="flex-1 overflow-hidden flex flex-col relative">
+            <div className="flex-1 overflow-hidden flex flex-col relative overscroll-contain">
               {hasPdf ? (
                 <Suspense
                   fallback={

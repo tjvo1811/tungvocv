@@ -4,6 +4,7 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import {
   getDocument,
   GlobalWorkerOptions,
@@ -18,8 +19,10 @@ const MOBILE_QUERY = '(max-width: 767px)';
 const MAX_DPR = 3;
 const MAX_CANVAS_PX = 8192;
 const RENDER_DEBOUNCE_MS = 100;
+const WHEEL_ZOOM_COMMIT_MS = 120;
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 6;
+const ZOOM_STEP = 1.2;
 
 interface PdfViewerProps {
   url: string;
@@ -104,13 +107,16 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
   const renderGenRef = useRef(0);
   const renderTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pinchRef = useRef<{ dist: number; zoom: number } | null>(null);
+  const gestureZoomRef = useRef(1);
   const rafRef = useRef<number | null>(null);
   const liveZoomRef = useRef(1);
+  const wheelCommitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [rendering, setRendering] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [pages, setPages] = useState<PageEntry[]>([]);
+  const [zoomPct, setZoomPct] = useState(100);
 
   const clearPreviewTransform = useCallback(() => {
     const el = contentRef.current;
@@ -152,6 +158,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
         if (gen !== renderGenRef.current) return;
         zoomRef.current = targetZoom;
         liveZoomRef.current = targetZoom;
+        setZoomPct(Math.round(targetZoom * 100));
         setPages(next);
         clearPreviewTransform();
       } catch (e) {
@@ -184,6 +191,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     setError(null);
     zoomRef.current = 1;
     liveZoomRef.current = 1;
+    setZoomPct(100);
     clearPreviewTransform();
 
     try {
@@ -216,6 +224,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     return () => {
       renderGenRef.current += 1;
       if (renderTimerRef.current) clearTimeout(renderTimerRef.current);
+      if (wheelCommitTimerRef.current) clearTimeout(wheelCommitTimerRef.current);
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       pdfRef.current?.destroy();
       pdfRef.current = null;
@@ -250,6 +259,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     (finalZoom: number) => {
       const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, finalZoom));
       liveZoomRef.current = clamped;
+      setZoomPct(Math.round(clamped * 100));
       if (Math.abs(clamped - zoomRef.current) < 0.02) {
         clearPreviewTransform();
         return;
@@ -259,38 +269,105 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     [scheduleRender, clearPreviewTransform],
   );
 
-  const onTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 2) {
-      pinchRef.current = { dist: touchDistance(e.touches[0], e.touches[1]), zoom: zoomRef.current };
-    }
-  };
+  const adjustZoom = useCallback(
+    (factor: number) => {
+      commitZoom(zoomRef.current * factor);
+    },
+    [commitZoom],
+  );
 
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 2 && pinchRef.current) {
+  const resetZoom = useCallback(() => {
+    commitZoom(1);
+  }, [commitZoom]);
+
+  // Pinch, trackpad pinch (ctrl+wheel), and Safari gestures — contained to this viewer.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        pinchRef.current = { dist: touchDistance(e.touches[0], e.touches[1]), zoom: zoomRef.current };
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && pinchRef.current) {
+        e.preventDefault();
+        const dist = touchDistance(e.touches[0], e.touches[1]);
+        const ratio = dist / pinchRef.current.dist;
+        queuePreviewZoom(pinchRef.current.zoom * ratio);
+      }
+    };
+
+    const finishTouchZoom = () => {
+      if (pinchRef.current) {
+        commitZoom(liveZoomRef.current);
+      }
+      pinchRef.current = null;
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (e.touches.length >= 2) return;
+      finishTouchZoom();
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
-      const dist = touchDistance(e.touches[0], e.touches[1]);
-      const ratio = dist / pinchRef.current.dist;
-      queuePreviewZoom(pinchRef.current.zoom * ratio);
-    }
-  };
+      e.stopPropagation();
+      const factor = Math.exp(-e.deltaY * 0.002);
+      queuePreviewZoom(liveZoomRef.current * factor);
+      if (wheelCommitTimerRef.current) clearTimeout(wheelCommitTimerRef.current);
+      wheelCommitTimerRef.current = setTimeout(() => {
+        wheelCommitTimerRef.current = null;
+        commitZoom(liveZoomRef.current);
+      }, WHEEL_ZOOM_COMMIT_MS);
+    };
 
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (e.touches.length >= 2) return;
-    if (pinchRef.current) {
+    const onGestureStart = (e: Event) => {
+      e.preventDefault();
+      gestureZoomRef.current = zoomRef.current;
+    };
+
+    const onGestureChange = (e: Event) => {
+      e.preventDefault();
+      const scale = (e as Event & { scale?: number }).scale ?? 1;
+      queuePreviewZoom(gestureZoomRef.current * scale);
+    };
+
+    const onGestureEnd = (e: Event) => {
+      e.preventDefault();
       commitZoom(liveZoomRef.current);
-    }
-    pinchRef.current = null;
-  };
+    };
+
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchmove', onTouchMove, { passive: false });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
+    el.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    el.addEventListener('wheel', onWheel, { passive: false });
+    el.addEventListener('gesturestart', onGestureStart as EventListener);
+    el.addEventListener('gesturechange', onGestureChange as EventListener);
+    el.addEventListener('gestureend', onGestureEnd as EventListener);
+
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchend', onTouchEnd);
+      el.removeEventListener('touchcancel', onTouchEnd);
+      el.removeEventListener('wheel', onWheel);
+      el.removeEventListener('gesturestart', onGestureStart as EventListener);
+      el.removeEventListener('gesturechange', onGestureChange as EventListener);
+      el.removeEventListener('gestureend', onGestureEnd as EventListener);
+      if (wheelCommitTimerRef.current) clearTimeout(wheelCommitTimerRef.current);
+    };
+  }, [queuePreviewZoom, commitZoom]);
 
   return (
     <div
       ref={containerRef}
       className={`pdf-viewer relative w-full h-full overflow-auto overscroll-contain ${className}`}
       style={{ WebkitOverflowScrolling: 'touch' }}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-      onTouchCancel={onTouchEnd}
     >
       {loading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center text-forest/50 dark:text-white/50 text-sm bg-[#EDEAE2]/80 dark:bg-[#0c1a11]/80">
@@ -308,7 +385,41 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
         </div>
       )}
       {!loading && !error && pages.length > 0 && (
-        <div className="flex justify-center py-3 px-2">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 px-2 py-1.5 rounded-full bg-white/90 dark:bg-[#0c1a11]/90 border border-forest/15 dark:border-white/15 shadow-lg backdrop-blur-sm">
+          <button
+            type="button"
+            onClick={() => adjustZoom(1 / ZOOM_STEP)}
+            disabled={zoomPct <= MIN_ZOOM * 100}
+            className="p-1.5 rounded-full text-forest/70 dark:text-white/70 hover:bg-forest/10 dark:hover:bg-white/10 disabled:opacity-30 transition-colors"
+            aria-label="Zoom out"
+          >
+            <ZoomOut size={16} />
+          </button>
+          <span className="min-w-[3rem] text-center text-xs font-semibold tabular-nums text-forest/80 dark:text-white/80">
+            {zoomPct}%
+          </span>
+          <button
+            type="button"
+            onClick={() => adjustZoom(ZOOM_STEP)}
+            disabled={zoomPct >= MAX_ZOOM * 100}
+            className="p-1.5 rounded-full text-forest/70 dark:text-white/70 hover:bg-forest/10 dark:hover:bg-white/10 disabled:opacity-30 transition-colors"
+            aria-label="Zoom in"
+          >
+            <ZoomIn size={16} />
+          </button>
+          <span className="w-px h-5 bg-forest/15 dark:bg-white/15 mx-0.5" aria-hidden />
+          <button
+            type="button"
+            onClick={resetZoom}
+            className="p-1.5 rounded-full text-forest/70 dark:text-white/70 hover:bg-forest/10 dark:hover:bg-white/10 transition-colors"
+            aria-label="Reset zoom"
+          >
+            <RotateCcw size={15} />
+          </button>
+        </div>
+      )}
+      {!loading && !error && pages.length > 0 && (
+        <div className="flex justify-center py-3 px-2 pb-16">
           <div ref={contentRef} className="flex flex-col items-center gap-4">
             {pages.map((p) => (
               <PageMount key={p.pageNum} canvas={p.canvas} />

@@ -86,11 +86,11 @@
 .hero-pop-4  { animation-delay: 0.55s; }
 .hero-pop-5  { animation-delay: 0.68s; }
 
-/* ── PDF viewer (mobile scroll + zoom) ───────────────────────────── */
+/* ── PDF viewer (scroll inside viewer; zoom handled in JS) ───────── */
 .pdf-viewer {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-x pan-y pinch-zoom;
+  touch-action: pan-x pan-y;
 }
 .pdf-viewer canvas {
   image-rendering: auto;
