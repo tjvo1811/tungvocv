@@ -58,7 +58,7 @@ So sánh và phân tích các quốc gia có mức phát thải gây ô nhiễm 
 
 ## Báo cáo hội nghị
 
-Võ Sơn Tùng, Stephano Cotsoradis, và Cole Rutherford. *"Buộc-không cạnh tranh (competitive zero forcing): Một mô hình trò chơi tô màu đồ thị hai người chơi mới"* — Hội nghị nghiên cứu Đại học St. Thomas – Houston, Houston, Texas, 2026.
+Võ Sơn Tùng, Stephano Cotsoradis, và Cole Rutherford. *"Buộc-không cạnh tranh (competitive zero forcing): Một quá trình lan truyền trên đồ thị hai tác nhân"* — Hội nghị nghiên cứu Đại học St. Thomas – Houston, Houston, Texas, 2026.
 
 Võ Sơn Tùng. *"Một phương pháp hệ thống để hiểu thế giới tự nhiên"* — Phiên trình bày áp phích – Học viện Khoa học Dữ liệu Môi trường, Đại học Rice, Houston, Texas, 2025.
 

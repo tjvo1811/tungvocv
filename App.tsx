@@ -380,7 +380,7 @@ const presentationsData: Record<Language, PresentationEntry[]> = {
     { title: 'National Model United Nations – New York Panelist', venue: 'Spring Honors and International Education Conference', location: 'Houston, TX', year: '2024' },
   ],
   vi: [
-    { title: '“Buộc-không cạnh tranh (competitive zero forcing): Một mô hình trò chơi tô màu đồ thị hai người chơi mới”', venue: 'Hội nghị nghiên cứu Đại học St. Thomas – Houston', location: 'Houston, Texas', year: '2026', poster: ustGraphTheoryPoster },
+    { title: '“Buộc-không cạnh tranh (competitive zero forcing): Một quá trình lan truyền trên đồ thị hai tác nhân”', venue: 'Hội nghị nghiên cứu Đại học St. Thomas – Houston', location: 'Houston, Texas', year: '2026', poster: ustGraphTheoryPoster },
     { title: '“Một phương pháp hệ thống để hiểu thế giới tự nhiên”', venue: 'Phiên trình bày áp phích – Học viện Khoa học Dữ liệu Môi trường, Đại học Rice', location: 'Houston, Texas', year: '2025', poster: ricePoster },
     { title: '“Một phương pháp hệ thống để hiểu thế giới tự nhiên”', venue: 'Hội nghị giáo dục danh dự và quốc tế mùa xuân', location: 'Houston, Texas', year: '2025', poster: ricePoster },
     { title: '“Vận may trong chiến tranh hay lá số trời định”: Xem xét ảnh hưởng của chiến thuật tuyển quân đến tỷ lệ đào ngũ trong Chiến tranh Việt Nam', venue: 'Hội nghị thường niên Hiệp hội Lịch sử Thế giới Texas', location: 'Commerce, Texas', year: '2025', poster: histPoster },
