@@ -106,42 +106,42 @@ const educationData: Record<Language, Array<{
   ],
 };
 
-type HonorEntry = { title: string; org: string; date: string; color: string };
+type HonorEntry = { title: string; org: string; date: string };
 
 const honorData: Record<Language, HonorEntry[]> = {
   en: [
-    { title: 'Monaghan Excellence Scholarship', org: 'University of St. Thomas', date: 'Fall 2025 – Spring 2027', color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42' },
-    { title: 'Hispanic Serving Institution STEM (Dunn) Endowed Scholarship', org: 'University of St. Thomas', date: '2025', color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42' },
-    { title: 'CASE Finalist', org: 'Amideast Education Abroad Connect', date: 'Summer 2025', color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/30' },
-    { title: 'Distinguished Global Scholar Study Abroad Scholarship', org: 'Lone Star College Houston-North', date: 'Summer 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
-    { title: 'Distinguished Global Scholar', org: 'Lone Star College', date: 'Fall 2024 – Spring 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
-    { title: 'Global Scholar Language Scholarship', org: 'Lone Star College Houston-North', date: 'Fall 2024 – Spring 2025', color: 'bg-[#e8eef8] dark:bg-[#0c2347]/35' },
-    { title: 'Best In Committee Award', org: 'National Model United Nations, NY', date: '2024', color: 'bg-[#f0dcd4] dark:bg-[#3e2218]/30' },
-    { title: 'Outstanding Delegation Award', org: 'National Model United Nations, NY', date: '2024', color: 'bg-[#d4dce8] dark:bg-[#1a2a3e]/30' },
-    { title: 'Global Scholar Award', org: 'Lone Star College Houston-North', date: 'Fall 2023 – Spring 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
-    { title: "President's List", org: 'Lone Star College', date: '2023 – 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
-    { title: 'Academic All-American Award', org: 'National Speech and Debate Association', date: 'Fall 2022', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: '6x Tournament Champion', org: 'Speech and Debate, Houston, TX', date: 'High School', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: '2x State TFA Qualifier', org: 'Texas Forensics Association', date: 'High School', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: 'TFA Quarter Finalists', org: 'Texas Forensics Association', date: 'High School', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: 'NIETOC Qualifier', org: 'National Individual Events Tournament of Champions', date: 'High School', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+    { title: 'Monaghan Excellence Scholarship', org: 'University of St. Thomas', date: 'Fall 2025 – Spring 2027' },
+    { title: 'Hispanic Serving Institution STEM (Dunn) Endowed Scholarship', org: 'University of St. Thomas', date: '2025' },
+    { title: 'CASE Finalist', org: 'Amideast Education Abroad Connect', date: 'Summer 2025' },
+    { title: 'Distinguished Global Scholar Study Abroad Scholarship', org: 'Lone Star College Houston-North', date: 'Summer 2025' },
+    { title: 'Distinguished Global Scholar', org: 'Lone Star College', date: 'Fall 2024 – Spring 2025' },
+    { title: 'Global Scholar Language Scholarship', org: 'Lone Star College Houston-North', date: 'Fall 2024 – Spring 2025' },
+    { title: 'Best In Committee Award', org: 'National Model United Nations, NY', date: '2024' },
+    { title: 'Outstanding Delegation Award', org: 'National Model United Nations, NY', date: '2024' },
+    { title: 'Global Scholar Award', org: 'Lone Star College Houston-North', date: 'Fall 2023 – Spring 2025' },
+    { title: "President's List", org: 'Lone Star College', date: '2023 – 2025' },
+    { title: 'Academic All-American Award', org: 'National Speech and Debate Association', date: 'Fall 2022' },
+    { title: '6x Tournament Champion', org: 'Speech and Debate, Houston, TX', date: 'High School' },
+    { title: '2x State TFA Qualifier', org: 'Texas Forensics Association', date: 'High School' },
+    { title: 'TFA Quarter Finalists', org: 'Texas Forensics Association', date: 'High School' },
+    { title: 'NIETOC Qualifier', org: 'National Individual Events Tournament of Champions', date: 'High School' },
   ],
   vi: [
-    { title: 'Học bổng xuất sắc Monaghan', org: 'Đại học St. Thomas', date: 'Mùa thu 2025 – Mùa xuân 2027', color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42' },
-    { title: 'Học bổng STEM dành cho cơ sở phục vụ cộng đồng gốc Tây Ban Nha (Hispanic Serving Institution) – Quỹ Dunn', org: 'Đại học St. Thomas', date: '2025', color: 'bg-[#e9d4d6] dark:bg-[#7B1113]/42' },
-    { title: 'Ứng viên vào vòng chung kết CASE (Cộng đồng, Hành động và Khởi nghiệp Xã hội)', org: 'Chương trình Kết nối Du học Amideast', date: 'Mùa hè 2025', color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/30' },
-    { title: 'Học bổng du học dành cho học giả toàn cầu xuất sắc', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa hè 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
-    { title: 'Danh hiệu học giả toàn cầu xuất sắc', org: 'Trường Cao đẳng Cộng đồng Lone Star', date: 'Mùa thu 2024 – Mùa xuân 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
-    { title: 'Học bổng ngoại ngữ dành cho học giả toàn cầu', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa thu 2024 – Mùa xuân 2025', color: 'bg-[#e8eef8] dark:bg-[#0c2347]/35' },
-    { title: 'Giải thưởng đại biểu xuất sắc nhất ủy ban', org: 'NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc), New York', date: '2024', color: 'bg-[#f0dcd4] dark:bg-[#3e2218]/30' },
-    { title: 'Giải thưởng đoàn đại biểu xuất sắc', org: 'NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc), New York', date: '2024', color: 'bg-[#d4dce8] dark:bg-[#1a2a3e]/30' },
-    { title: 'Giải thưởng học giả toàn cầu', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa thu 2023 – Mùa xuân 2025', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/35' },
-    { title: 'Danh sách tuyên dương của hiệu trưởng (President\'s List)', org: 'Trường Cao đẳng Cộng đồng Lone Star', date: '2023 – 2025', color: 'bg-[#dde6f3] dark:bg-[#0c2347]/35' },
-    { title: 'Giải thưởng học thuật toàn Hoa Kỳ', org: 'Hiệp hội Hùng biện và Tranh luận Quốc gia Hoa Kỳ (National Speech and Debate Association)', date: 'Mùa thu 2022', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: 'Sáu lần vô địch giải đấu', org: 'Bộ môn hùng biện và tranh luận, Houston, Texas', date: 'Bậc trung học phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: 'Hai lần đạt chuẩn tham dự giải cấp tiểu bang TFA (Hiệp hội Hùng biện và Tranh luận Texas)', org: 'Hiệp hội Hùng biện và Tranh luận Texas', date: 'Bậc trung học phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: 'Vào tứ kết giải TFA (Hiệp hội Hùng biện và Tranh luận Texas)', org: 'Hiệp hội Hùng biện và Tranh luận Texas', date: 'Bậc trung học phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
-    { title: 'Đạt chuẩn tham dự giải NIETOC (Giải vô địch toàn quốc các nội dung hùng biện cá nhân)', org: 'Giải vô địch toàn quốc các nội dung hùng biện cá nhân', date: 'Bậc trung học phổ thông', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/30' },
+    { title: 'Học bổng xuất sắc Monaghan', org: 'Đại học St. Thomas', date: 'Mùa thu 2025 – Mùa xuân 2027' },
+    { title: 'Học bổng STEM dành cho cơ sở phục vụ cộng đồng gốc Tây Ban Nha (Hispanic Serving Institution) – Quỹ Dunn', org: 'Đại học St. Thomas', date: '2025' },
+    { title: 'Ứng viên vào vòng chung kết CASE (Cộng đồng, Hành động và Khởi nghiệp Xã hội)', org: 'Chương trình Kết nối Du học Amideast', date: 'Mùa hè 2025' },
+    { title: 'Học bổng du học dành cho học giả toàn cầu xuất sắc', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa hè 2025' },
+    { title: 'Danh hiệu học giả toàn cầu xuất sắc', org: 'Trường Cao đẳng Cộng đồng Lone Star', date: 'Mùa thu 2024 – Mùa xuân 2025' },
+    { title: 'Học bổng ngoại ngữ dành cho học giả toàn cầu', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa thu 2024 – Mùa xuân 2025' },
+    { title: 'Giải thưởng đại biểu xuất sắc nhất ủy ban', org: 'NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc), New York', date: '2024' },
+    { title: 'Giải thưởng đoàn đại biểu xuất sắc', org: 'NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc), New York', date: '2024' },
+    { title: 'Giải thưởng học giả toàn cầu', org: 'Trường Cao đẳng Cộng đồng Lone Star – Phân hiệu Houston-North', date: 'Mùa thu 2023 – Mùa xuân 2025' },
+    { title: 'Danh sách tuyên dương của hiệu trưởng (President\'s List)', org: 'Trường Cao đẳng Cộng đồng Lone Star', date: '2023 – 2025' },
+    { title: 'Giải thưởng học thuật toàn Hoa Kỳ', org: 'Hiệp hội Hùng biện và Tranh luận Quốc gia Hoa Kỳ (National Speech and Debate Association)', date: 'Mùa thu 2022' },
+    { title: 'Sáu lần vô địch giải đấu', org: 'Bộ môn hùng biện và tranh luận, Houston, Texas', date: 'Bậc trung học phổ thông' },
+    { title: 'Hai lần đạt chuẩn tham dự giải cấp tiểu bang TFA (Hiệp hội Hùng biện và Tranh luận Texas)', org: 'Hiệp hội Hùng biện và Tranh luận Texas', date: 'Bậc trung học phổ thông' },
+    { title: 'Vào tứ kết giải TFA (Hiệp hội Hùng biện và Tranh luận Texas)', org: 'Hiệp hội Hùng biện và Tranh luận Texas', date: 'Bậc trung học phổ thông' },
+    { title: 'Đạt chuẩn tham dự giải NIETOC (Giải vô địch toàn quốc các nội dung hùng biện cá nhân)', org: 'Giải vô địch toàn quốc các nội dung hùng biện cá nhân', date: 'Bậc trung học phổ thông' },
   ],
 };
 
@@ -392,18 +392,18 @@ const presentationsData: Record<Language, PresentationEntry[]> = {
 };
 
 /* ─── Personal projects ───────────────────────────────────────────── */
-type ProjectEntry = { title: string; blurb: string; url: string; color: string };
+type ProjectEntry = { title: string; blurb: string; url: string };
 
 const projectsData: Record<Language, ProjectEntry[]> = {
   en: [
-    { title: 'The Fortunes of War', blurb: 'An interactive follow-up to Vietnam War recruitment and desertion research, with charts and narrative built for a general audience.', url: 'https://thefortunesofwar.netlify.app/', color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/35' },
-    { title: 'The Pollution Paradox', blurb: 'A public companion to the US vs. Chad air pollution and life expectancy paper, with data stories that highlight the paradox between pollution and outcomes.', url: 'https://thepollutionparadox.netlify.app/', color: 'bg-[#d4e0e8] dark:bg-[#1a2e3d]/35' },
-    { title: 'Genuine', blurb: 'A follow-on to the NMUN autoethnography on intercultural communication and relational leadership—reimagined as a site where visitors can explore the ideas beyond the PDF.', url: 'https://genuinenmun.netlify.app/', color: 'bg-[#e4e8e0] dark:bg-[#222d24]/35' },
+    { title: 'The Fortunes of War', blurb: 'An interactive follow-up to Vietnam War recruitment and desertion research, with charts and narrative built for a general audience.', url: 'https://thefortunesofwar.netlify.app/' },
+    { title: 'The Pollution Paradox', blurb: 'A public companion to the US vs. Chad air pollution and life expectancy paper, with data stories that highlight the paradox between pollution and outcomes.', url: 'https://thepollutionparadox.netlify.app/' },
+    { title: 'Genuine', blurb: 'A follow-on to the NMUN autoethnography on intercultural communication and relational leadership—reimagined as a site where visitors can explore the ideas beyond the PDF.', url: 'https://genuinenmun.netlify.app/' },
   ],
   vi: [
-    { title: 'The Fortunes of War', blurb: 'Một trang điện tử tương tác mở rộng từ công trình nghiên cứu về chiến thuật tuyển quân và hiện tượng đào ngũ trong Chiến tranh Việt Nam, được trình bày qua biểu đồ và lối tự sự dành cho công chúng phổ thông.', url: 'https://thefortunesofwar.netlify.app/', color: 'bg-[#e8d4d4] dark:bg-[#3d1a1a]/35' },
-    { title: 'The Pollution Paradox', blurb: 'Phiên bản công cộng đi kèm bài nghiên cứu so sánh về ô nhiễm không khí và tuổi thọ bình quân giữa Hoa Kỳ và Cộng hòa Chad, sử dụng các câu chuyện dữ liệu nhằm làm nổi bật nghịch lý giữa mức độ ô nhiễm và kết quả về sức khỏe.', url: 'https://thepollutionparadox.netlify.app/', color: 'bg-[#d4e0e8] dark:bg-[#1a2e3d]/35' },
-    { title: 'Genuine', blurb: 'Công trình tiếp nối nghiên cứu tự dân tộc học (autoethnography) tại NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc) về giao tiếp liên văn hóa và lãnh đạo theo quan hệ — được tái hình dung dưới dạng một trang điện tử, nơi độc giả có thể khám phá các luận điểm vượt ra ngoài khuôn khổ của bản PDF.', url: 'https://genuinenmun.netlify.app/', color: 'bg-[#e4e8e0] dark:bg-[#222d24]/35' },
+    { title: 'The Fortunes of War', blurb: 'Một trang điện tử tương tác mở rộng từ công trình nghiên cứu về chiến thuật tuyển quân và hiện tượng đào ngũ trong Chiến tranh Việt Nam, được trình bày qua biểu đồ và lối tự sự dành cho công chúng phổ thông.', url: 'https://thefortunesofwar.netlify.app/' },
+    { title: 'The Pollution Paradox', blurb: 'Phiên bản công cộng đi kèm bài nghiên cứu so sánh về ô nhiễm không khí và tuổi thọ bình quân giữa Hoa Kỳ và Cộng hòa Chad, sử dụng các câu chuyện dữ liệu nhằm làm nổi bật nghịch lý giữa mức độ ô nhiễm và kết quả về sức khỏe.', url: 'https://thepollutionparadox.netlify.app/' },
+    { title: 'Genuine', blurb: 'Công trình tiếp nối nghiên cứu tự dân tộc học (autoethnography) tại NMUN (Hội nghị Mô phỏng Liên Hợp Quốc Toàn quốc) về giao tiếp liên văn hóa và lãnh đạo theo quan hệ — được tái hình dung dưới dạng một trang điện tử, nơi độc giả có thể khám phá các luận điểm vượt ra ngoài khuôn khổ của bản PDF.', url: 'https://genuinenmun.netlify.app/' },
   ],
 };
 
@@ -436,7 +436,6 @@ const uiStrings = {
   en: {
     connect: 'Connect',
     contact: 'Contact Me',
-    portfolioBadge: 'Portfolio ✦',
     educationLabel: 'Education',
     educationHeading: 'Academic Foundation.',
     researchExperienceMenu: 'Research Experience',
@@ -477,7 +476,6 @@ const uiStrings = {
   vi: {
     connect: 'Kết nối',
     contact: 'Liên hệ',
-    portfolioBadge: 'Hồ sơ cá nhân ✦',
     educationLabel: 'Học vấn',
     educationHeading: 'Nền tảng học thuật.',
     researchExperienceMenu: 'Kinh nghiệm nghiên cứu',
@@ -521,32 +519,6 @@ const uiStrings = {
 const getStaircaseOffset = (index: number, total: number) =>
   ((total - 1 - index) / Math.max(total - 1, 1)) * 50;
 
-/* ─── Sparkle ─────────────────────────────────────────────────────── */
-const Sparkle = ({
-  className = '',
-  size = 36,
-  style,
-}: {
-  className?: string;
-  size?: number;
-  style?: React.CSSProperties;
-}) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 36 36"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-    className={className}
-    style={style}
-  >
-    <path
-      d="M18.00,4.00C20.07,4.00 21.36,8.33 23.76,10.07C26.16,11.81 30.67,11.70 31.31,13.67C31.96,15.65 28.24,18.21 27.32,21.03C26.40,23.85 27.91,28.11 26.23,29.33C24.55,30.55 20.96,27.80 18.00,27.80C15.04,27.80 11.45,30.55 9.77,29.33C8.09,28.11 9.60,23.85 8.68,21.03C7.76,18.21 4.04,15.65 4.69,13.67C5.33,11.70 9.84,11.81 12.24,10.07C14.64,8.33 15.93,4.00 18.00,4.00Z"
-      fill="currentColor"
-    />
-  </svg>
-);
-
 /* ─── Tab hero heading (like seanhalpin.xyz) ──────────────────────── */
 const TabHero = ({ children }: { children: React.ReactNode }) => (
   <motion.div {...scrollReveal} className="text-center mb-16 pt-4">
@@ -559,30 +531,52 @@ const TabHero = ({ children }: { children: React.ReactNode }) => (
   </motion.div>
 );
 
-/* ─── Honor card ─────────────────────────────────────────────────── */
-const HonorCard = ({
+/* ─── Project card ─────────────────────────────────────────────────── */
+const ProjectCard = ({
   title,
-  org,
-  date,
-  color,
+  blurb,
+  url,
+  visitLabel,
 }: {
   title: string;
-  org: string;
-  date: string;
-  color: string;
+  blurb: string;
+  url: string;
+  visitLabel: string;
 }) => (
-  <motion.div
+  <motion.a
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
     variants={fadeIn}
-    className={`flex flex-col group items-center p-6 ${color} rounded-2xl border border-white/40 dark:border-white/10 hover:shadow-lg transition-all duration-300 hover:-translate-y-1`}
+    className="block h-full group"
   >
-    <h3 className="font-display font-bold text-lg text-forest dark:text-white text-center mb-2 leading-tight">
-      {title}
-    </h3>
-    <div className="w-8 h-0.5 bg-nobel-gold mb-3 opacity-60" />
-    <p className="text-xs text-stone-500 dark:text-white/55 font-bold uppercase tracking-widest text-center">
-      {org}
-    </p>
-    <p className="text-xs text-stone-400 dark:text-white/35 mt-2 italic">{date}</p>
+    <div className="bg-forest dark:bg-forest-light text-white rounded-xl p-4 h-full flex flex-col gap-2">
+      <div className="flex items-start justify-between gap-2">
+        <h3 className="font-display font-bold text-sm leading-snug">{title}</h3>
+        <ExternalLink
+          size={14}
+          className="shrink-0 mt-0.5 text-white/40 group-hover:text-white/80 transition-colors"
+          aria-hidden
+        />
+      </div>
+      <p className="text-white/65 text-xs leading-relaxed flex-1">{blurb}</p>
+      <span className="text-white/45 text-[11px] font-semibold uppercase tracking-wide mt-auto pt-1 group-hover:text-white/70 transition-colors">
+        {visitLabel}
+      </span>
+    </div>
+  </motion.a>
+);
+
+/* ─── Honor card ─────────────────────────────────────────────────── */
+const HonorCard = ({ title, org, date }: { title: string; org: string; date: string }) => (
+  <motion.div variants={fadeIn} className="h-full">
+    <div className="bg-forest dark:bg-forest-light text-white rounded-xl p-4 h-full flex flex-col gap-2">
+      <h3 className="font-display font-bold text-sm leading-snug">{title}</h3>
+      <p className="text-white/65 text-[11px] font-semibold uppercase tracking-wide leading-snug">
+        {org}
+      </p>
+      <p className="text-white/45 text-xs mt-auto pt-1">{date}</p>
+    </div>
   </motion.div>
 );
 
@@ -876,9 +870,26 @@ const App: React.FC = () => {
     }, 500);
   };
 
+  /* Frosted nav shell fades in once content scrolls near the top */
+  const [navBarSolid, setNavBarSolid] = useState(false);
+  const NAV_SOLID_AT = 48;
+
+  const syncNavBarSolid = () => {
+    setNavBarSolid(window.scrollY > NAV_SOLID_AT);
+  };
+
+  useEffect(() => {
+    const onScroll = () => syncNavBarSolid();
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   useEffect(() => {
     if (isMobile) return;
     window.scrollTo({ top: 0 });
+    setNavBarSolid(false);
   }, [activeTab, isMobile]);
 
   /* sliding nav pill */
@@ -886,6 +897,9 @@ const App: React.FC = () => {
   const navRef = useRef<HTMLDivElement>(null);
   const linkRefs = useRef<Record<string, HTMLElement | null>>({});
   const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, visible: false });
+
+  const navShellFrost =
+    'bg-white/75 dark:bg-forest/60 backdrop-blur-md shadow-lg border border-white/70 dark:border-white/10';
 
   useLayoutEffect(() => {
     const measure = () => {
@@ -928,6 +942,7 @@ const App: React.FC = () => {
           : `section-${id}`;
       if (targetId === null) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        setNavBarSolid(false);
       } else {
         // Defer slightly so the menu close animation doesn't fight the scroll.
         setTimeout(() => {
@@ -938,9 +953,11 @@ const App: React.FC = () => {
     }
 
     setActiveTab(id);
+    setNavBarSolid(false);
     if (scrollTo) {
       setTimeout(() => {
         document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        requestAnimationFrame(syncNavBarSolid);
       }, 450);
     }
   };
@@ -974,12 +991,18 @@ const App: React.FC = () => {
       {/* ── Floating pill nav ──────────────────────────────── */}
       <nav className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
         {/* Desktop */}
-        <div
+        <motion.div
           ref={navRef}
-          className="hidden md:flex pointer-events-auto items-center gap-0.5 px-2 py-1.5 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 relative"
+          className="hidden md:flex pointer-events-auto items-center gap-0.5 px-2 py-1.5 relative rounded-full"
         >
+          <motion.div
+            aria-hidden
+            className={`absolute inset-0 rounded-full pointer-events-none ${navShellFrost}`}
+            animate={{ opacity: navBarSolid ? 1 : 0 }}
+            transition={{ duration: 0.3, ease: cubicEase }}
+          />
           <div
-            className="absolute rounded-full bg-forest/10 dark:bg-white/15 pointer-events-none"
+            className="absolute rounded-full bg-white/55 dark:bg-white/12 backdrop-blur-md border border-white/70 dark:border-white/20 shadow-[0_2px_12px_rgba(26,61,43,0.1)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] pointer-events-none"
             style={{
               left: pillStyle.left,
               width: pillStyle.width,
@@ -1161,16 +1184,22 @@ const App: React.FC = () => {
           >
             {isDark ? <Sun size={14} /> : <Moon size={14} />}
           </button>
-        </div>
+        </motion.div>
 
         {/* Mobile */}
         <div className="flex md:hidden w-full pointer-events-auto justify-between items-center gap-2">
           <button
             onClick={() => switchTab('home')}
-            className="flex items-center gap-2 px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10"
+            className="relative flex items-center gap-2 px-3 py-2 rounded-full overflow-hidden"
           >
-            <BrandMark className="w-7 h-7 flex-shrink-0" />
-            <span className="font-display font-black text-forest dark:text-white text-sm">
+            <motion.span
+              aria-hidden
+              className={`absolute inset-0 rounded-full ${navShellFrost}`}
+              animate={{ opacity: navBarSolid ? 1 : 0 }}
+              transition={{ duration: 0.3, ease: cubicEase }}
+            />
+            <BrandMark className="relative w-7 h-7 flex-shrink-0" />
+            <span className="relative font-display font-black text-forest dark:text-white text-sm">
               {localizedName}
             </span>
           </button>
@@ -1180,10 +1209,16 @@ const App: React.FC = () => {
                 <span className="absolute inset-0 rounded-full animate-ping bg-nobel-gold/50 pointer-events-none" />
               )}
               <button
-                className={`relative px-3 py-2 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border text-forest dark:text-white/70 text-xs font-bold overflow-hidden transition-all ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-white/70 dark:border-white/10'}`}
+                className={`relative px-3 py-2 rounded-full text-forest dark:text-white/70 text-xs font-bold overflow-hidden ${langBtnHighlight ? 'ring-2 ring-nobel-gold ring-offset-1 ring-offset-transparent' : ''}`}
                 onClick={handleLanguageToggle}
                 aria-label={uiStrings[language].ariaToggleLanguage}
               >
+                <motion.span
+                  aria-hidden
+                  className={`absolute inset-0 rounded-full ${navShellFrost}`}
+                  animate={{ opacity: navBarSolid ? 1 : 0 }}
+                  transition={{ duration: 0.3, ease: cubicEase }}
+                />
                 {langBtnInitPulse && (
                   <span className="absolute inset-0 rounded-full bg-yellow-200/70 animate-pulse pointer-events-none" />
                 )}
@@ -1237,17 +1272,29 @@ const App: React.FC = () => {
               </AnimatePresence>
             </div>
             <button
-              className="p-2.5 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white/60"
+              className="relative p-2.5 rounded-full text-forest dark:text-white/60 overflow-hidden"
               onClick={() => setIsDark(!isDark)}
               aria-label={uiStrings[language].ariaToggleDarkMode}
             >
-              {isDark ? <Sun size={16} /> : <Moon size={16} />}
+              <motion.span
+                aria-hidden
+                className={`absolute inset-0 rounded-full ${navShellFrost}`}
+                animate={{ opacity: navBarSolid ? 1 : 0 }}
+                transition={{ duration: 0.3, ease: cubicEase }}
+              />
+              <span className="relative">{isDark ? <Sun size={16} /> : <Moon size={16} />}</span>
             </button>
             <button
-              className="p-2.5 bg-white/75 dark:bg-forest/60 backdrop-blur-md rounded-full shadow-lg border border-white/70 dark:border-white/10 text-forest dark:text-white"
+              className="relative p-2.5 rounded-full text-forest dark:text-white overflow-hidden"
               onClick={() => setMenuOpen(!menuOpen)}
             >
-              {menuOpen ? <X size={18} /> : <Menu size={18} />}
+              <motion.span
+                aria-hidden
+                className={`absolute inset-0 rounded-full ${navShellFrost}`}
+                animate={{ opacity: navBarSolid ? 1 : 0 }}
+                transition={{ duration: 0.3, ease: cubicEase }}
+              />
+              <span className="relative">{menuOpen ? <X size={18} /> : <Menu size={18} />}</span>
             </button>
           </div>
         </div>
@@ -1294,94 +1341,7 @@ const App: React.FC = () => {
             exit={{ opacity: 0, transition: { duration: 0.3 } }}
           >
             <header className="hero-fade relative min-h-screen pb-28 md:pb-36 flex items-center justify-center overflow-hidden mesh-gradient">
-              <span
-                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_6px_rgba(26,61,43,0.12)] dark:drop-shadow-[0_1px_8px_rgba(0,0,0,0.35)]"
-                style={{ top: '16%', left: '9%', animationDelay: '0.35s' }}
-              >
-                <Sparkle
-                  className="text-forest/95 dark:text-white/92 sparkle-anim"
-                  size={64}
-                  style={{ animationDuration: '24s' }}
-                />
-              </span>
-              <span
-                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(197,160,89,0.35)] dark:drop-shadow-[0_1px_10px_rgba(197,160,89,0.25)]"
-                style={{ top: '19%', right: '8%', animationDelay: '0.55s' }}
-              >
-                <Sparkle
-                  className="text-nobel-gold dark:text-nobel-gold sparkle-anim-rev"
-                  size={44}
-                  style={{ animationDuration: '29s' }}
-                />
-              </span>
-              <span
-                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(26,61,43,0.14)] dark:drop-shadow-[0_1px_8px_rgba(0,0,0,0.35)]"
-                style={{ bottom: '26%', left: '7%', animationDelay: '0.70s' }}
-              >
-                <Sparkle
-                  className="text-forest/95 dark:text-white/90 sparkle-anim"
-                  size={34}
-                  style={{ animationDuration: '20s' }}
-                />
-              </span>
-              <span
-                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(197,160,89,0.32)] dark:drop-shadow-[0_1px_10px_rgba(197,160,89,0.22)]"
-                style={{ bottom: '31%', right: '10%', animationDelay: '0.50s' }}
-              >
-                <Sparkle
-                  className="text-nobel-gold dark:text-nobel-gold sparkle-anim-rev"
-                  size={28}
-                  style={{ animationDuration: '26s' }}
-                />
-              </span>
-              <span
-                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(26,61,43,0.12)] dark:drop-shadow-[0_1px_8px_rgba(0,0,0,0.32)]"
-                style={{ top: '10%', left: '50%', animationDelay: '0.22s' }}
-              >
-                <span className="block -translate-x-1/2">
-                  <Sparkle
-                    className="text-forest/92 dark:text-white/88 sparkle-anim-rev"
-                    size={30}
-                    style={{ animationDuration: '22s' }}
-                  />
-                </span>
-              </span>
-              <span
-                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(197,160,89,0.3)] dark:drop-shadow-[0_1px_10px_rgba(197,160,89,0.2)]"
-                style={{ top: '44%', left: '2%', animationDelay: '0.42s' }}
-              >
-                <Sparkle
-                  className="text-nobel-gold dark:text-nobel-gold sparkle-anim"
-                  size={38}
-                  style={{ animationDuration: '31s' }}
-                />
-              </span>
-              <span
-                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(26,61,43,0.14)] dark:drop-shadow-[0_1px_8px_rgba(0,0,0,0.35)]"
-                style={{ top: '40%', right: '2%', animationDelay: '0.33s' }}
-              >
-                <Sparkle
-                  className="text-forest/95 dark:text-white/90 sparkle-anim-rev"
-                  size={32}
-                  style={{ animationDuration: '21s' }}
-                />
-              </span>
-              <span
-                className="absolute hero-pop pointer-events-none drop-shadow-[0_1px_5px_rgba(197,160,89,0.3)] dark:drop-shadow-[0_1px_10px_rgba(197,160,89,0.2)]"
-                style={{ bottom: '20%', left: '18%', animationDelay: '0.62s' }}
-              >
-                <Sparkle
-                  className="text-nobel-gold dark:text-nobel-gold sparkle-anim"
-                  size={36}
-                  style={{ animationDuration: '27s' }}
-                />
-              </span>
-
               <div className="relative z-10 container mx-auto px-6 text-center">
-                <div className="hero-pop hero-pop-1 inline-block mb-7 px-4 py-1.5 bg-white/50 dark:bg-white/10 backdrop-blur-sm text-forest dark:text-white/80 text-xs tracking-[0.22em] uppercase font-bold rounded-full border border-white/70 dark:border-white/20">
-                  {uiStrings[language].portfolioBadge}
-                </div>
-
                 <h1
                   className="hero-pop hero-pop-2 font-display font-black text-forest dark:text-white leading-[0.88] mb-4 md:mb-5"
                   style={{ fontSize: 'clamp(3.2rem, 10.5vw, 8.5rem)' }}
@@ -1652,33 +1612,23 @@ const App: React.FC = () => {
                 sub={uiStrings[language].projectsSub}
                 center
               />
-              <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-5">
+              <motion.div
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={scrollViewport}
+                className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3"
+              >
                 {projectsData[language].map((proj) => (
-                  <motion.a
+                  <ProjectCard
                     key={proj.url}
-                    href={proj.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    {...scrollReveal}
-                    className={`group block p-6 ${proj.color} rounded-2xl border border-white/50 dark:border-white/10 hover:shadow-lg hover:-translate-y-1 transition-all duration-300`}
-                  >
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <h3 className="font-display font-bold text-lg text-forest dark:text-white leading-snug">
-                        {proj.title}
-                      </h3>
-                      <span className="flex-shrink-0 p-2 rounded-full bg-white/60 dark:bg-white/10 text-forest dark:text-white/80 group-hover:bg-forest group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-forest transition-colors">
-                        <ExternalLink size={16} aria-hidden />
-                      </span>
-                    </div>
-                    <p className="text-sm text-forest/70 dark:text-white/55 leading-relaxed">
-                      {proj.blurb}
-                    </p>
-                    <span className="mt-4 block text-xs font-bold uppercase tracking-wider text-forest/50 dark:text-white/40 group-hover:text-forest dark:group-hover:text-white transition-colors">
-                      {uiStrings[language].visitSite}
-                    </span>
-                  </motion.a>
+                    title={proj.title}
+                    blurb={proj.blurb}
+                    url={proj.url}
+                    visitLabel={uiStrings[language].visitSite}
+                  />
                 ))}
-              </div>
+              </motion.div>
             </div>
           </motion.main>
         )}
@@ -1752,7 +1702,7 @@ const App: React.FC = () => {
               initial="initial"
               whileInView="animate"
               viewport={scrollViewport}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-4xl mx-auto"
             >
               {honorData[language].map((h, i) => (
                 <HonorCard
@@ -1760,7 +1710,6 @@ const App: React.FC = () => {
                   title={h.title}
                   org={h.org}
                   date={h.date}
-                  color={h.color}
                 />
               ))}
             </motion.div>
