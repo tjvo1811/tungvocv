@@ -4,24 +4,87 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
+import {
+  getDocument,
+  GlobalWorkerOptions,
+  type PDFDocumentProxy,
+  type PDFPageProxy,
+} from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 
 GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const MOBILE_QUERY = '(max-width: 767px)';
+const MAX_DPR = 3;
+const MAX_CANVAS_PX = 8192;
+const RENDER_DEBOUNCE_MS = 100;
+const MIN_ZOOM = 0.5;
+const MAX_ZOOM = 6;
 
 interface PdfViewerProps {
   url: string;
-  /** Posters (landscape): fit entire page. Papers: fit width so the full page is visible on phone. */
   fitMode: 'page' | 'width';
   className?: string;
 }
 
-type TouchPoint = { x: number; y: number };
+type PageEntry = {
+  pageNum: number;
+  canvas: HTMLCanvasElement;
+};
 
-function touchDistance(a: TouchPoint, b: TouchPoint) {
-  return Math.hypot(a.x - b.x, a.y - b.y);
+function touchDistance(t0: Touch, t1: Touch) {
+  return Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+}
+
+function computeBaseScale(
+  pageWidth: number,
+  pageHeight: number,
+  container: HTMLElement,
+  mode: 'page' | 'width',
+) {
+  const pad = 16;
+  const w = container.clientWidth - pad;
+  const h = container.clientHeight - pad;
+  const scaleW = w / pageWidth;
+  if (mode === 'width') return Math.max(0.1, scaleW);
+  const scaleH = h / pageHeight;
+  return Math.max(0.1, Math.min(scaleW, scaleH));
+}
+
+function pixelRatioFor(viewportWidth: number, viewportHeight: number) {
+  const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+  let ratio = dpr;
+  const pxW = viewportWidth * ratio;
+  const pxH = viewportHeight * ratio;
+  if (pxW > MAX_CANVAS_PX) ratio *= MAX_CANVAS_PX / pxW;
+  if (pxH > MAX_CANVAS_PX) ratio *= MAX_CANVAS_PX / pxH;
+  return ratio;
+}
+
+async function renderPageToCanvas(page: PDFPageProxy, layoutScale: number, zoom: number) {
+  const displayScale = layoutScale * zoom;
+  const displayVp = page.getViewport({ scale: displayScale });
+  let ratio = pixelRatioFor(displayVp.width, displayVp.height);
+  const renderVp = page.getViewport({ scale: displayScale * ratio });
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d', { alpha: false });
+  if (!ctx) throw new Error('Canvas not supported');
+
+  canvas.width = Math.floor(renderVp.width);
+  canvas.height = Math.floor(renderVp.height);
+  canvas.style.width = `${displayVp.width}px`;
+  canvas.style.height = `${displayVp.height}px`;
+  canvas.className = 'block max-w-none shadow-sm';
+
+  await page.render({
+    canvasContext: ctx,
+    viewport: renderVp,
+    canvas,
+    intent: 'display',
+  }).promise;
+
+  return canvas;
 }
 
 function PageMount({ canvas }: { canvas: HTMLCanvasElement }) {
@@ -36,36 +99,92 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const pdfRef = useRef<PDFDocumentProxy | null>(null);
-  const pinchRef = useRef<{ dist: number; scale: number } | null>(null);
-  const panRef = useRef<{ x: number; y: number; tx: number; ty: number } | null>(null);
+  const baseScaleRef = useRef(1);
+  const zoomRef = useRef(1);
+  const renderGenRef = useRef(0);
+  const renderTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pinchRef = useRef<{ dist: number; zoom: number } | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const liveZoomRef = useRef(1);
 
   const [loading, setLoading] = useState(true);
+  const [rendering, setRendering] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [canvases, setCanvases] = useState<HTMLCanvasElement[]>([]);
-  const [userScale, setUserScale] = useState(1);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const [pages, setPages] = useState<PageEntry[]>([]);
 
-  const computeBaseScale = useCallback(
-    (pageWidth: number, pageHeight: number, container: HTMLElement, mode: 'page' | 'width') => {
-      const pad = 16;
-      const w = container.clientWidth - pad;
-      const h = container.clientHeight - pad;
-      const scaleW = w / pageWidth;
-      if (mode === 'width') return Math.max(0.1, scaleW);
-      const scaleH = h / pageHeight;
-      return Math.max(0.1, Math.min(scaleW, scaleH));
+  const clearPreviewTransform = useCallback(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    el.style.transform = '';
+  }, []);
+
+  const setPreviewTransform = useCallback((liveZoom: number) => {
+    const el = contentRef.current;
+    if (!el) return;
+    const ratio = liveZoom / zoomRef.current;
+    if (Math.abs(ratio - 1) < 0.001) {
+      el.style.transform = '';
+      return;
+    }
+    el.style.transform = `scale(${ratio})`;
+    el.style.transformOrigin = 'center top';
+  }, []);
+
+  const renderAllPages = useCallback(
+    async (targetZoom: number, showSpinner = false) => {
+      const pdf = pdfRef.current;
+      if (!pdf) return;
+
+      const gen = ++renderGenRef.current;
+      if (showSpinner) setRendering(true);
+
+      try {
+        const layoutScale = baseScaleRef.current;
+        const next: PageEntry[] = [];
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+          if (gen !== renderGenRef.current) return;
+          const page = await pdf.getPage(i);
+          const canvas = await renderPageToCanvas(page, layoutScale, targetZoom);
+          next.push({ pageNum: i, canvas });
+        }
+
+        if (gen !== renderGenRef.current) return;
+        zoomRef.current = targetZoom;
+        liveZoomRef.current = targetZoom;
+        setPages(next);
+        clearPreviewTransform();
+      } catch (e) {
+        if (gen === renderGenRef.current) {
+          setError(e instanceof Error ? e.message : 'Failed to render PDF');
+        }
+      } finally {
+        if (gen === renderGenRef.current && showSpinner) setRendering(false);
+      }
     },
-    [],
+    [clearPreviewTransform],
   );
 
-  const renderPdf = useCallback(async () => {
+  const scheduleRender = useCallback(
+    (targetZoom: number) => {
+      if (renderTimerRef.current) clearTimeout(renderTimerRef.current);
+      renderTimerRef.current = setTimeout(() => {
+        renderTimerRef.current = null;
+        void renderAllPages(targetZoom, true);
+      }, RENDER_DEBOUNCE_MS);
+    },
+    [renderAllPages],
+  );
+
+  const loadPdf = useCallback(async () => {
     const container = containerRef.current;
     if (!container) return;
 
     setLoading(true);
     setError(null);
-    setUserScale(1);
-    setOffset({ x: 0, y: 0 });
+    zoomRef.current = 1;
+    liveZoomRef.current = 1;
+    clearPreviewTransform();
 
     try {
       pdfRef.current?.destroy();
@@ -73,52 +192,38 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
       pdfRef.current = pdf;
 
       const isMobile = window.matchMedia(MOBILE_QUERY).matches;
-      // On phone, always fit the full page in view first; desktop uses fitMode.
       const mode = isMobile ? 'page' : fitMode;
 
       const firstPage = await pdf.getPage(1);
       const baseViewport = firstPage.getViewport({ scale: 1 });
-      const baseScale = computeBaseScale(baseViewport.width, baseViewport.height, container, mode);
+      baseScaleRef.current = computeBaseScale(
+        baseViewport.width,
+        baseViewport.height,
+        container,
+        mode,
+      );
 
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const rendered: HTMLCanvasElement[] = [];
-
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({ scale: baseScale });
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        if (!ctx) continue;
-
-        canvas.width = Math.floor(viewport.width * dpr);
-        canvas.height = Math.floor(viewport.height * dpr);
-        canvas.style.width = `${viewport.width}px`;
-        canvas.style.height = `${viewport.height}px`;
-        canvas.className = 'block max-w-none shadow-sm';
-
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        await page.render({ canvasContext: ctx, viewport, canvas }).promise;
-        rendered.push(canvas);
-      }
-
-      setCanvases(rendered);
+      await renderAllPages(1, false);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load PDF');
     } finally {
       setLoading(false);
     }
-  }, [url, fitMode, computeBaseScale]);
+  }, [url, fitMode, renderAllPages, clearPreviewTransform]);
 
   useEffect(() => {
-    renderPdf();
+    void loadPdf();
     return () => {
+      renderGenRef.current += 1;
+      if (renderTimerRef.current) clearTimeout(renderTimerRef.current);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       pdfRef.current?.destroy();
       pdfRef.current = null;
     };
-  }, [renderPdf]);
+  }, [loadPdf]);
 
   useEffect(() => {
-    const onChange = () => renderPdf();
+    const onChange = () => void loadPdf();
     const mq = window.matchMedia(MOBILE_QUERY);
     mq.addEventListener('change', onChange);
     window.addEventListener('resize', onChange);
@@ -126,80 +231,75 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
       mq.removeEventListener('change', onChange);
       window.removeEventListener('resize', onChange);
     };
-  }, [renderPdf]);
+  }, [loadPdf]);
 
-  const clampOffset = useCallback((tx: number, ty: number, scale: number) => {
-    const container = containerRef.current;
-    const content = contentRef.current;
-    if (!container || !content) return { x: tx, y: ty };
+  const queuePreviewZoom = useCallback(
+    (liveZoom: number) => {
+      const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, liveZoom));
+      liveZoomRef.current = clamped;
+      if (rafRef.current !== null) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = null;
+        setPreviewTransform(liveZoomRef.current);
+      });
+    },
+    [setPreviewTransform],
+  );
 
-    const cw = container.clientWidth;
-    const ch = container.clientHeight;
-    const sw = content.offsetWidth * scale;
-    const sh = content.offsetHeight * scale;
-    const maxX = Math.max(0, (sw - cw) / 2);
-    const maxY = Math.max(0, (sh - ch) / 2);
-
-    return {
-      x: Math.min(maxX, Math.max(-maxX, tx)),
-      y: Math.min(maxY, Math.max(-maxY, ty)),
-    };
-  }, []);
+  const commitZoom = useCallback(
+    (finalZoom: number) => {
+      const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, finalZoom));
+      liveZoomRef.current = clamped;
+      if (Math.abs(clamped - zoomRef.current) < 0.02) {
+        clearPreviewTransform();
+        return;
+      }
+      scheduleRender(clamped);
+    },
+    [scheduleRender, clearPreviewTransform],
+  );
 
   const onTouchStart = (e: React.TouchEvent) => {
     if (e.touches.length === 2) {
-      const a = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      const b = { x: e.touches[1].clientX, y: e.touches[1].clientY };
-      pinchRef.current = { dist: touchDistance(a, b), scale: userScale };
-      panRef.current = null;
-    } else if (e.touches.length === 1 && userScale > 1) {
-      panRef.current = {
-        x: e.touches[0].clientX,
-        y: e.touches[0].clientY,
-        tx: offset.x,
-        ty: offset.y,
-      };
-      pinchRef.current = null;
+      pinchRef.current = { dist: touchDistance(e.touches[0], e.touches[1]), zoom: zoomRef.current };
     }
   };
 
   const onTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length === 2 && pinchRef.current) {
       e.preventDefault();
-      const a = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-      const b = { x: e.touches[1].clientX, y: e.touches[1].clientY };
-      const dist = touchDistance(a, b);
+      const dist = touchDistance(e.touches[0], e.touches[1]);
       const ratio = dist / pinchRef.current.dist;
-      const next = Math.min(6, Math.max(0.5, pinchRef.current.scale * ratio));
-      pinchRef.current = { dist, scale: next };
-      setUserScale(next);
-    } else if (e.touches.length === 1 && panRef.current && userScale > 1) {
-      e.preventDefault();
-      const dx = e.touches[0].clientX - panRef.current.x;
-      const dy = e.touches[0].clientY - panRef.current.y;
-      setOffset(clampOffset(panRef.current.tx + dx, panRef.current.ty + dy, userScale));
+      queuePreviewZoom(pinchRef.current.zoom * ratio);
     }
   };
 
-  const onTouchEnd = () => {
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (e.touches.length >= 2) return;
+    if (pinchRef.current) {
+      commitZoom(liveZoomRef.current);
+    }
     pinchRef.current = null;
-    panRef.current = null;
   };
-
-  const canPan = userScale > 1.02;
 
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-full ${canPan ? 'overflow-hidden' : 'overflow-auto'} touch-none ${className}`}
+      className={`pdf-viewer relative w-full h-full overflow-auto overscroll-contain ${className}`}
+      style={{ WebkitOverflowScrolling: 'touch' }}
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
       onTouchCancel={onTouchEnd}
     >
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center text-forest/50 dark:text-white/50 text-sm">
+        <div className="absolute inset-0 z-10 flex items-center justify-center text-forest/50 dark:text-white/50 text-sm bg-[#EDEAE2]/80 dark:bg-[#0c1a11]/80">
           Loading…
+        </div>
+      )}
+      {rendering && !loading && (
+        <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full text-xs bg-forest/10 dark:bg-white/10 text-forest/60 dark:text-white/60 backdrop-blur-sm pointer-events-none">
+          Sharpening…
         </div>
       )}
       {error && (
@@ -207,17 +307,11 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
           {error}
         </div>
       )}
-      {!loading && !error && canvases.length > 0 && (
-        <div className={`min-h-full flex justify-center ${canPan ? 'items-center h-full' : 'py-2'}`}>
-          <div
-            ref={contentRef}
-            className="flex flex-col items-center gap-3 origin-center"
-            style={{
-              transform: `translate(${offset.x}px, ${offset.y}px) scale(${userScale})`,
-            }}
-          >
-            {canvases.map((canvas, i) => (
-              <PageMount key={i} canvas={canvas} />
+      {!loading && !error && pages.length > 0 && (
+        <div className="flex justify-center py-3 px-2">
+          <div ref={contentRef} className="flex flex-col items-center gap-4">
+            {pages.map((p) => (
+              <PageMount key={p.pageNum} canvas={p.canvas} />
             ))}
           </div>
         </div>
