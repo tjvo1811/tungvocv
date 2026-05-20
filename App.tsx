@@ -441,13 +441,6 @@ const uiStrings = {
     researchExperienceMenu: 'Research Experience',
     conferencePresentationsMenu: 'Conference Presentations',
     personalProjectsMenu: 'Personal Projects',
-    researchFocusBadge: 'Research Focus',
-    graphTheoryHead1: 'Graph Theory &',
-    graphTheoryHead2: 'Network Dynamics.',
-    codingTheoryHead1: 'Coding Theory &',
-    codingTheoryHead2: 'Combinatorics.',
-    historyHead1: 'History &',
-    historyHead2: 'Public Policy.',
     presentationsLabel: 'Presentations',
     presentationsHeading: 'Conference Presentations.',
     projectsLabel: 'Personal projects',
@@ -481,13 +474,6 @@ const uiStrings = {
     researchExperienceMenu: 'Kinh nghiệm nghiên cứu',
     conferencePresentationsMenu: 'Báo cáo hội nghị',
     personalProjectsMenu: 'Dự án cá nhân',
-    researchFocusBadge: 'Trọng tâm nghiên cứu',
-    graphTheoryHead1: 'Lý thuyết đồ thị &',
-    graphTheoryHead2: 'Động lực mạng lưới.',
-    codingTheoryHead1: 'Lý thuyết mã &',
-    codingTheoryHead2: 'Tổ hợp.',
-    historyHead1: 'Lịch sử &',
-    historyHead2: 'Chính sách công.',
     presentationsLabel: 'Báo cáo',
     presentationsHeading: 'Báo cáo hội nghị.',
     projectsLabel: 'Dự án cá nhân',
@@ -1445,16 +1431,25 @@ const App: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
               {/* Left column */}
               <div>
-                <motion.div {...scrollReveal} className="mb-10">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/55 dark:bg-white/10 text-forest dark:text-white/80 text-xs font-bold tracking-widest uppercase rounded-full mb-5 border border-white/70 dark:border-white/15">
-                    {language === 'vi' ? 'Trọng tâm nghiên cứu' : 'Research Focus'}
-                  </div>
-                  <h2 className="font-display font-black text-4xl md:text-5xl text-forest dark:text-white leading-[0.92]">
-                    {language === 'vi' ? 'Lý thuyết đồ thị &' : 'Graph Theory &'}
-                    <br />
-                    {language === 'vi' ? 'Động lực mạng.' : 'Network Dynamics.'}
-                  </h2>
-                </motion.div>
+                <ExperienceItem
+                  language={language}
+                  title={language === 'vi' ? 'Đại học Rice' : 'Rice University'}
+                  role={
+                    language === 'vi'
+                      ? 'Trợ lý nghiên cứu bậc đại học'
+                      : 'Undergraduate Research Assistant'
+                  }
+                  date={language === 'vi' ? 'Hè 2026 – Hiện tại' : 'Summer 2026 – Current'}
+                  location={
+                    language === 'vi'
+                      ? 'Trưởng dự án: Saber Dinpazhouh (Nghiên cứu sinh tiến sĩ) | Giáo sư hướng dẫn: Tiến sĩ Illya Hicks'
+                      : 'Project Lead: Saber Dinpazhouh (PhD Candidate) | Supervisor: Dr. Illya Hicks'
+                  }
+                >
+                  {language === 'vi'
+                    ? 'Nghiên cứu về bài toán định tuyến qubit (qubit routing) trong tối ưu hóa mạch lượng tử. Xây dựng các mô hình quy hoạch nguyên (integer programming) được giải bằng phần mềm Gurobi và đối chiếu các lời giải tối ưu chính xác với thuật toán SABRE (thuật toán tìm kiếm heuristic hai chiều dựa trên cổng SWAP).'
+                    : 'On the qubit routing problem in quantum circuit optimization. Developing integer programming formulations solved with Gurobi and benchmarking exact solutions against the SABRE heuristic.'}
+                </ExperienceItem>
                 <ExperienceItem
                   language={language}
                   title={language === 'vi' ? 'Đại học St. Thomas' : 'University of St. Thomas'}
@@ -1469,16 +1464,6 @@ const App: React.FC = () => {
                     : 'NSF PRIMES PAIR-funded research under Dr. Mary Flagg on competitive zero forcing sets in graph theory. Conducted theoretical analysis and computational experiments across graph families to study propagation dynamics in competing zero forcing processes.'}
                 </ExperienceItem>
 
-                <motion.div {...scrollReveal} className="mb-10 mt-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/55 dark:bg-white/10 text-forest dark:text-white/80 text-xs font-bold tracking-widest uppercase rounded-full mb-5 border border-white/70 dark:border-white/15">
-                    {language === 'vi' ? 'Trọng tâm nghiên cứu' : 'Research Focus'}
-                  </div>
-                  <h2 className="font-display font-black text-4xl md:text-5xl text-forest dark:text-white leading-[0.92]">
-                    {uiStrings[language].codingTheoryHead1}
-                    <br />
-                    {uiStrings[language].codingTheoryHead2}
-                  </h2>
-                </motion.div>
                 <ExperienceItem
                   language={language}
                   title={
@@ -1502,13 +1487,6 @@ const App: React.FC = () => {
 
               {/* Right column */}
               <div>
-                <motion.div {...scrollReveal} className="mb-10">
-                  <h2 className="font-display font-black text-4xl md:text-5xl text-forest dark:text-white leading-[0.92]">
-                    {language === 'vi' ? 'Lịch sử &' : 'History &'}
-                    <br />
-                    {language === 'vi' ? 'Chính sách công.' : 'Public Policy.'}
-                  </h2>
-                </motion.div>
                 <ExperienceItem
                   language={language}
                   title={language === 'vi' ? 'Trường Cao đẳng Cộng đồng Lone Star | Trường Cao đẳng Danh dự' : 'Lone Star College | The Honors College'}

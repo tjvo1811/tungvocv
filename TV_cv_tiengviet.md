@@ -21,6 +21,14 @@ Danh hiệu xuất sắc (Cum Laude).
 
 ## Kinh nghiệm nghiên cứu
 
+**Đại học Rice**, Houston, Texas — Hè 2026 – Hiện tại
+*Trợ lý nghiên cứu bậc đại học*
+*Trưởng dự án: Saber Dinpazhouh (Nghiên cứu sinh tiến sĩ) | Giáo sư hướng dẫn: Tiến sĩ Illya Hicks*
+
+Nghiên cứu về bài toán định tuyến qubit trong tối ưu hóa mạch lượng tử. Xây dựng các mô hình quy hoạch số nguyên được giải quyết bằng Gurobi và đối sánh các nghiệm chính xác với thuật toán heuristic SABRE.
+
+---
+
 **Đại học St. Thomas**, Houston, Texas — Mùa thu 2025 – Hiện tại
 *Giáo sư hướng dẫn: Tiến sĩ Mary Flagg*
 
