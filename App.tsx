@@ -805,7 +805,11 @@ const EducationCards = ({ language }: { language: Language }) => (
     whileInView="animate"
     viewport={scrollViewport}
     className="grid grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto"
-    style={{ borderTop: '1px solid var(--rule)' }}
+    style={{
+      borderTop: '1px solid var(--rule)',
+      borderLeft: '1px solid var(--rule)',
+      borderRight: '1px solid var(--rule)',
+    }}
   >
     {educationData[language].map((item, i) => (
       <motion.a
@@ -814,10 +818,11 @@ const EducationCards = ({ language }: { language: Language }) => (
         target="_blank"
         rel="noopener noreferrer"
         variants={fadeIn}
-        className="group block p-6 md:p-8 transition-colors duration-300"
+        className={`group block p-6 md:p-8 transition-colors duration-300${
+          i < educationData[language].length - 1 ? ' education-card-divider' : ''
+        }`}
         style={{
           borderBottom: '1px solid var(--rule)',
-          borderRight: i < educationData[language].length - 1 ? '1px solid var(--rule)' : 'none',
         }}
       >
         <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] mb-3">

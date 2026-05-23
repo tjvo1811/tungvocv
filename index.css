@@ -77,3 +77,10 @@ html.dark body::after {
 .pdf-viewer canvas {
   image-rendering: auto;
 }
+
+/* Education grid: column dividers on desktop only (container handles mobile sides) */
+@media (min-width: 768px) {
+  .education-card-divider {
+    border-right: 1px solid var(--rule);
+  }
+}
