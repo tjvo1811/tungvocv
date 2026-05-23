@@ -1,29 +1,40 @@
 /**
- * Circular “T” mark: Fraunces black / text-sm optical size, matches nav + favicon.
+ * Editorial wordmark: "TV." in Source Serif 4 italic — replaces the prior
+ * circular pill mark. The dot is set in the sage accent for a quiet
+ * masthead signature.
  */
 export function BrandMark({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 32 32" className={`block ${className}`} aria-hidden>
-      <rect
-        width={32}
-        height={32}
-        rx={16}
-        className="fill-forest transition-colors group-hover:fill-forest/80 dark:fill-white dark:group-hover:fill-white/90"
-      />
+    <svg viewBox="0 0 36 32" className={`block ${className}`} aria-label="TV." role="img">
       <text
-        x={16}
-        y={16}
-        textAnchor="middle"
-        dominantBaseline="central"
-        className="fill-white transition-colors dark:fill-forest"
+        x={0}
+        y={24}
+        textAnchor="start"
+        className="fill-[var(--ink)]"
         style={{
-          fontFamily: '"Fraunces", serif',
-          fontWeight: 900,
-          fontSize: 14,
-          fontVariationSettings: '"opsz" 9',
+          fontFamily: '"Source Serif 4", Georgia, serif',
+          fontStyle: 'italic',
+          fontWeight: 600,
+          fontSize: 24,
+          fontVariationSettings: '"opsz" 24',
+          letterSpacing: '-0.02em',
         }}
       >
-        T
+        TV
+      </text>
+      <text
+        x={28}
+        y={24}
+        textAnchor="start"
+        className="fill-[var(--sage)]"
+        style={{
+          fontFamily: '"Source Serif 4", Georgia, serif',
+          fontStyle: 'italic',
+          fontWeight: 700,
+          fontSize: 24,
+        }}
+      >
+        .
       </text>
     </svg>
   );

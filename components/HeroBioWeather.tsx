@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useLayoutEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
 import {
   Cloud,
   CloudLightning,
@@ -15,8 +14,8 @@ import {
 } from 'lucide-react';
 import { cToF, useHoustonWeather } from '../hooks/useHoustonWeather';
 
-function weatherIcon(code: number, size = 15): React.ReactNode {
-  const cls = 'inline-block shrink-0 align-[-0.15em] opacity-85 mx-0.5';
+function weatherIcon(code: number, size = 14): React.ReactNode {
+  const cls = 'inline-block shrink-0 align-[-0.15em] mx-0.5 text-[var(--sage)]';
   if (code === 0) return <Sun size={size} className={cls} aria-hidden />;
   if (code <= 3) return <CloudSun size={size} className={cls} aria-hidden />;
   if (code <= 48) return <Cloud size={size} className={cls} aria-hidden />;
@@ -26,74 +25,43 @@ function weatherIcon(code: number, size = 15): React.ReactNode {
   return <CloudLightning size={size} className={cls} aria-hidden />;
 }
 
-function AnimatedDegree({
-  value,
-  unit,
-}: {
-  value: number | null;
-  unit: 'F' | 'C';
-}) {
+function Degree({ value, unit }: { value: number | null; unit: 'F' | 'C' }) {
   const rounded =
     value !== null && !Number.isNaN(value) ? Math.round(value) : null;
-  const prev = useRef<number | null>(null);
-
-  const fromY =
-    rounded !== null &&
-    prev.current !== null &&
-    prev.current !== rounded
-      ? rounded > prev.current
-        ? 11
-        : -11
-      : 0;
-
-  useLayoutEffect(() => {
-    if (rounded !== null) prev.current = rounded;
-  }, [rounded]);
-
-  if (rounded === null) {
-    return null;
-  }
-
+  if (rounded === null) return null;
   return (
-    <span className="inline-block tabular-nums font-semibold text-forest dark:text-white/90">
-      <motion.span
-        key={`${unit}-${rounded}`}
-        initial={fromY === 0 ? false : { y: fromY, opacity: 0.4 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 440, damping: 26 }}
-        className="inline-block"
-      >
-        {rounded}°{unit}
-      </motion.span>
+    <span className="font-mono tabular-nums text-[var(--ink)]">
+      {rounded}°{unit}
     </span>
   );
 }
 
-const lineClass =
-  'text-[0.95rem] sm:text-lg leading-relaxed text-forest/72 dark:text-white/58';
+const bioLineClass =
+  'font-serif text-[0.95rem] sm:text-[1.05rem] leading-relaxed text-[var(--ink-muted)]';
 
 export const HeroBioWeather: React.FC<{ language: 'en' | 'vi' }> = ({ language }) => {
   const { status, tempC, weatherCode } = useHoustonWeather();
   const tempF = tempC !== null ? cToF(tempC) : null;
-
   const live = status === 'ok' && tempC !== null;
 
   return (
-    <div className="hero-pop hero-pop-2b max-w-2xl mx-auto mb-8 px-2 text-center">
-      <p className={`${lineClass} mb-3 sm:mb-3.5`}>
-        <span className="font-semibold text-forest/88 dark:text-white/70">
-          {language === 'vi' ? 'Ngành chính:' : 'Major:'}
-        </span>{' '}
+    <div className="max-w-2xl mx-auto mb-4 px-2 text-center">
+      <p className={`${bioLineClass} mb-3 sm:mb-3.5`}>
+        <span className="text-[var(--ink)] font-medium">
+          {language === 'vi' ? 'Ngành chính' : 'Major'}
+        </span>
+        <span className="mx-2 text-[var(--sage)]">·</span>
         {language === 'vi' ? 'Toán học ứng dụng' : 'Applied Mathematics'}
-        <span className="mx-2.5 sm:mx-3 text-forest/35 dark:text-white/30">·</span>
-        <span className="font-semibold text-forest/88 dark:text-white/70">
-          {language === 'vi' ? 'Ngành phụ:' : 'Minor:'}
-        </span>{' '}
+        <span className="mx-3 text-[var(--ink-muted)]/40">/</span>
+        <span className="text-[var(--ink)] font-medium">
+          {language === 'vi' ? 'Ngành phụ' : 'Minor'}
+        </span>
+        <span className="mx-2 text-[var(--sage)]">·</span>
         {language === 'vi' ? 'Phân tích dữ liệu' : 'Data Analytics'}
       </p>
 
       <p
-        className={lineClass}
+        className={bioLineClass}
         role="status"
         aria-live="polite"
         aria-label={
@@ -106,69 +74,33 @@ export const HeroBioWeather: React.FC<{ language: 'en' | 'vi' }> = ({ language }
               : 'Based in Houston, Texas'
         }
       >
-        {language === 'vi' ? 'Hiện tôi sống ở ' : "I'm based in "}
-        {status === 'loading' && (
-          <>
-            {language === 'vi' ? (
-              <>
-                <span className="font-medium text-forest/90 dark:text-white/75">
-                  Houston, Texas
-                </span>
-                <span className="mx-1 text-forest/50 dark:text-white/35">·</span>
-                <span className="text-forest/45 dark:text-white/40 tabular-nums">
-                  …°F · …°C
-                </span>{' '}
-              </>
-            ) : (
-              <>
-                <span className="text-forest/45 dark:text-white/40 tabular-nums">
-                  …°F · …°C
-                </span>{' '}
-                <span className="font-medium text-forest/90 dark:text-white/75">
-                  Houston, Texas
-                </span>
-              </>
-            )}
-            <span className="text-forest/45 dark:text-white/40 text-sm sm:text-base">
-              {' '}
-              {language === 'vi' ? '— đang tải thông tin thời tiết' : '— live read incoming'}
-            </span>
-          </>
-        )}
+        <span className="italic">
+          {language === 'vi' ? 'Hiện sống tại ' : 'Based in '}
+        </span>
+        <span className="text-[var(--ink)] font-medium">Houston, Texas</span>
         {live && (
           <>
-            {language === 'vi' ? (
-              <>
-                <span className="font-medium text-forest/90 dark:text-white/75">
-                  Houston, Texas
-                </span>
-                <span className="mx-1 text-forest/50 dark:text-white/35">·</span>
-                <AnimatedDegree value={tempF} unit="F" />
-                <span className="mx-1 text-forest/50 dark:text-white/35">·</span>
-                <AnimatedDegree value={tempC} unit="C" /> {weatherIcon(weatherCode)}
-              </>
-            ) : (
-              <>
-                <AnimatedDegree value={tempF} unit="F" />
-                <span className="mx-1 text-forest/50 dark:text-white/35">·</span>
-                <AnimatedDegree value={tempC} unit="C" /> {weatherIcon(weatherCode)}{' '}
-                <span className="font-medium text-forest/90 dark:text-white/75">
-                  Houston, Texas
-                </span>
-              </>
-            )}
+            <span className="mx-2 text-[var(--ink-muted)]/50">—</span>
+            <Degree value={tempF} unit="F" />
+            <span className="mx-1 text-[var(--ink-muted)]/50">·</span>
+            <Degree value={tempC} unit="C" /> {weatherIcon(weatherCode)}
+          </>
+        )}
+        {status === 'loading' && (
+          <>
+            <span className="mx-2 text-[var(--ink-muted)]/50">—</span>
+            <span className="font-mono text-[var(--ink-muted)]/70 text-sm">
+              {language === 'vi' ? 'đang tải thời tiết' : 'reading weather'}
+            </span>
           </>
         )}
         {status === 'error' && (
-          <span className="text-forest/80 dark:text-white/70">
-            <span className="font-medium text-forest/90 dark:text-white/75">
-              Houston, Texas
+          <>
+            <span className="mx-2 text-[var(--ink-muted)]/50">—</span>
+            <span className="italic text-[var(--ink-muted)]/70 text-sm">
+              {language === 'vi' ? 'không có dự báo' : 'forecast unavailable'}
             </span>
-            <span className="text-forest/50 dark:text-white/45">
-              {' '}
-              {language === 'vi' ? '(không thể tải dự báo lúc này)' : '(forecast unavailable right now)'}
-            </span>
-          </span>
+          </>
         )}
       </p>
     </div>

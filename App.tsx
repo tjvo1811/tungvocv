@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
-import { ArrowDown, Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun, ChevronDown } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ustGraphTheoryPoster, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
@@ -64,7 +64,6 @@ const educationData: Record<Language, Array<{
   date: string;
   honor: string;
   url: string;
-  color: string;
 }>> = {
   en: [
   {
@@ -73,10 +72,9 @@ const educationData: Record<Language, Array<{
     date: 'Expected May 2028',
     honor: 'Minor: Data Analytics',
     url: 'https://stthom.edu/',
-    color: 'bg-[#ebd6d8] dark:bg-[#7B1113]/50',
   },
-  { school: 'Lone Star College', degree: 'Honors A.S. / General', date: 'May 2025', honor: 'Summa Cum Laude | Distinguished Global Scholars', url: 'https://www.lonestar.edu/', color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/45' },
-  { school: 'Jersey Village High School', degree: 'High School Diploma', date: 'May 2023', honor: 'Cum Laude', url: 'https://jerseyvillage.cfisd.net/', color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/45' },
+  { school: 'Lone Star College', degree: 'Honors A.S. / General', date: 'May 2025', honor: 'Summa Cum Laude | Distinguished Global Scholars', url: 'https://www.lonestar.edu/' },
+  { school: 'Jersey Village High School', degree: 'High School Diploma', date: 'May 2023', honor: 'Cum Laude', url: 'https://jerseyvillage.cfisd.net/' },
   ],
   vi: [
     {
@@ -85,7 +83,6 @@ const educationData: Record<Language, Array<{
       date: 'Dự kiến tốt nghiệp tháng 5 năm 2028',
       honor: 'Chuyên ngành phụ: Phân tích dữ liệu',
       url: 'https://stthom.edu/',
-      color: 'bg-[#ebd6d8] dark:bg-[#7B1113]/50',
     },
     {
       school: 'Trường Cao đẳng Cộng đồng Lone Star',
@@ -93,7 +90,6 @@ const educationData: Record<Language, Array<{
       date: 'Tháng 5 năm 2025',
       honor: 'Danh hiệu xuất sắc tối cao (Summa Cum Laude) | Học giả toàn cầu xuất sắc (Distinguished Global Scholar)',
       url: 'https://www.lonestar.edu/',
-      color: 'bg-[#e3eaf5] dark:bg-[#0c2347]/45',
     },
     {
       school: 'Trường Trung học Jersey Village',
@@ -101,7 +97,6 @@ const educationData: Record<Language, Array<{
       date: 'Tháng 5 năm 2023',
       honor: 'Danh hiệu xuất sắc (Cum Laude)',
       url: 'https://jerseyvillage.cfisd.net/',
-      color: 'bg-[#ebe4f7] dark:bg-[#2d2248]/45',
     },
   ],
 };
@@ -464,7 +459,6 @@ const uiStrings = {
     ariaSwitchToEnglish: 'Switch to English',
     langHintVi: '🇺🇸 Also available in English — click to switch.',
     langHintEn: '🇻🇳 Có tiếng Việt — bấm để chuyển đổi.',
-    langHintFooterVi: 'This page is also available in English',
   },
   vi: {
     connect: 'Kết nối',
@@ -497,7 +491,6 @@ const uiStrings = {
     ariaSwitchToEnglish: 'Chuyển sang tiếng Anh',
     langHintVi: '🇺🇸 Trang này cũng có bản tiếng Anh — bấm để chuyển đổi.',
     langHintEn: '🇻🇳 Có tiếng Việt — bấm để chuyển đổi.',
-    langHintFooterVi: 'Trang này cũng có bản tiếng Anh',
   },
 } as const;
 
@@ -505,19 +498,34 @@ const uiStrings = {
 const getStaircaseOffset = (index: number, total: number) =>
   ((total - 1 - index) / Math.max(total - 1, 1)) * 50;
 
-/* ─── Tab hero heading (like seanhalpin.xyz) ──────────────────────── */
-const TabHero = ({ children }: { children: React.ReactNode }) => (
+/* ─── Tab hero heading (editorial masthead) ─────────────────────── */
+const TabHero = ({ children, index }: { children: React.ReactNode; index?: number }) => (
   <motion.div {...scrollReveal} className="text-center mb-16 pt-4">
-    <h1
-      className="font-display font-black text-forest dark:text-white leading-[0.88]"
-      style={{ fontSize: 'clamp(3.5rem, 10vw, 8rem)' }}
+    {index !== undefined && (
+      <div className="font-mono text-[11px] tracking-[0.18em] text-[var(--ink-muted)] mb-4 uppercase">
+        № {String(index).padStart(2, '0')}
+      </div>
+    )}
+    <h2
+      className="font-display italic text-[var(--ink)] leading-[0.92]"
+      style={{
+        fontSize: 'clamp(2.5rem, 7vw, 6rem)',
+        fontWeight: 500,
+        fontVariationSettings: '"opsz" 60',
+        letterSpacing: '-0.01em',
+      }}
     >
       {children}
-    </h1>
+    </h2>
+    <div
+      className="mx-auto mt-6 h-px w-12"
+      style={{ backgroundColor: 'var(--sage)' }}
+      aria-hidden
+    />
   </motion.div>
 );
 
-/* ─── Project card ─────────────────────────────────────────────────── */
+/* ─── Project card (editorial bordered) ───────────────────────────── */
 const ProjectCard = ({
   title,
   blurb,
@@ -536,33 +544,49 @@ const ProjectCard = ({
     variants={fadeIn}
     className="block h-full group"
   >
-    <div className="bg-forest dark:bg-forest-light text-white rounded-xl p-4 h-full flex flex-col gap-2">
+    <div
+      className="relative h-full flex flex-col gap-3 p-5 transition-colors duration-300"
+      style={{
+        backgroundColor: 'transparent',
+        border: '1px solid var(--rule)',
+      }}
+    >
       <div className="flex items-start justify-between gap-2">
-        <h3 className="font-display font-bold text-sm leading-snug">{title}</h3>
+        <h3 className="font-display italic text-[var(--ink)] text-base leading-snug" style={{ fontWeight: 600 }}>
+          {title}
+        </h3>
         <ExternalLink
-          size={14}
-          className="shrink-0 mt-0.5 text-white/40 group-hover:text-white/80 transition-colors"
+          size={13}
+          className="shrink-0 mt-1 text-[var(--ink-muted)] group-hover:text-[var(--sage)] transition-colors"
           aria-hidden
         />
       </div>
-      <p className="text-white/65 text-xs leading-relaxed flex-1">{blurb}</p>
-      <span className="text-white/45 text-[11px] font-semibold uppercase tracking-wide mt-auto pt-1 group-hover:text-white/70 transition-colors">
+      <p className="font-serif text-[var(--ink-muted)] text-[13px] leading-relaxed flex-1">{blurb}</p>
+      <span className="font-mono text-[10px] tracking-[0.18em] uppercase mt-auto pt-2 text-[var(--ink-muted)] group-hover:text-[var(--sage)] transition-colors">
         {visitLabel}
       </span>
     </div>
   </motion.a>
 );
 
-/* ─── Honor card ─────────────────────────────────────────────────── */
+/* ─── Honor row (editorial ruled list) ───────────────────────────── */
 const HonorCard = ({ title, org, date }: { title: string; org: string; date: string }) => (
-  <motion.div variants={fadeIn} className="h-full">
-    <div className="bg-forest dark:bg-forest-light text-white rounded-xl p-4 h-full flex flex-col gap-2">
-      <h3 className="font-display font-bold text-sm leading-snug">{title}</h3>
-      <p className="text-white/65 text-[11px] font-semibold uppercase tracking-wide leading-snug">
+  <motion.div
+    variants={fadeIn}
+    className="group flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-4"
+    style={{ borderTop: '1px solid var(--rule)' }}
+  >
+    <div className="flex-1 min-w-0">
+      <h3 className="font-display italic text-[var(--ink)] text-[15px] leading-snug" style={{ fontWeight: 500 }}>
+        {title}
+      </h3>
+      <p className="font-serif text-[var(--ink-muted)] text-[13px] leading-snug mt-0.5">
         {org}
       </p>
-      <p className="text-white/45 text-xs mt-auto pt-1">{date}</p>
     </div>
+    <p className="font-mono text-[11px] text-[var(--ink-muted)] tabular-nums whitespace-nowrap sm:text-right">
+      {date}
+    </p>
   </motion.div>
 );
 
@@ -592,31 +616,55 @@ const ExperienceItem = ({
 }) => (
   <motion.div
     {...scrollReveal}
-    className="mb-12 border-l-2 border-forest/20 dark:border-white/15 pl-6 relative"
+    className="mb-10 pl-6 relative"
+    style={{ borderLeft: '1px solid var(--rule)' }}
   >
-    <div className="absolute w-3 h-3 bg-forest dark:bg-white/70 rounded-full -left-[6.5px] top-1.5 ring-2 ring-white/80 dark:ring-black/30" />
+    <div
+      className="absolute w-1.5 h-1.5 -left-[3.5px] top-2"
+      style={{ backgroundColor: 'var(--sage)' }}
+      aria-hidden
+    />
 
-    <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2">
-      <div className="flex items-center gap-3 flex-wrap">
-        <h3 className="text-xl font-display font-bold text-forest dark:text-white">{title}</h3>
+    <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2 gap-2">
+      <div className="flex items-baseline gap-4 flex-wrap">
+        <h3
+          className="font-display italic text-[var(--ink)] text-xl leading-snug"
+          style={{ fontWeight: 500 }}
+        >
+          {title}
+        </h3>
         {documentData && onOpenDocument && (
           <button
             onClick={() => onOpenDocument(documentData)}
-            className="flex items-center gap-1.5 px-3 py-1 bg-white/70 dark:bg-white/10 border border-forest/20 dark:border-white/15 rounded-full text-forest dark:text-white/80 hover:bg-forest dark:hover:bg-white hover:text-white dark:hover:text-forest transition-all duration-300 text-xs uppercase font-bold tracking-wider group"
+            className="group inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
             title={uiStrings[language].viewPaper}
           >
-            <FileText size={13} className="group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline">{uiStrings[language].viewPaper}</span>
+            <FileText size={11} />
+            <span className="relative">
+              {uiStrings[language].viewPaper}
+              <span
+                className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
+                style={{ backgroundColor: 'var(--sage)' }}
+                aria-hidden
+              />
+            </span>
           </button>
         )}
         {posterData && onOpenDocument && (
           <button
             onClick={() => onOpenDocument(posterData)}
-            className="flex items-center gap-1.5 px-3 py-1 bg-white/70 dark:bg-white/10 border border-forest/20 dark:border-white/15 rounded-full text-forest dark:text-white/80 hover:bg-forest dark:hover:bg-white hover:text-white dark:hover:text-forest transition-all duration-300 text-xs uppercase font-bold tracking-wider group"
+            className="group inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
             title={uiStrings[language].viewPoster}
           >
-            <LayoutTemplate size={13} className="group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline">{uiStrings[language].viewPoster}</span>
+            <LayoutTemplate size={11} />
+            <span className="relative">
+              {uiStrings[language].viewPoster}
+              <span
+                className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
+                style={{ backgroundColor: 'var(--sage)' }}
+                aria-hidden
+              />
+            </span>
           </button>
         )}
         {toolUrl && (
@@ -624,23 +672,36 @@ const ExperienceItem = ({
             href={toolUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-3 py-1 bg-white/70 dark:bg-white/10 border border-forest/20 dark:border-white/15 rounded-full text-forest dark:text-white/80 hover:bg-forest dark:hover:bg-white hover:text-white dark:hover:text-forest transition-all duration-300 text-xs uppercase font-bold tracking-wider group"
+            className="group inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
           >
-            <ExternalLink size={13} className="group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline">{uiStrings[language].liveTool}</span>
+            <ExternalLink size={11} />
+            <span className="relative">
+              {uiStrings[language].liveTool}
+              <span
+                className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
+                style={{ backgroundColor: 'var(--sage)' }}
+                aria-hidden
+              />
+            </span>
           </a>
         )}
       </div>
-      <span className="text-xs text-forest/50 dark:text-white/40 font-mono whitespace-nowrap mt-1 md:mt-0 md:ml-4 bg-white/50 dark:bg-white/8 px-2 py-0.5 rounded-full">
+      <span className="font-mono text-[11px] text-[var(--ink-muted)] tabular-nums whitespace-nowrap">
         {date}
       </span>
     </div>
 
-    <div className="text-sm font-bold text-forest/70 dark:text-white/55 uppercase tracking-wider mb-1">{role}</div>
+    <div className="font-sans text-[11px] tracking-[0.16em] uppercase text-[var(--ink-muted)] mb-1">
+      {role}
+    </div>
     {location && (
-      <div className="text-xs text-forest/50 dark:text-white/40 mb-3 italic">{location}</div>
+      <div className="font-serif italic text-[12px] text-[var(--ink-muted)] mb-3">
+        {location}
+      </div>
     )}
-    <div className="text-forest/80 dark:text-white/65 leading-relaxed text-base">{children}</div>
+    <div className="font-serif text-[var(--ink)] leading-relaxed text-[15px]">
+      {children}
+    </div>
   </motion.div>
 );
 
@@ -660,19 +721,32 @@ const SectionHeading = ({
     {...scrollReveal}
     className={`mb-12 ${center ? 'text-center' : ''}`}
   >
-    <div className="inline-block mb-3 text-xs font-bold tracking-[0.2em] text-forest/50 dark:text-white/40 uppercase">
+    <div className="font-mono text-[11px] tracking-[0.18em] text-[var(--ink-muted)] uppercase mb-3">
       {label}
     </div>
-    <h2 className="font-display font-black text-5xl md:text-6xl text-forest dark:text-white leading-[0.92]">
+    <h2
+      className="font-display italic text-[var(--ink)] leading-[0.95]"
+      style={{
+        fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+        fontWeight: 500,
+        fontVariationSettings: '"opsz" 48',
+        letterSpacing: '-0.01em',
+      }}
+    >
       {heading}
     </h2>
+    <div
+      className={`${center ? 'mx-auto' : ''} mt-5 h-px w-12`}
+      style={{ backgroundColor: 'var(--sage)' }}
+      aria-hidden
+    />
     {sub && (
-      <p className="mt-4 text-forest/60 dark:text-white/50 max-w-xl mx-auto text-base">{sub}</p>
+      <p className={`mt-5 ${center ? 'mx-auto' : ''} text-[var(--ink-muted)] max-w-xl text-base font-serif leading-relaxed`}>{sub}</p>
     )}
   </motion.div>
 );
 
-/* ─── Staircase card (like seanhalpin.xyz About timeline) ─────────── */
+/* ─── Staircase entry (editorial marginalia offset) ────────────── */
 const StaircaseCard = ({
   title,
   role,
@@ -690,39 +764,48 @@ const StaircaseCard = ({
 }) => (
   <motion.div
     {...scrollReveal}
-    className="mb-3 staircase-step"
+    className="mb-8 staircase-step group overflow-visible"
     style={{ paddingLeft: `${offset}%` }}
   >
-    <div className="bg-forest dark:bg-forest-light text-white rounded-2xl p-5 md:p-6 max-w-lg">
-      <div className="flex items-baseline justify-between gap-4 mb-1">
-        <h3 className="font-display font-bold text-base md:text-lg leading-tight">
-          {title}
-        </h3>
-        <span className="font-display font-black text-lg md:text-xl whitespace-nowrap opacity-70">
-          {shortDate}
-        </span>
+    <div
+      className="relative pl-6 pr-2 py-3 max-w-2xl overflow-visible"
+      style={{ borderLeft: '1px solid var(--rule)' }}
+    >
+      <div className="font-mono text-[10px] tracking-[0.12em] text-[var(--ink-muted)] tabular-nums mb-2">
+        {shortDate}
       </div>
-      <div className="text-white/70 text-sm font-bold uppercase tracking-wider">
+      <h3
+        className="font-display italic text-[var(--ink)] text-lg md:text-xl leading-normal"
+        style={{ fontWeight: 500 }}
+      >
+        {title}
+      </h3>
+      <div className="font-sans text-[11px] tracking-[0.16em] uppercase text-[var(--ink-muted)] mt-1">
         {role}
       </div>
       {location && (
-        <div className="text-white/50 text-xs italic mt-1">{location}</div>
+        <div className="font-serif italic text-[12px] text-[var(--ink-muted)]/85 mt-0.5">
+          {location}
+        </div>
       )}
       {children && (
-        <div className="text-white/60 text-sm leading-relaxed mt-3">{children}</div>
+        <div className="font-serif text-[14px] text-[var(--ink)] leading-relaxed mt-3">
+          {children}
+        </div>
       )}
     </div>
   </motion.div>
 );
 
-/* ─── Education cards (reused on home + Education tab) ────────────── */
+/* ─── Education entries (editorial bordered columns) ─────────────── */
 const EducationCards = ({ language }: { language: Language }) => (
   <motion.div
     variants={staggerContainer}
     initial="initial"
     whileInView="animate"
     viewport={scrollViewport}
-    className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto"
+    className="grid grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto"
+    style={{ borderTop: '1px solid var(--rule)' }}
   >
     {educationData[language].map((item, i) => (
       <motion.a
@@ -731,16 +814,28 @@ const EducationCards = ({ language }: { language: Language }) => (
         target="_blank"
         rel="noopener noreferrer"
         variants={fadeIn}
-        className={`p-6 ${item.color} rounded-2xl border border-white/40 dark:border-white/10 hover:shadow-md hover:-translate-y-1 transition-all duration-300 text-center block`}
+        className="group block p-6 md:p-8 transition-colors duration-300"
+        style={{
+          borderBottom: '1px solid var(--rule)',
+          borderRight: i < educationData[language].length - 1 ? '1px solid var(--rule)' : 'none',
+        }}
       >
-        <h4 className="font-display font-black text-forest dark:text-white text-lg mb-2">
+        <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] mb-3">
+          № {String(i + 1).padStart(2, '0')}
+        </div>
+        <h4
+          className="font-display italic text-[var(--ink)] text-xl leading-tight mb-2 group-hover:text-[var(--sage)] transition-colors"
+          style={{ fontWeight: 500 }}
+        >
           {item.school}
         </h4>
-        <p className="text-forest/60 dark:text-white/50 italic mb-2 text-sm">
+        <p className="font-serif italic text-[var(--ink-muted)] text-[14px] mb-3">
           {item.degree}
         </p>
-        <p className="text-sm text-forest/50 dark:text-white/40">{item.date}</p>
-        <p className="text-xs text-forest/60 dark:text-white/50 mt-2 uppercase tracking-wide font-bold">
+        <div className="font-mono text-[11px] text-[var(--ink-muted)] mb-2 tabular-nums">
+          {item.date}
+        </div>
+        <p className="font-serif text-[13px] text-[var(--ink)] leading-snug">
           {item.honor}
         </p>
       </motion.a>
@@ -767,11 +862,15 @@ const NAV_LINKS: Record<Language, { id: TabId; label: string; altLabel: string }
 };
 
 const navLinkClass = (active: boolean) =>
-  `px-3.5 py-1.5 text-sm font-medium rounded-full transition-colors cursor-pointer whitespace-nowrap relative z-10 ${
+  `relative px-2 py-3 font-sans text-[11px] tracking-[0.18em] uppercase cursor-pointer whitespace-nowrap transition-colors duration-200 ${
     active
-      ? 'text-forest dark:text-white'
-      : 'text-forest/70 dark:text-white/70 hover:text-forest dark:hover:text-white'
+      ? 'text-[var(--ink)] after:absolute after:left-2 after:right-2 after:bottom-1.5 after:h-px after:bg-[var(--sage)]'
+      : 'text-[var(--ink-muted)] hover:text-[var(--ink)] after:absolute after:left-2 after:right-2 after:bottom-1.5 after:h-px after:bg-[var(--sage)] after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200'
   }`;
+
+const getSystemPrefersDark = () =>
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-color-scheme: dark)').matches;
 
 /* ─── App ────────────────────────────────────────────────────────── */
 const App: React.FC = () => {
@@ -786,14 +885,13 @@ const App: React.FC = () => {
   const [langTransition, setLangTransition] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDocument, setActiveDocument] = useState<ResearchDocument | null>(null);
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(getSystemPrefersDark);
+  const themeOverride = useRef<'light' | 'dark' | null>(null);
   const [activeTab, setActiveTab] = useState<TabId>('home');
   const [navResearchOpen, setNavResearchOpen] = useState(false);
   const navResearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [langHintVisible, setLangHintVisible] = useState(false);
   const [langHintDismissed, setLangHintDismissed] = useState(false);
-  const [langBtnHighlight, setLangBtnHighlight] = useState(false);
-  const [langBtnInitPulse, setLangBtnInitPulse] = useState(true);
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
@@ -808,6 +906,37 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!menuOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const syncWithSystem = (event: MediaQueryList | MediaQueryListEvent) => {
+      if (themeOverride.current !== null) return;
+      setIsDark(event.matches);
+    };
+    if (themeOverride.current === null) {
+      setIsDark(mq.matches);
+    }
+    mq.addEventListener('change', syncWithSystem);
+    return () => mq.removeEventListener('change', syncWithSystem);
+  }, []);
+
+  const toggleDarkMode = () => {
+    setIsDark((prev) => {
+      const next = !prev;
+      themeOverride.current = next ? 'dark' : 'light';
+      return next;
+    });
+  };
+
+  useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
   }, [isDark]);
 
@@ -815,12 +944,7 @@ const App: React.FC = () => {
     document.documentElement.lang = language;
   }, [language]);
 
-  useEffect(() => {
-    const t = setTimeout(() => setLangBtnInitPulse(false), 3000);
-    return () => clearTimeout(t);
-  }, []);
-
-  // Show hints on every visit; auto-dismiss footer pill after 3 s.
+  // Show hints on every visit; auto-dismiss after 3 s.
   // Dismissal is session-only — no localStorage — so it reappears on each load.
   useEffect(() => {
     const showTimer = setTimeout(() => setLangHintVisible(true), 1200);
@@ -835,15 +959,6 @@ const App: React.FC = () => {
   const dismissLangHint = () => {
     setLangHintVisible(false);
     setLangHintDismissed(true);
-  };
-
-  const pointToLangBtn = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    // After scroll completes, flash a highlight ring on the nav language button.
-    setTimeout(() => {
-      setLangBtnHighlight(true);
-      setTimeout(() => setLangBtnHighlight(false), 2000);
-    }, 500);
   };
 
   /* Frosted nav shell fades in once content scrolls near the top */
@@ -868,41 +983,7 @@ const App: React.FC = () => {
     setNavBarSolid(false);
   }, [activeTab, isMobile]);
 
-  /* sliding nav pill */
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const navRef = useRef<HTMLDivElement>(null);
-  const linkRefs = useRef<Record<string, HTMLElement | null>>({});
-  const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, visible: false });
-
-  const navShellFrost =
-    'bg-white/75 dark:bg-forest/60 backdrop-blur-md shadow-lg border border-white/70 dark:border-white/10';
-
-  useLayoutEffect(() => {
-    const measure = () => {
-      const targetId = hoveredId ?? (activeTab !== 'home' ? activeTab : null);
-      if (targetId && navRef.current && linkRefs.current[targetId]) {
-        const navRect = navRef.current.getBoundingClientRect();
-        const linkRect = linkRefs.current[targetId]!.getBoundingClientRect();
-        setPillStyle({
-          left: linkRect.left - navRect.left,
-          width: linkRect.width,
-          visible: true,
-        });
-      } else {
-        setPillStyle((prev) => ({ ...prev, visible: false }));
-      }
-    };
-
-    measure();
-    // Re-measure once fonts settle / after the next frame, since label widths
-    // change when toggling language and the first measurement can race the layout.
-    const raf = requestAnimationFrame(measure);
-    window.addEventListener('resize', measure);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', measure);
-    };
-  }, [hoveredId, activeTab, language]);
+  /* Masthead nav (no sliding indicator — underlines handle active/hover state) */
 
   const switchTab = (id: TabId, scrollTo?: string) => {
     setMenuOpen(false);
@@ -952,328 +1033,273 @@ const App: React.FC = () => {
     : uiStrings.vi.langHintVi;
   const showLangHint = langHintVisible && !langHintDismissed;
 
+  const closeDocumentModal = useCallback(() => setActiveDocument(null), []);
+
   const navLinks = NAV_LINKS[language];
   const localizedName = language === 'vi' ? 'Võ Sơn Tùng' : 'TJ Vo';
 
   return (
-    <div className="site-shell min-h-screen text-forest dark:text-white selection:bg-forest selection:text-white transition-colors duration-300">
+    <div className="site-shell min-h-screen transition-colors duration-300">
       <DocumentModal
         isOpen={!!activeDocument}
-        onClose={() => setActiveDocument(null)}
+        onClose={closeDocumentModal}
         document={activeDocument}
         language={language}
       />
 
-      {/* ── Floating pill nav ──────────────────────────────── */}
-      <nav className="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
-        {/* Desktop */}
-        <motion.div
-          ref={navRef}
-          className="hidden md:flex pointer-events-auto items-center gap-3 px-3 py-1.5 relative rounded-full"
-        >
-          <motion.div
-            aria-hidden
-            className={`absolute inset-0 rounded-full pointer-events-none ${navShellFrost}`}
-            animate={{ opacity: navBarSolid ? 1 : 0 }}
-            transition={{ duration: 0.3, ease: cubicEase }}
-          />
-          <div
-            className="absolute rounded-full bg-white/55 dark:bg-white/12 backdrop-blur-md border border-white/70 dark:border-white/20 shadow-[0_2px_12px_rgba(26,61,43,0.1)] dark:shadow-[0_2px_16px_rgba(0,0,0,0.35)] pointer-events-none"
-            style={{
-              left: pillStyle.left,
-              width: pillStyle.width,
-              top: 6,
-              bottom: 6,
-              opacity: pillStyle.visible ? 1 : 0,
-              transition:
-                'left 320ms cubic-bezier(0.4, 0, 0.2, 1), width 320ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms ease',
-            }}
-          />
-
+      {/* ── Editorial masthead nav ─────────────────────────── */}
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 transition-colors duration-300"
+        style={{
+          backgroundColor: navBarSolid ? 'var(--paper)' : 'transparent',
+          borderBottom: navBarSolid ? '1px solid var(--rule)' : '1px solid transparent',
+        }}
+      >
+        {/* Desktop masthead */}
+        <div className="hidden md:flex items-center justify-between gap-6 px-8 lg:px-12 h-14">
           <button
             type="button"
             onClick={() => switchTab('home')}
-            className="group w-8 h-8 p-0 rounded-full flex-shrink-0 relative z-10 border-0 bg-transparent cursor-pointer"
+            className="group flex items-center cursor-pointer border-0 bg-transparent p-0"
             aria-label={uiStrings[language].ariaHome}
           >
-            <BrandMark className="w-full h-full" />
+            <BrandMark className="h-7" />
           </button>
 
-          <div className="flex items-center gap-1.5">
-          {navLinks.map(({ id, label }) =>
-            id === 'research' ? (
-              <div
-                key={id}
-                className="relative z-20"
-                onMouseEnter={() => {
-                  if (navResearchTimer.current) clearTimeout(navResearchTimer.current);
-                  setHoveredId(id);
-                  setNavResearchOpen(true);
-                }}
-                onMouseLeave={() => {
-                  setHoveredId(null);
-                  navResearchTimer.current = setTimeout(() => setNavResearchOpen(false), 120);
-                }}
-              >
+          <div className="flex items-center gap-0">
+            {navLinks.map(({ id, label }) =>
+              id === 'research' ? (
+                <div
+                  key={id}
+                  className="relative"
+                  onMouseEnter={() => {
+                    if (navResearchTimer.current) clearTimeout(navResearchTimer.current);
+                    setNavResearchOpen(true);
+                  }}
+                  onMouseLeave={() => {
+                    navResearchTimer.current = setTimeout(() => setNavResearchOpen(false), 120);
+                  }}
+                >
+                  <button
+                    onClick={() => switchTab(id)}
+                    className={navLinkClass(activeTab === id)}
+                  >
+                    {label}
+                  </button>
+                  <AnimatePresence>
+                    {navResearchOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -4 }}
+                        animate={{ opacity: 1, y: 0, transition: { duration: 0.15 } }}
+                        exit={{ opacity: 0, y: -4, transition: { duration: 0.1 } }}
+                        className="absolute top-full left-1/2 -translate-x-1/2 mt-0 w-60 overflow-hidden"
+                        style={{
+                          backgroundColor: 'var(--paper)',
+                          border: '1px solid var(--rule)',
+                          borderTop: 'none',
+                        }}
+                        onMouseEnter={() => {
+                          if (navResearchTimer.current) clearTimeout(navResearchTimer.current);
+                        }}
+                        onMouseLeave={() => {
+                          navResearchTimer.current = setTimeout(() => setNavResearchOpen(false), 120);
+                        }}
+                      >
+                        <button
+                          onClick={() => switchTab('research')}
+                          className="block w-full text-left px-5 py-3 font-sans text-[11px] tracking-[0.16em] uppercase text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors"
+                        >
+                          {uiStrings[language].researchExperienceMenu}
+                        </button>
+                        <div className="hairline-t mx-5" />
+                        <button
+                          onClick={() => switchTab('research', 'research-presentations')}
+                          className="block w-full text-left px-5 py-3 font-sans text-[11px] tracking-[0.16em] uppercase text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors"
+                        >
+                          {uiStrings[language].conferencePresentationsMenu}
+                        </button>
+                        <div className="hairline-t mx-5" />
+                        <button
+                          onClick={() => switchTab('research', 'research-projects')}
+                          className="block w-full text-left px-5 py-3 font-sans text-[11px] tracking-[0.16em] uppercase text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors"
+                        >
+                          {uiStrings[language].personalProjectsMenu}
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
                 <button
-                  ref={(el) => { linkRefs.current[id] = el; }}
+                  key={id}
                   onClick={() => switchTab(id)}
-                  className={`${navLinkClass(activeTab === id)} flex items-center gap-1`}
+                  className={navLinkClass(activeTab === id)}
                 >
                   {label}
-                  <ChevronDown
-                    size={12}
-                    className={`transition-transform duration-200 ${navResearchOpen ? 'rotate-180' : ''}`}
-                  />
                 </button>
-                <AnimatePresence>
-                  {navResearchOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6, scale: 0.96 }}
-                      animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.15 } }}
-                      exit={{ opacity: 0, y: -6, scale: 0.96, transition: { duration: 0.1 } }}
-                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-52 bg-white/95 dark:bg-[#0f2919]/95 backdrop-blur-md border border-white/80 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden"
-                      onMouseEnter={() => {
-                        if (navResearchTimer.current) clearTimeout(navResearchTimer.current);
-                      }}
-                      onMouseLeave={() => {
-                        navResearchTimer.current = setTimeout(() => setNavResearchOpen(false), 120);
-                      }}
-                    >
-                      <button
-                        onClick={() => switchTab('research')}
-                        className="w-full text-left px-4 py-3 text-sm font-medium text-forest/70 dark:text-white/60 hover:bg-forest/5 dark:hover:bg-white/8 transition-colors"
-                      >
-                        {uiStrings[language].researchExperienceMenu}
-                      </button>
-                      <div className="mx-4 h-px bg-forest/8 dark:bg-white/8" />
-                      <button
-                        onClick={() => switchTab('research', 'research-presentations')}
-                        className="w-full text-left px-4 py-3 text-sm font-medium text-forest/70 dark:text-white/60 hover:bg-forest/5 dark:hover:bg-white/8 transition-colors"
-                      >
-                        {uiStrings[language].conferencePresentationsMenu}
-                      </button>
-                      <div className="mx-4 h-px bg-forest/8 dark:bg-white/8" />
-                      <button
-                        onClick={() => switchTab('research', 'research-projects')}
-                        className="w-full text-left px-4 py-3 text-sm font-medium text-forest/70 dark:text-white/60 hover:bg-forest/5 dark:hover:bg-white/8 transition-colors"
-                      >
-                        {uiStrings[language].personalProjectsMenu}
-                      </button>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ) : (
-              <button
-                key={id}
-                ref={(el) => { linkRefs.current[id] = el; }}
-                onClick={() => switchTab(id)}
-                onMouseEnter={() => setHoveredId(id)}
-                onMouseLeave={() => setHoveredId(null)}
-                className={navLinkClass(activeTab === id)}
-              >
-                {label}
-              </button>
-            )
-          )}
-          </div>
-
-          <div
-            className="w-px h-6 bg-forest/15 dark:bg-white/20 flex-shrink-0"
-            aria-hidden
-          />
-
-          <div className="flex items-center gap-2 flex-shrink-0">
-          <div className="relative z-10">
-            {langBtnHighlight && (
-              <span className="absolute inset-0 rounded-full animate-ping bg-nobel-gold/50 pointer-events-none" />
+              )
             )}
-            <button
-              onClick={handleLanguageToggle}
-              className={`relative min-w-[2.75rem] px-3 py-1.5 border text-forest dark:text-white text-xs font-bold rounded-full hover:bg-forest/10 dark:hover:bg-white/10 transition-all overflow-hidden text-center ${langBtnHighlight ? 'border-nobel-gold shadow-[0_0_0_3px_rgba(197,160,89,0.35)]' : 'border-forest/20 dark:border-white/20'}`}
-              aria-label={uiStrings[language].ariaToggleLanguage}
-            >
-              {langBtnInitPulse && (
-                <span className="absolute inset-0 rounded-full bg-yellow-200/70 animate-pulse pointer-events-none" />
-              )}
-              <span
-                style={{
-                  display: 'inline-block',
-                  transition: 'transform 0.19s cubic-bezier(0.4,0,0.2,1), opacity 0.19s ease',
-                  transform: langTransition ? 'translateY(-6px) scale(0.8)' : 'translateY(0) scale(1)',
-                  opacity: langTransition ? 0 : 1,
-                }}
-              >
-                {language === 'en' ? 'VI' : 'EN'}
-              </span>
-            </button>
-            {showLangHint && (
-              <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 pointer-events-none">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-70 animate-ping" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-nobel-gold ring-2 ring-white/80 dark:ring-forest" />
-              </span>
-            )}
-            <AnimatePresence>
-              {showLangHint && (
-                <motion.div
-                  initial={{ opacity: 0, y: -6, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.2 } }}
-                  exit={{ opacity: 0, y: -6, scale: 0.96, transition: { duration: 0.15 } }}
-                  className="absolute top-full right-0 mt-3 w-56 rounded-2xl bg-forest text-white dark:bg-white dark:text-forest shadow-xl text-xs leading-snug overflow-hidden"
-                  role="status"
-                >
-                  <button
-                    type="button"
-                    onClick={handleLanguageToggle}
-                    className="w-full text-left px-4 pt-3 pb-2.5 hover:bg-white/10 dark:hover:bg-forest/10 transition-colors"
-                  >
-                    <div className="font-medium pr-5">{langHintText}</div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={dismissLangHint}
-                    aria-label={uiStrings[language].ariaDismiss}
-                    className="absolute top-1.5 right-1.5 p-1 rounded-full text-white/70 hover:text-white dark:text-forest/60 dark:hover:text-forest"
-                  >
-                    <X size={11} />
-                  </button>
-                  <span
-                    aria-hidden
-                    className="absolute -top-1.5 right-4 w-3 h-3 rotate-45 bg-forest dark:bg-white"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
-          <a
-            href="https://www.linkedin.com/in/tung-vo-4728b7235/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-1.5 bg-forest text-white text-sm font-medium rounded-full hover:bg-forest/80 transition-colors flex items-center gap-1.5 flex-shrink-0 relative z-10 whitespace-nowrap"
-          >
-            <Linkedin size={13} />
-            {uiStrings[language].connect}
-          </a>
-          <button
-            onClick={() => setIsDark(!isDark)}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-forest/50 hover:text-forest hover:bg-forest/10 dark:text-white/50 dark:hover:text-white dark:hover:bg-white/10 transition-all flex-shrink-0 relative z-10"
-            aria-label={uiStrings[language].ariaToggleDarkMode}
-          >
-            {isDark ? <Sun size={14} /> : <Moon size={14} />}
-          </button>
-          </div>
-        </motion.div>
 
-        {/* Mobile */}
-        <div className="flex md:hidden w-full pointer-events-auto justify-between items-center gap-2">
-          <button
-            onClick={() => switchTab('home')}
-            className="relative flex items-center gap-2 px-3 py-2 rounded-full overflow-hidden"
-          >
-            <motion.span
-              aria-hidden
-              className={`absolute inset-0 rounded-full ${navShellFrost}`}
-              animate={{ opacity: navBarSolid ? 1 : 0 }}
-              transition={{ duration: 0.3, ease: cubicEase }}
-            />
-            <BrandMark className="relative w-7 h-7 flex-shrink-0" />
-            <span className="relative font-display font-black text-forest dark:text-white text-sm">
-              {localizedName}
-            </span>
-          </button>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-5">
             <div className="relative">
-              {langBtnHighlight && (
-                <span className="absolute inset-0 rounded-full animate-ping bg-nobel-gold/50 pointer-events-none" />
-              )}
               <button
-                className={`relative px-3 py-2 rounded-full text-forest dark:text-white/70 text-xs font-bold overflow-hidden ${langBtnHighlight ? 'ring-2 ring-nobel-gold ring-offset-1 ring-offset-transparent' : ''}`}
                 onClick={handleLanguageToggle}
+                className="relative font-mono text-[11px] tracking-[0.12em] text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors py-2"
                 aria-label={uiStrings[language].ariaToggleLanguage}
               >
-                <motion.span
-                  aria-hidden
-                  className={`absolute inset-0 rounded-full ${navShellFrost}`}
-                  animate={{ opacity: navBarSolid ? 1 : 0 }}
-                  transition={{ duration: 0.3, ease: cubicEase }}
-                />
-                {langBtnInitPulse && (
-                  <span className="absolute inset-0 rounded-full bg-yellow-200/70 animate-pulse pointer-events-none" />
-                )}
                 <span
                   style={{
                     display: 'inline-block',
                     transition: 'transform 0.19s cubic-bezier(0.4,0,0.2,1), opacity 0.19s ease',
-                    transform: langTransition ? 'translateY(-6px) scale(0.8)' : 'translateY(0) scale(1)',
+                    transform: langTransition ? 'translateY(-4px)' : 'translateY(0)',
                     opacity: langTransition ? 0 : 1,
                   }}
                 >
-                  {language === 'en' ? 'VI' : 'EN'}
+                  {language === 'en' ? 'EN / VI' : 'VI / EN'}
                 </span>
+                {showLangHint && (
+                  <span
+                    className="absolute -top-0.5 -right-2 w-1.5 h-1.5"
+                    style={{ backgroundColor: 'var(--sage)' }}
+                    aria-hidden
+                  />
+                )}
               </button>
-              {showLangHint && (
-                <span className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 pointer-events-none">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-70 animate-ping" />
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-nobel-gold ring-2 ring-white/80 dark:ring-forest" />
-                </span>
-              )}
               <AnimatePresence>
                 {showLangHint && (
                   <motion.div
-                    initial={{ opacity: 0, y: -6, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1, transition: { duration: 0.2 } }}
-                    exit={{ opacity: 0, y: -6, scale: 0.96, transition: { duration: 0.15 } }}
-                    className="absolute top-full right-0 mt-2 w-52 rounded-2xl bg-forest text-white dark:bg-white dark:text-forest shadow-xl text-xs leading-snug z-50 overflow-hidden"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0, transition: { duration: 0.2 } }}
+                    exit={{ opacity: 0, y: -4, transition: { duration: 0.15 } }}
+                    className="absolute top-full right-0 mt-2 w-64 overflow-hidden"
+                    style={{
+                      backgroundColor: 'var(--paper)',
+                      border: '1px solid var(--rule)',
+                    }}
                     role="status"
                   >
                     <button
                       type="button"
                       onClick={handleLanguageToggle}
-                      className="w-full text-left px-4 pt-3 pb-2.5 hover:bg-white/10 dark:hover:bg-forest/10 transition-colors"
+                      className="w-full text-left px-4 pt-3 pb-2.5 font-serif italic text-[13px] text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors"
                     >
-                      <div className="font-medium pr-5">{langHintText}</div>
+                      <span className="pr-5">{langHintText}</span>
                     </button>
                     <button
                       type="button"
                       onClick={dismissLangHint}
                       aria-label={uiStrings[language].ariaDismiss}
-                      className="absolute top-1.5 right-1.5 p-1 rounded-full text-white/70 hover:text-white dark:text-forest/60 dark:hover:text-forest"
+                      className="absolute top-2 right-2 p-1 text-[var(--ink-muted)] hover:text-[var(--ink)]"
                     >
                       <X size={11} />
                     </button>
-                    <span
-                      aria-hidden
-                      className="absolute -top-1.5 right-4 w-3 h-3 rotate-45 bg-forest dark:bg-white"
-                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+            <a
+              href="https://www.linkedin.com/in/tung-vo-4728b7235/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-sans text-[11px] tracking-[0.18em] uppercase text-[var(--ink)] hover:text-[var(--sage)] transition-colors flex items-center gap-1.5 whitespace-nowrap py-2"
+            >
+              <Linkedin size={12} />
+              {uiStrings[language].connect}
+            </a>
+            <button
+              onClick={toggleDarkMode}
+              className="text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors p-2 -mr-2"
+              aria-label={uiStrings[language].ariaToggleDarkMode}
+            >
+              {isDark ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile masthead */}
+        <div className="flex md:hidden items-center justify-between gap-2 px-5 h-14">
+          <button
+            onClick={() => switchTab('home')}
+            className="flex items-center gap-2 cursor-pointer border-0 bg-transparent p-0"
+            aria-label={uiStrings[language].ariaHome}
+          >
+            <BrandMark className="h-6" />
+            <span className="font-display italic text-[var(--ink)] text-sm" style={{ fontWeight: 600 }}>
+              {localizedName}
+            </span>
+          </button>
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <button
+                className="relative font-mono text-[11px] tracking-[0.12em] text-[var(--ink-muted)] p-2 -mx-2"
+                onClick={handleLanguageToggle}
+                aria-label={uiStrings[language].ariaToggleLanguage}
+              >
+                <span
+                  style={{
+                    display: 'inline-block',
+                    transition: 'transform 0.19s cubic-bezier(0.4,0,0.2,1), opacity 0.19s ease',
+                    transform: langTransition ? 'translateY(-4px)' : 'translateY(0)',
+                    opacity: langTransition ? 0 : 1,
+                  }}
+                >
+                  {language === 'en' ? 'EN/VI' : 'VI/EN'}
+                </span>
+                {showLangHint && (
+                  <span
+                    className="absolute top-1 right-0 w-1.5 h-1.5"
+                    style={{ backgroundColor: 'var(--sage)' }}
+                    aria-hidden
+                  />
+                )}
+              </button>
+              <AnimatePresence>
+                {showLangHint && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0, transition: { duration: 0.2 } }}
+                    exit={{ opacity: 0, y: -4, transition: { duration: 0.15 } }}
+                    className="absolute top-full right-0 mt-2 w-60 z-50 overflow-hidden"
+                    style={{
+                      backgroundColor: 'var(--paper)',
+                      border: '1px solid var(--rule)',
+                    }}
+                    role="status"
+                  >
+                    <button
+                      type="button"
+                      onClick={handleLanguageToggle}
+                      className="w-full text-left px-4 pt-3 pb-2.5 font-serif italic text-[13px] text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors"
+                    >
+                      <span className="pr-5">{langHintText}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={dismissLangHint}
+                      aria-label={uiStrings[language].ariaDismiss}
+                      className="absolute top-2 right-2 p-1 text-[var(--ink-muted)] hover:text-[var(--ink)]"
+                    >
+                      <X size={11} />
+                    </button>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
             <button
-              className="relative p-2.5 rounded-full text-forest dark:text-white/60 overflow-hidden"
-              onClick={() => setIsDark(!isDark)}
+              className="text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors p-2 -mx-1"
+              onClick={toggleDarkMode}
               aria-label={uiStrings[language].ariaToggleDarkMode}
             >
-              <motion.span
-                aria-hidden
-                className={`absolute inset-0 rounded-full ${navShellFrost}`}
-                animate={{ opacity: navBarSolid ? 1 : 0 }}
-                transition={{ duration: 0.3, ease: cubicEase }}
-              />
-              <span className="relative">{isDark ? <Sun size={16} /> : <Moon size={16} />}</span>
+              {isDark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
             <button
-              className="relative p-2.5 rounded-full text-forest dark:text-white overflow-hidden"
+              className="text-[var(--ink)] p-2 -mr-2"
               onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={menuOpen ? (language === 'vi' ? 'Đóng menu' : 'Close menu') : (language === 'vi' ? 'Mở menu' : 'Open menu')}
+              aria-expanded={menuOpen}
             >
-              <motion.span
-                aria-hidden
-                className={`absolute inset-0 rounded-full ${navShellFrost}`}
-                animate={{ opacity: navBarSolid ? 1 : 0 }}
-                transition={{ duration: 0.3, ease: cubicEase }}
-              />
-              <span className="relative">{menuOpen ? <X size={18} /> : <Menu size={18} />}</span>
+              {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
         </div>
@@ -1281,19 +1307,24 @@ const App: React.FC = () => {
 
       {/* Mobile fullscreen menu */}
       {menuOpen && (
-        <div className="fixed inset-0 z-40 bg-[#EDEAE2]/95 dark:bg-[#0c1a11]/95 backdrop-blur-md flex flex-col items-center justify-center gap-7">
+        <div
+          className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8"
+          style={{ backgroundColor: 'var(--paper)' }}
+        >
           {navLinks.map(({ id, label }) => (
             <button
               key={id}
               onClick={() => switchTab(id)}
-              className="font-display font-black text-3xl text-forest dark:text-white hover:text-forest/60 dark:hover:text-white/60 transition-colors"
+              className="font-display italic text-4xl text-[var(--ink)] hover:text-[var(--sage)] transition-colors"
+              style={{ fontWeight: 500 }}
             >
               {label}
             </button>
           ))}
           <a
             href="mailto:vo.tung@stthom.edu"
-            className="mt-4 px-8 py-3 bg-forest text-white rounded-full text-sm font-medium shadow-lg"
+            className="mt-4 px-8 py-3 font-sans text-[11px] tracking-[0.2em] uppercase text-[var(--ink)] hover:text-[var(--paper)] hover:bg-[var(--ink)] transition-colors"
+            style={{ border: '1px solid var(--rule)' }}
           >
             {uiStrings[language].contact}
           </a>
@@ -1319,55 +1350,81 @@ const App: React.FC = () => {
             animate={{ opacity: 1, transition: { duration: 0.5 } }}
             exit={{ opacity: 0, transition: { duration: 0.3 } }}
           >
-            <header className="hero-fade relative min-h-screen pb-28 md:pb-36 flex items-center justify-center overflow-hidden mesh-gradient">
-              <div className="relative z-10 container mx-auto px-6 text-center">
-                <h1
-                  className="hero-pop hero-pop-2 font-display font-black text-forest dark:text-white leading-[0.88] mb-4 md:mb-5"
-                  style={{ fontSize: 'clamp(3.2rem, 10.5vw, 8.5rem)' }}
+            <header className="relative min-h-screen pb-28 md:pb-36 flex items-center justify-center overflow-hidden">
+              <div className="relative z-10 container mx-auto px-6 max-w-4xl">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.32, ease: cubicEase, delay: 0.1 }}
+                  className="text-center"
                 >
-                  {language === 'vi' ? 'Tôi là Võ Sơn Tùng.' : "Hi. I'm TJ."}
-                </h1>
+                  <div className="font-mono text-[11px] tracking-[0.22em] text-[var(--ink-muted)] uppercase mb-6">
+                    Portfolio · Tung (TJ) Vo
+                  </div>
+                  <h1
+                    className="font-display italic text-[var(--ink)] leading-[0.95] mb-8 md:mb-10"
+                    style={{
+                      fontSize: 'clamp(3rem, 9vw, 7.5rem)',
+                      fontWeight: 500,
+                      fontVariationSettings: '"opsz" 60',
+                      letterSpacing: '-0.015em',
+                    }}
+                  >
+                    {language === 'vi' ? 'Tôi là Võ Sơn Tùng.' : "Hi. I'm TJ."}
+                  </h1>
+                </motion.div>
 
                 <HeroBioWeather language={language} />
 
-                <div className="hero-pop hero-pop-3 flex flex-col sm:flex-row justify-center items-center gap-3">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.32, ease: cubicEase, delay: 0.35 }}
+                  className="flex flex-col sm:flex-row justify-center items-center gap-3 -mt-1"
+                >
                   <a
                     href="mailto:vo.tung@stthom.edu"
-                    className="flex items-center gap-2 px-7 py-3 bg-forest dark:bg-white text-white dark:text-forest rounded-full hover:bg-forest/85 dark:hover:bg-white/90 transition-colors font-medium text-sm shadow-md"
+                    className="group inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.1em] text-[var(--ink)] transition-colors"
                   >
-                    <Mail size={15} />
-                    vo.tung@stthom.edu
+                    <Mail size={14} className="text-[var(--sage)]" />
+                    <span className="relative">
+                      vo.tung@stthom.edu
+                      <span
+                        className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-100 transition-transform duration-300"
+                        style={{ backgroundColor: 'var(--sage)' }}
+                        aria-hidden
+                      />
+                    </span>
                   </a>
-                </div>
+                </motion.div>
 
                 {/* Language availability banner — visible in hero until user switches or dismisses */}
                 <AnimatePresence>
                   {!langHintDismissed && (
                     <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0, transition: { delay: 1.3, duration: 0.45 } }}
-                      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                      className="mt-5 flex justify-center"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1, transition: { delay: 1.0, duration: 0.4 } }}
+                      exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                      className="mt-8 flex justify-center"
                     >
-                      <div className="flex items-center bg-white/45 dark:bg-white/10 backdrop-blur-sm border border-white/60 dark:border-white/20 rounded-full shadow-sm overflow-hidden">
+                      <div className="flex items-center gap-3 max-w-xl">
+                        <span
+                          className="w-1.5 h-1.5 flex-shrink-0"
+                          style={{ backgroundColor: 'var(--sage)' }}
+                          aria-hidden
+                        />
                         <button
                           onClick={handleLanguageToggle}
-                          className="flex items-center gap-2.5 pl-4 pr-3 py-2.5 text-xs font-medium text-forest/75 dark:text-white/65 hover:text-forest dark:hover:text-white transition-colors"
+                          className="font-serif italic text-[13px] text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
                           aria-label={language === 'en' ? uiStrings.en.ariaSwitchToVietnamese : uiStrings.vi.ariaSwitchToEnglish}
                         >
-                          <span className="relative flex h-2 w-2 flex-shrink-0">
-                            <span className="absolute inline-flex h-full w-full rounded-full bg-nobel-gold opacity-75 animate-ping" />
-                            <span className="relative inline-flex h-2 w-2 rounded-full bg-nobel-gold" />
-                          </span>
-                          <span>
-                            {language === 'en'
-                              ? uiStrings.en.langHintEn
-                              : uiStrings.vi.langHintVi}
-                          </span>
+                          {language === 'en'
+                            ? uiStrings.en.langHintEn
+                            : uiStrings.vi.langHintVi}
                         </button>
                         <button
                           onClick={dismissLangHint}
-                          className="px-2.5 py-2.5 text-forest/35 dark:text-white/30 hover:text-forest/60 dark:hover:text-white/55 transition-colors border-l border-white/40 dark:border-white/15 flex-shrink-0"
+                          className="p-1 text-[var(--ink-muted)]/60 hover:text-[var(--ink)] transition-colors flex-shrink-0"
                           aria-label={uiStrings[language].ariaDismissLangHint}
                         >
                           <X size={11} />
@@ -1377,30 +1434,8 @@ const App: React.FC = () => {
                   )}
                 </AnimatePresence>
 
-                <div className="hero-pop hero-pop-4 absolute bottom-10 left-0 right-0 flex justify-center animate-bounce">
-                  <button
-                    onClick={() =>
-                      document
-                        .getElementById(isMobile ? 'section-about' : 'home-education')
-                        ?.scrollIntoView({ behavior: 'smooth' })
-                    }
-                    className="text-forest/40 hover:text-forest transition-colors cursor-pointer"
-                  >
-                    <ArrowDown size={24} />
-                  </button>
-                </div>
               </div>
             </header>
-
-            {/* Education below hero — hidden on mobile since the Education section below renders these cards in continuous-scroll mode. */}
-            <section id="home-education" className="py-24 px-6 md:px-16 hidden md:block">
-              <SectionHeading
-                label={language === 'vi' ? 'Học vấn' : 'Education'}
-                heading={language === 'vi' ? 'Nền tảng học thuật.' : 'Academic Foundation.'}
-                center
-              />
-              <EducationCards language={language} />
-            </section>
           </motion.div>
         )}
 
@@ -1412,7 +1447,7 @@ const App: React.FC = () => {
             {...mainTabMotion}
             className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
-            <TabHero>{language === 'vi' ? 'Học vấn.' : 'Education.'}</TabHero>
+            <TabHero index={1}>{language === 'vi' ? 'Học vấn.' : 'Education.'}</TabHero>
             <EducationCards language={language} />
           </motion.main>
         )}
@@ -1425,7 +1460,7 @@ const App: React.FC = () => {
             {...mainTabMotion}
             className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
-            <TabHero>{language === 'vi' ? 'Nghiên cứu.' : 'Research.'}</TabHero>
+            <TabHero index={2}>{language === 'vi' ? 'Nghiên cứu.' : 'Research.'}</TabHero>
 
             {/* Research experience */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
@@ -1541,33 +1576,51 @@ const App: React.FC = () => {
                 heading={uiStrings[language].presentationsHeading}
                 center
               />
-              <div className="max-w-3xl mx-auto space-y-4">
+              <div
+                className="max-w-3xl mx-auto"
+                style={{ borderTop: '1px solid var(--rule)' }}
+              >
                 {presentationsData[language].map((p, i) => (
                   <motion.div
                     key={i}
                     {...scrollReveal}
-                    className="flex gap-4 items-start p-5 bg-white/50 dark:bg-white/5 border border-white/60 dark:border-white/10 rounded-2xl hover:shadow-md transition-all duration-300"
+                    className="flex gap-5 items-baseline py-5"
+                    style={{ borderBottom: '1px solid var(--rule)' }}
                   >
-                    <span className="flex-shrink-0 mt-1 font-display font-black text-lg text-forest/30 dark:text-white/25 w-6 text-right">
-                      {i + 1}
+                    <span className="flex-shrink-0 font-mono text-[11px] tabular-nums text-[var(--ink-muted)] w-6">
+                      {String(i + 1).padStart(2, '0')}
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-3 mb-1">
-                        <h4 className="font-display font-bold text-forest dark:text-white leading-snug text-base">
+                        <h4
+                          className="font-display italic text-[var(--ink)] leading-snug text-[16px]"
+                          style={{ fontWeight: 500 }}
+                        >
                           {p.title}
                         </h4>
                         {p.poster && (
                           <button
                             onClick={() => setActiveDocument(p.poster!)}
-                            className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1 bg-white/70 dark:bg-white/10 border border-forest/20 dark:border-white/15 rounded-full text-forest dark:text-white/80 hover:bg-forest dark:hover:bg-white hover:text-white dark:hover:text-forest transition-all duration-300 text-xs uppercase font-bold tracking-wider group"
+                            className="group flex-shrink-0 inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
                           >
-                            <LayoutTemplate size={12} className="group-hover:scale-110 transition-transform" />
-                            <span>{uiStrings[language].viewPoster}</span>
+                            <LayoutTemplate size={11} />
+                            <span className="relative">
+                              {uiStrings[language].viewPoster}
+                              <span
+                                className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
+                                style={{ backgroundColor: 'var(--sage)' }}
+                                aria-hidden
+                              />
+                            </span>
                           </button>
                         )}
                       </div>
-                      <p className="text-sm text-forest/60 dark:text-white/50">
-                        {p.venue} · {p.location}, {p.year}
+                      <p className="font-serif text-[13px] text-[var(--ink-muted)] mt-1">
+                        {p.venue}
+                        <span className="mx-1.5 text-[var(--sage)]">·</span>
+                        {p.location}
+                        <span className="mx-1.5 text-[var(--ink-muted)]/40">/</span>
+                        <span className="font-mono text-[11px]">{p.year}</span>
                       </p>
                     </div>
                   </motion.div>
@@ -1588,7 +1641,7 @@ const App: React.FC = () => {
                 initial="initial"
                 whileInView="animate"
                 viewport={scrollViewport}
-                className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-3"
+                className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4"
               >
                 {projectsData[language].map((proj) => (
                   <ProjectCard
@@ -1612,8 +1665,8 @@ const App: React.FC = () => {
             {...mainTabMotion}
             className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
-            <TabHero>{language === 'vi' ? 'Lãnh đạo.' : 'Leadership.'}</TabHero>
-            <div className="overflow-hidden">
+            <TabHero index={3}>{language === 'vi' ? 'Lãnh đạo.' : 'Leadership.'}</TabHero>
+            <div className="overflow-x-clip overflow-y-visible">
               {leadershipData[language].map((entry, i, arr) => (
                 <StaircaseCard
                   key={`leadership-${i}`}
@@ -1638,8 +1691,8 @@ const App: React.FC = () => {
             {...mainTabMotion}
             className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
-            <TabHero>{language === 'vi' ? 'Kinh nghiệm.' : 'Work.'}</TabHero>
-            <div className="overflow-hidden">
+            <TabHero index={4}>{language === 'vi' ? 'Kinh nghiệm.' : 'Work.'}</TabHero>
+            <div className="overflow-x-clip overflow-y-visible">
               {workData[language].map((entry, i, arr) => (
                 <StaircaseCard
                   key={`work-${i}`}
@@ -1664,8 +1717,11 @@ const App: React.FC = () => {
             {...mainTabMotion}
             className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
-            <TabHero>{language === 'vi' ? 'Thành tích.' : 'Honors.'}</TabHero>
-            <motion.div {...scrollReveal} className="mb-6 text-center text-forest/60 dark:text-white/50 text-base max-w-xl mx-auto">
+            <TabHero index={5}>{language === 'vi' ? 'Thành tích.' : 'Honors.'}</TabHero>
+            <motion.div
+              {...scrollReveal}
+              className="mb-10 text-center font-serif italic text-[var(--ink-muted)] text-base max-w-xl mx-auto"
+            >
               {uiStrings[language].honorsSub}
             </motion.div>
             <motion.div
@@ -1673,7 +1729,8 @@ const App: React.FC = () => {
               initial="initial"
               whileInView="animate"
               viewport={scrollViewport}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-4xl mx-auto"
+              className="max-w-3xl mx-auto"
+              style={{ borderBottom: '1px solid var(--rule)' }}
             >
               {honorData[language].map((h, i) => (
                 <HonorCard
@@ -1685,81 +1742,81 @@ const App: React.FC = () => {
               ))}
             </motion.div>
 
-            <motion.div {...scrollReveal} className="mt-16 text-center">
-              <h3 className="font-display font-bold text-2xl text-forest dark:text-white mb-6">
+            <motion.div {...scrollReveal} className="mt-20 max-w-3xl mx-auto text-center">
+              <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--ink-muted)] mb-4">
                 {uiStrings[language].certHeading}
-              </h3>
-              <div className="flex flex-wrap justify-center gap-3">
-                {certificationsData[language].map((cert, i) => (
-                  <span
-                    key={`cert-${i}`}
-                    className="px-4 py-2 bg-[#EDEAE2] dark:bg-white/15 border border-stone-200 dark:border-white/25 rounded-full text-sm text-forest/70 dark:text-white/85 font-medium"
-                  >
-                    {cert}
-                  </span>
-                ))}
               </div>
+              <div
+                className="mx-auto mb-8 h-px w-12"
+                style={{ backgroundColor: 'var(--sage)' }}
+                aria-hidden
+              />
+              <p className="font-serif text-[15px] leading-loose text-[var(--ink)]">
+                {certificationsData[language].map((cert, i) => (
+                  <React.Fragment key={`cert-${i}`}>
+                    <span className="italic">{cert}</span>
+                    {i < certificationsData[language].length - 1 && (
+                      <span className="mx-3 text-[var(--sage)]">·</span>
+                    )}
+                  </React.Fragment>
+                ))}
+              </p>
             </motion.div>
           </motion.main>
         )}
       </AnimatePresence>
 
-      {/* ── Footer ─────────────────────────────────────────── */}
-      <footer className="bg-forest text-white/70 py-16">
+      {/* ── Footer (editorial masthead colophon) ───────────── */}
+      <footer
+        className="mt-24 py-9 px-6 md:px-12"
+        style={{ borderTop: '1px solid var(--rule)' }}
+      >
         <motion.div {...scrollReveal}>
-          <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="text-center md:text-left">
-              <div className="text-white font-display font-black text-3xl mb-1">
+          <div className="container mx-auto flex flex-col md:flex-row justify-between items-start md:items-baseline gap-5">
+            <div>
+              <div
+                className="font-display italic text-[var(--ink)] text-2xl mb-1"
+                style={{ fontWeight: 500 }}
+              >
                 {uiStrings[language].fullName}
               </div>
+              <div className="font-mono text-[10px] tracking-[0.2em] uppercase text-[var(--ink-muted)]">
+                Houston, Texas
+              </div>
             </div>
-            <div className="flex gap-3">
-              <a
-                href="mailto:vo.tung@stthom.edu"
-                className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-              >
-                <Mail size={18} />
-              </a>
-              <a
-                href="https://www.linkedin.com/in/tung-vo-4728b7235/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-              >
-                <Linkedin size={18} />
-              </a>
-            </div>
-          </div>
-          <div className="text-center mt-10 text-xs text-white/25">
-            {uiStrings[language].rightsReserved}
-          </div>
-          <div className="mt-6 flex flex-col items-center gap-0">
-            {/* Caret pointing up toward the nav VI/EN button */}
-            <span className="w-0 h-0 border-l-[7px] border-r-[7px] border-b-[7px] border-l-transparent border-r-transparent border-b-white/15" />
-            <div className="relative">
-              {showLangHint && (
-                <span className="absolute inset-0 rounded-full bg-nobel-gold/25 animate-ping pointer-events-none" />
-              )}
-            <div className="relative flex items-center gap-1 bg-white/10 rounded-full px-4 py-2 text-xs text-white/70">
-              <button
-                onClick={pointToLangBtn}
-                className="flex items-center gap-2 hover:text-white transition-colors"
-              >
-                <span>{language === 'en' ? '🇻🇳' : '🇺🇸'}</span>
-                <span>
-                  {language === 'en'
-                    ? uiStrings.en.langHintEn.replace('🇻🇳 ', '')
-                    : uiStrings.vi.langHintFooterVi}
-                </span>
-              </button>
-              <button
-                onClick={dismissLangHint}
-                className="ml-1 text-white/40 hover:text-white/80 transition-colors leading-none"
-                aria-label={uiStrings[language].ariaDismiss}
-              >
-                <X size={11} />
-              </button>
-            </div>
+            <div className="flex flex-col items-start md:items-end gap-2">
+              <div className="flex gap-5">
+                <a
+                  href="mailto:vo.tung@stthom.edu"
+                  className="group inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.16em] uppercase text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
+                >
+                  <Mail size={12} />
+                  <span className="relative">
+                    Email
+                    <span
+                      className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
+                      style={{ backgroundColor: 'var(--sage)' }}
+                      aria-hidden
+                    />
+                  </span>
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/tung-vo-4728b7235/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.16em] uppercase text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
+                >
+                  <Linkedin size={12} />
+                  <span className="relative">
+                    LinkedIn
+                    <span
+                      className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
+                      style={{ backgroundColor: 'var(--sage)' }}
+                      aria-hidden
+                    />
+                  </span>
+                </a>
+              </div>
             </div>
           </div>
         </motion.div>

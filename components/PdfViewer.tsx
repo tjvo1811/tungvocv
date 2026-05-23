@@ -28,6 +28,7 @@ interface PdfViewerProps {
   url: string;
   fitMode: 'page' | 'width';
   className?: string;
+  onLoadError?: () => void;
 }
 
 type PageEntry = {
@@ -78,7 +79,7 @@ async function renderPageToCanvas(page: PDFPageProxy, layoutScale: number, zoom:
   canvas.height = Math.floor(renderVp.height);
   canvas.style.width = `${displayVp.width}px`;
   canvas.style.height = `${displayVp.height}px`;
-  canvas.className = 'block max-w-none shadow-sm';
+  canvas.className = 'block max-w-none';
 
   await page.render({
     canvasContext: ctx,
@@ -98,7 +99,7 @@ function PageMount({ canvas }: { canvas: HTMLCanvasElement }) {
   return <div ref={ref} />;
 }
 
-export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = '' }) => {
+export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = '', onLoadError }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const pdfRef = useRef<PDFDocumentProxy | null>(null);
@@ -214,6 +215,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
       await renderAllPages(1, false);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to load PDF');
+      onLoadError?.();
     } finally {
       setLoading(false);
     }
@@ -370,51 +372,64 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
       style={{ WebkitOverflowScrolling: 'touch' }}
     >
       {loading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center text-forest/50 dark:text-white/50 text-sm bg-[#EDEAE2]/80 dark:bg-[#0c1a11]/80">
+        <div
+          className="absolute inset-0 z-10 flex items-center justify-center font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--ink-muted)]"
+          style={{ backgroundColor: 'var(--paper)' }}
+        >
           Loading…
         </div>
       )}
       {rendering && !loading && (
-        <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-full text-xs bg-forest/10 dark:bg-white/10 text-forest/60 dark:text-white/60 backdrop-blur-sm pointer-events-none">
+        <div
+          className="absolute top-3 right-3 z-10 px-2.5 py-1 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] pointer-events-none"
+          style={{ backgroundColor: 'var(--paper)', border: '1px solid var(--rule)' }}
+        >
           Sharpening…
         </div>
       )}
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center text-red-600/80 dark:text-red-400/80 text-sm px-6 text-center">
+        <div className="absolute inset-0 flex items-center justify-center font-serif italic text-[var(--ink-muted)] text-sm px-6 text-center">
           {error}
         </div>
       )}
       {!loading && !error && pages.length > 0 && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 px-2 py-1.5 rounded-full bg-white/90 dark:bg-[#0c1a11]/90 border border-forest/15 dark:border-white/15 shadow-lg backdrop-blur-sm">
+        <div
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 px-3 py-2"
+          style={{ backgroundColor: 'var(--paper)', border: '1px solid var(--rule)' }}
+        >
           <button
             type="button"
             onClick={() => adjustZoom(1 / ZOOM_STEP)}
             disabled={zoomPct <= MIN_ZOOM * 100}
-            className="p-1.5 rounded-full text-forest/70 dark:text-white/70 hover:bg-forest/10 dark:hover:bg-white/10 disabled:opacity-30 transition-colors"
+            className="p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-30 transition-colors"
             aria-label="Zoom out"
           >
-            <ZoomOut size={16} />
+            <ZoomOut size={14} />
           </button>
-          <span className="min-w-[3rem] text-center text-xs font-semibold tabular-nums text-forest/80 dark:text-white/80">
+          <span className="min-w-[3rem] text-center font-mono text-[11px] tabular-nums text-[var(--ink)]">
             {zoomPct}%
           </span>
           <button
             type="button"
             onClick={() => adjustZoom(ZOOM_STEP)}
             disabled={zoomPct >= MAX_ZOOM * 100}
-            className="p-1.5 rounded-full text-forest/70 dark:text-white/70 hover:bg-forest/10 dark:hover:bg-white/10 disabled:opacity-30 transition-colors"
+            className="p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-30 transition-colors"
             aria-label="Zoom in"
           >
-            <ZoomIn size={16} />
+            <ZoomIn size={14} />
           </button>
-          <span className="w-px h-5 bg-forest/15 dark:bg-white/15 mx-0.5" aria-hidden />
+          <span
+            className="w-px h-4 mx-1"
+            style={{ backgroundColor: 'var(--rule)', opacity: 0.4 }}
+            aria-hidden
+          />
           <button
             type="button"
             onClick={resetZoom}
-            className="p-1.5 rounded-full text-forest/70 dark:text-white/70 hover:bg-forest/10 dark:hover:bg-white/10 transition-colors"
+            className="p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
             aria-label="Reset zoom"
           >
-            <RotateCcw size={15} />
+            <RotateCcw size={13} />
           </button>
         </div>
       )}

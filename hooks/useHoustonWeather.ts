@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /** Downtown Houston — Open-Meteo expects WGS84 */
 export const HOUSTON = { latitude: 29.7604, longitude: -95.3698 };
@@ -24,11 +24,14 @@ export function useHoustonWeather(pollMs: number = HOUSTON_WEATHER_POLL_MS): {
   const [status, setStatus] = useState<HoustonWeatherStatus>('loading');
   const [tempC, setTempC] = useState<number | null>(null);
   const [weatherCode, setWeatherCode] = useState(0);
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
 
     const load = async () => {
+      const requestId = ++requestIdRef.current;
+
       try {
         const url = new URL('https://api.open-meteo.com/v1/forecast');
         url.searchParams.set('latitude', String(HOUSTON.latitude));
@@ -45,13 +48,13 @@ export function useHoustonWeather(pollMs: number = HOUSTON_WEATHER_POLL_MS): {
         const wc = data.current?.weather_code;
         if (typeof t !== 'number' || Number.isNaN(t)) throw new Error('bad payload');
 
-        if (!cancelled) {
-          setTempC(t);
-          setWeatherCode(typeof wc === 'number' ? wc : 0);
-          setStatus('ok');
-        }
+        if (cancelled || requestId !== requestIdRef.current) return;
+        setTempC(t);
+        setWeatherCode(typeof wc === 'number' ? wc : 0);
+        setStatus('ok');
       } catch {
-        if (!cancelled) setStatus('error');
+        if (cancelled || requestId !== requestIdRef.current) return;
+        setStatus((prev) => (prev === 'ok' ? 'ok' : 'error'));
       }
     };
 

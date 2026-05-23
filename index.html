@@ -5,46 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tung (TJ) Vo - Portfolio</title>
     <meta name="description" content="Portfolio of Tung (TJ) Vo — Applied Mathematics undergraduate at the University of St. Thomas. Research in graph theory, history & public policy, and data-driven storytelling." />
-    <meta name="theme-color" content="#1a3d2b" />
+    <meta name="theme-color" content="#EBE5D2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1B221C" media="(prefers-color-scheme: dark)" />
     <meta property="og:title" content="Tung (TJ) Vo — Portfolio" />
     <meta property="og:description" content="Applied Mathematics undergraduate. Research in graph theory, history & public policy, and data-driven storytelling." />
     <meta property="og:type" content="website" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <script>
+      (function () {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;0,9..144,900;1,9..144,400;1,9..144,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500;1,8..60,600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
           extend: {
             fontFamily: {
-              display: ['"Fraunces"', 'serif'],
-              sans: ['"DM Sans"', 'sans-serif'],
+              display: ['"Source Serif 4"', 'Georgia', 'serif'],
+              sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
+              mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
+              serif: ['"Source Serif 4"', 'Georgia', 'serif'],
             },
             colors: {
+              // ── Sage Folio semantic tokens ────────────────────────────
+              paper:    '#EBE5D2', // page bg (light)
+              'paper-2':'#E1DAC4', // surface (light)
+              ink:      '#3D4A3A', // primary text (light)
+              'ink-muted': '#7A8377',
+              rule:     '#3D4A3A',
+              sage:     '#6B7F60', // link / active accent
+              'sage-soft': '#A8B49A',
+              bone:     '#C8BFA3', // selection / highlight
+              'paper-dk':  '#1B221C', // page bg (dark)
+              'paper-2-dk':'#252C25',
+              'ink-dk':    '#DDE2D5',
+              'ink-muted-dk': '#9DA89A',
+
+              // ── Legacy token aliases (mapped to Sage Folio) ────────────
+              // Kept as names so existing Tailwind classes still resolve;
+              // downstream phases rename usages to semantic tokens.
               forest: {
-                DEFAULT: '#1a3d2b',
-                light: '#2d6a4f',
-                muted: '#4a7c5f',
+                DEFAULT: '#3D4A3A',
+                light:   '#4A5947',
+                muted:   '#7A8377',
               },
               nobel: {
-                gold: '#C5A059',
-              }
+                gold: '#C8BFA3',
+              },
+              oxblood:   '#6B7F60',
+              dustslate: '#7A8377',
             }
           }
         }
       }
     </script>
     <style>
+      :root {
+        --paper:      #EBE5D2;
+        --paper-2:    #E1DAC4;
+        --ink:        #3D4A3A;
+        --ink-muted:  #7A8377;
+        --rule:       #3D4A3A;
+        --sage:       #6B7F60;
+        --sage-soft:  #A8B49A;
+        --bone:       #C8BFA3;
+      }
+      html.dark {
+        --paper:      #1B221C;
+        --paper-2:    #252C25;
+        --ink:        #DDE2D5;
+        --ink-muted:  #9DA89A;
+        --rule:       #DDE2D5;
+        --sage:       #A8B49A;
+        --sage-soft:  #6B7F60;
+        --bone:       #8B8470;
+      }
       html {
         scroll-behavior: smooth;
-        scroll-padding-top: 80px;
+        scroll-padding-top: 72px;
       }
       body {
-        background-color: #EDEAE2;
-        color: #1a3d2b;
+        background-color: var(--paper);
+        color: var(--ink);
+        font-family: 'Source Serif 4', Georgia, serif;
+        font-feature-settings: 'kern' 1, 'liga' 1, 'onum' 1;
         /* Prevent the browser from faking bold/italic when a glyph or weight
            is missing — synthesized bold mangles Vietnamese diacritics
            (Ố, Ấ, Ử, Ọ, etc.) and makes them look mis-weighted. */
@@ -52,8 +103,12 @@
         -webkit-font-synthesis: none;
       }
       html.dark body {
-        background-color: #0c1a11;
-        color: #e0f0e8;
+        background-color: var(--paper);
+        color: var(--ink);
+      }
+      ::selection {
+        background-color: var(--bone);
+        color: var(--ink);
       }
       @media print {
         nav, footer, button { display: none !important; }

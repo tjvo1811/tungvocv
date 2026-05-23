@@ -1,36 +1,56 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* ── Film-grain overlay (softened for plaster palette) ──────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+html.dark body::after {
+  opacity: 0.05;
+  mix-blend-mode: screen;
+}
+@media (prefers-reduced-motion: reduce), print {
+  body::after { display: none; }
+  .hero-pop { animation: none !important; opacity: 1 !important; }
+}
 
 /* ── Unified page surface ────────────────────────────────────────── */
 .site-shell {
-  background-color: #edeae2;
+  background-color: var(--paper);
+  color: var(--ink);
 }
 .dark .site-shell {
-  background-color: #0c1a11;
+  background-color: var(--paper);
+  color: var(--ink);
 }
 
-/* ── Hero bottom fade ────────────────────────────────────────────── */
-.hero-fade::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 28vh;
-  min-height: 160px;
-  pointer-events: none;
-  z-index: 2;
-  background: linear-gradient(180deg,
-    rgba(237, 234, 226, 0) 0%,
-    rgba(237, 234, 226, 0.6) 40%,
-    #edeae2 100%);
+/* ── Editorial typographic defaults ──────────────────────────────── */
+.font-display,
+.font-serif {
+  font-feature-settings: 'kern' 1, 'liga' 1, 'onum' 1, 'ss01' 1;
 }
-.dark .hero-fade::after {
-  background: linear-gradient(180deg,
-    rgba(12, 26, 17, 0) 0%,
-    rgba(12, 26, 17, 0.7) 40%,
-    #0c1a11 100%);
+.font-mono {
+  font-feature-settings: 'kern' 1, 'tnum' 1;
+  letter-spacing: -0.005em;
+}
+
+/* Editorial hairline rule helper */
+.hairline {
+  border-color: var(--rule);
+  border-width: 1px;
+}
+.hairline-b {
+  border-bottom: 1px solid var(--rule);
+}
+.hairline-t {
+  border-top: 1px solid var(--rule);
+}
+.hairline-l {
+  border-left: 1px solid var(--rule);
 }
 
 /* ── Tab content area ────────────────────────────────────────────── */
@@ -47,44 +67,6 @@
     max-width: 100%;
   }
 }
-
-/* ── Mesh gradient hero ─────────────────────────────────────────── */
-.mesh-gradient {
-  background-color: #d8efe2;
-  background-image:
-    radial-gradient(at 30% 20%, rgba(198, 240, 220, 0.96) 0px, transparent 55%),
-    radial-gradient(at 78% 12%, rgba(249, 228, 152, 0.48) 0px, transparent 50%),
-    radial-gradient(at 6% 58%, rgba(232, 213, 245, 0.52) 0px, transparent 50%),
-    radial-gradient(at 92% 62%, rgba(255, 213, 181, 0.46) 0px, transparent 50%),
-    radial-gradient(at 50% 92%, rgba(191, 219, 254, 0.34) 0px, transparent 48%),
-    radial-gradient(at 18% 88%, rgba(196, 240, 218, 0.26) 0px, transparent 40%);
-}
-.dark .mesh-gradient {
-  background-color: #0d2218;
-  background-image:
-    radial-gradient(at 30% 20%, rgba(15, 63, 37, 0.95) 0px, transparent 55%),
-    radial-gradient(at 78% 12%, rgba(33, 79, 54, 0.42) 0px, transparent 50%),
-    radial-gradient(at 6% 58%, rgba(27, 14, 46, 0.36) 0px, transparent 50%),
-    radial-gradient(at 92% 62%, rgba(44, 23, 12, 0.3) 0px, transparent 50%),
-    radial-gradient(at 50% 92%, rgba(11, 24, 42, 0.24) 0px, transparent 48%),
-    radial-gradient(at 18% 88%, rgba(13, 60, 35, 0.18) 0px, transparent 40%);
-}
-
-/* ── Hero entrance animation ────────────────────────────────────── */
-@keyframes hero-pop {
-  0%   { opacity: 0; transform: translateY(18px); }
-  100% { opacity: 1; transform: translateY(0);    }
-}
-.hero-pop {
-  opacity: 0;
-  animation: hero-pop 0.55s ease-out forwards;
-}
-.hero-pop-1  { animation-delay: 0.10s; }
-.hero-pop-2  { animation-delay: 0.25s; }
-.hero-pop-2b { animation-delay: 0.32s; }
-.hero-pop-3  { animation-delay: 0.40s; }
-.hero-pop-4  { animation-delay: 0.55s; }
-.hero-pop-5  { animation-delay: 0.68s; }
 
 /* ── PDF viewer (scroll inside viewer; zoom handled in JS) ───────── */
 .pdf-viewer {
