@@ -17,6 +17,34 @@ type Language = 'en' | 'vi';
 /* ─── Animation variants ──────────────────────────────────────────── */
 const cubicEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
+const mobileMenuOverlay = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.28, ease: cubicEase } },
+  exit: { opacity: 0, transition: { duration: 0.22, ease: cubicEase } },
+};
+
+const mobileMenuPanel = {
+  initial: { opacity: 0, scale: 0.94, y: 24 },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { duration: 0.38, ease: cubicEase, staggerChildren: 0.07, delayChildren: 0.06 },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.97,
+    y: 12,
+    transition: { duration: 0.22, ease: cubicEase, staggerChildren: 0.04, staggerDirection: -1 },
+  },
+};
+
+const mobileMenuItem = {
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.32, ease: cubicEase } },
+  exit: { opacity: 0, y: 10, transition: { duration: 0.16, ease: cubicEase } },
+};
+
 /** Tab shell only — no `variants` here so children are not forced to animate on tab switch. */
 const tabShellTransition = {
   duration: 0.4,
@@ -1311,30 +1339,47 @@ const App: React.FC = () => {
       </nav>
 
       {/* Mobile fullscreen menu */}
-      {menuOpen && (
-        <div
-          className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-8"
-          style={{ backgroundColor: 'var(--paper)' }}
-        >
-          {navLinks.map(({ id, label }) => (
-            <button
-              key={id}
-              onClick={() => switchTab(id)}
-              className="font-display italic text-4xl text-[var(--ink)] hover:text-[var(--sage)] transition-colors"
-              style={{ fontWeight: 500 }}
-            >
-              {label}
-            </button>
-          ))}
-          <a
-            href="mailto:vo.tung@stthom.edu"
-            className="mt-4 px-8 py-3 font-sans text-[11px] tracking-[0.2em] uppercase text-[var(--ink)] hover:text-[var(--paper)] hover:bg-[var(--ink)] transition-colors"
-            style={{ border: '1px solid var(--rule)' }}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            variants={mobileMenuOverlay}
+            className="fixed inset-0 z-40 flex flex-col items-center justify-center"
+            style={{ backgroundColor: 'var(--paper)' }}
           >
-            {uiStrings[language].contact}
-          </a>
-        </div>
-      )}
+            <motion.div
+              className="flex flex-col items-center gap-8"
+              variants={mobileMenuPanel}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              {navLinks.map(({ id, label }) => (
+                <motion.button
+                  key={id}
+                  variants={mobileMenuItem}
+                  onClick={() => switchTab(id)}
+                  className="font-display italic text-4xl text-[var(--ink)] hover:text-[var(--sage)] transition-colors"
+                  style={{ fontWeight: 500 }}
+                >
+                  {label}
+                </motion.button>
+              ))}
+              <motion.a
+                variants={mobileMenuItem}
+                href="mailto:vo.tung@stthom.edu"
+                className="mt-4 px-8 py-3 font-sans text-[11px] tracking-[0.2em] uppercase text-[var(--ink)] hover:text-[var(--paper)] hover:bg-[var(--ink)] transition-colors"
+                style={{ border: '1px solid var(--rule)' }}
+              >
+                {uiStrings[language].contact}
+              </motion.a>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Content area ─────────────────────────────────────── */}
       <div
