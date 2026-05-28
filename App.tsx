@@ -96,9 +96,9 @@ const educationData: Record<Language, Array<{
   en: [
   {
     school: 'University of St. Thomas',
-    degree: 'B.S. Applied Mathematics',
+    degree: 'B.S. Applied Mathematics\nB.A. Mathematics',
     date: 'Expected May 2028',
-    honor: 'Minor: Data Analytics',
+    honor: '',
     url: 'https://stthom.edu/',
   },
   { school: 'Lone Star College', degree: 'Honors A.S. / General', date: 'May 2025', honor: 'Summa Cum Laude | Distinguished Global Scholars', url: 'https://www.lonestar.edu/' },
@@ -107,9 +107,9 @@ const educationData: Record<Language, Array<{
   vi: [
     {
       school: 'Đại học St. Thomas',
-      degree: 'Cử nhân khoa học ngành toán học ứng dụng',
+      degree: 'Cử nhân khoa học ngành toán học ứng dụng\nCử nhân nghệ thuật ngành toán học',
       date: 'Dự kiến tốt nghiệp tháng 5 năm 2028',
-      honor: 'Chuyên ngành phụ: Phân tích dữ liệu',
+      honor: '',
       url: 'https://stthom.edu/',
     },
     {
@@ -862,15 +862,17 @@ const EducationCards = ({ language }: { language: Language }) => (
         >
           {item.school}
         </h4>
-        <p className="font-serif italic text-[var(--ink-muted)] text-[14px] mb-3">
+        <p className="font-serif italic text-[var(--ink-muted)] text-[14px] mb-3 whitespace-pre-line">
           {item.degree}
         </p>
         <div className="font-mono text-[11px] text-[var(--ink-muted)] mb-2 tabular-nums">
           {item.date}
         </div>
-        <p className="font-serif text-[13px] text-[var(--ink)] leading-snug">
-          {item.honor}
-        </p>
+        {item.honor ? (
+          <p className="font-serif text-[13px] text-[var(--ink)] leading-snug">
+            {item.honor}
+          </p>
+        ) : null}
       </motion.a>
     ))}
   </motion.div>
