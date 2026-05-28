@@ -47,11 +47,15 @@ export const HeroBioWeather: React.FC<{ language: 'en' | 'vi' }> = ({ language }
   return (
     <div className="max-w-2xl mx-auto mb-4 px-2 text-center">
       <p className={`${bioLineClass} mb-3 sm:mb-3.5`}>
-        <span className="text-[var(--ink)] font-medium">B.S.</span>
+        <span className="text-[var(--ink)] font-medium">
+          {language === 'vi' ? 'Cử nhân khoa học' : 'B.S.'}
+        </span>
         <span className="mx-2 text-[var(--sage)]">·</span>
         {language === 'vi' ? 'Toán học ứng dụng' : 'Applied Mathematics'}
         <span className="mx-3 text-[var(--ink-muted)]/40">/</span>
-        <span className="text-[var(--ink)] font-medium">B.A.</span>
+        <span className="text-[var(--ink)] font-medium">
+          {language === 'vi' ? 'Cử nhân nghệ thuật' : 'B.A.'}
+        </span>
         <span className="mx-2 text-[var(--sage)]">·</span>
         {language === 'vi' ? 'Toán học' : 'Mathematics'}
       </p>

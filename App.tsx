@@ -1532,8 +1532,8 @@ const App: React.FC = () => {
                   }
                 >
                   {language === 'vi'
-                    ? 'Nghiên cứu về bài toán định tuyến qubit (qubit routing) trong tối ưu hóa mạch lượng tử. Xây dựng các mô hình quy hoạch nguyên (integer programming) được giải bằng phần mềm Gurobi và đối chiếu các lời giải tối ưu chính xác với thuật toán SABRE (thuật toán tìm kiếm heuristic hai chiều dựa trên cổng SWAP).'
-                    : 'On the qubit routing problem in quantum circuit optimization. Developing integer programming formulations solved with Gurobi and benchmarking exact solutions against the SABRE heuristic.'}
+                    ? 'Nghiên cứu về bài toán định tuyến qubit (qubit routing) trong tối ưu hóa mạch lượng tử. Sử dụng quy hoạch nguyên (integer programming) để phát triển một thuật toán heuristic mới và đối chiếu hiệu năng với các phương pháp hiện có như SABRE và TKET.'
+                    : 'On the qubit routing problem in quantum circuit optimization. Using integer programming to develop a new heuristic and comparing its performance against existing methods such as SABRE and TKET.'}
                 </ExperienceItem>
                 <ExperienceItem
                   language={language}
