@@ -16,6 +16,7 @@ const modalStrings = {
   en: {
     paperViewer: 'Paper Viewer',
     posterViewer: 'Poster Viewer',
+    cvViewer: 'CV',
     pdfViewer: 'PDF Viewer',
     unableToDisplayPdf: 'Unable to display PDF',
     pdfFallback:
@@ -29,6 +30,7 @@ const modalStrings = {
   vi: {
     paperViewer: 'Trình xem bài nghiên cứu',
     posterViewer: 'Trình xem áp phích',
+    cvViewer: 'CV',
     pdfViewer: 'Trình xem PDF',
     unableToDisplayPdf: 'Không thể hiển thị tệp PDF',
     pdfFallback: 'Không thể tải trực tiếp tệp PDF. Vui lòng kiểm tra xem tệp',
@@ -95,6 +97,12 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
   if (!doc) return null;
 
   const isPoster = doc.type === 'Poster';
+  const isCv = doc.type === 'CV';
+  const viewerLabel = isPoster
+    ? strings.posterViewer
+    : isCv
+      ? strings.cvViewer
+      : strings.paperViewer;
   const hasPdf = !!doc.pdfUrl;
   const showPdf = hasPdf && !pdfFailed;
   const hasInlineContent = doc.content.length > 0;
@@ -130,7 +138,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
               <div className="pr-8">
                 <div className="flex items-center gap-2 mb-2 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--sage)]">
                   {isPoster ? <LayoutTemplate size={12} /> : <FileText size={12} />}
-                  {isPoster ? strings.posterViewer : strings.paperViewer}
+                  {viewerLabel}
                 </div>
                 <h2
                   className="font-display italic text-[var(--ink)] text-xl md:text-2xl leading-tight"

@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ustGraphTheoryPoster, ResearchDocument } from './data/researchData';
+import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ustGraphTheoryPoster, cvDocument, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
 import { HeroBioWeather } from './components/HeroBioWeather';
 import { BrandMark } from './components/BrandMark';
@@ -459,6 +459,8 @@ const uiStrings = {
   en: {
     connect: 'Connect',
     contact: 'Contact Me',
+    downloadCv: 'Download CV',
+    ariaViewCv: 'View curriculum vitae',
     educationLabel: 'Education',
     educationHeading: 'Academic Foundation.',
     researchExperienceMenu: 'Research Experience',
@@ -491,6 +493,8 @@ const uiStrings = {
   vi: {
     connect: 'Kết nối',
     contact: 'Liên hệ',
+    downloadCv: 'Tải CV',
+    ariaViewCv: 'Xem sơ yếu lý lịch',
     educationLabel: 'Học vấn',
     educationHeading: 'Nền tảng học thuật.',
     researchExperienceMenu: 'Kinh nghiệm nghiên cứu',
@@ -1432,7 +1436,7 @@ const App: React.FC = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.32, ease: cubicEase, delay: 0.35 }}
-                  className="flex flex-col sm:flex-row justify-center items-center gap-3 -mt-1"
+                  className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 -mt-1"
                 >
                   <a
                     href="mailto:vo.tung@stthom.edu"
@@ -1448,6 +1452,25 @@ const App: React.FC = () => {
                       />
                     </span>
                   </a>
+                  <span className="hidden sm:inline text-[var(--ink-muted)]/40" aria-hidden>
+                    ·
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setActiveDocument(cvDocument)}
+                    className="group inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.1em] text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
+                    aria-label={uiStrings[language].ariaViewCv}
+                  >
+                    <FileText size={14} className="text-[var(--sage)]" />
+                    <span className="relative">
+                      {uiStrings[language].downloadCv}
+                      <span
+                        className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
+                        style={{ backgroundColor: 'var(--sage)' }}
+                        aria-hidden
+                      />
+                    </span>
+                  </button>
                 </motion.div>
 
                 {/* Language availability banner — visible in hero until user switches or dismisses */}

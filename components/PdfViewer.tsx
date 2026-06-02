@@ -99,6 +99,35 @@ function PageMount({ canvas }: { canvas: HTMLCanvasElement }) {
   return <div ref={ref} />;
 }
 
+type ScrollAnchor = { centerXRatio: number; centerYRatio: number };
+
+function captureScrollAnchor(container: HTMLDivElement): ScrollAnchor | null {
+  const sw = container.scrollWidth;
+  const sh = container.scrollHeight;
+  if (sw <= 0 || sh <= 0) return null;
+  return {
+    centerXRatio: (container.scrollLeft + container.clientWidth / 2) / sw,
+    centerYRatio: (container.scrollTop + container.clientHeight / 2) / sh,
+  };
+}
+
+/** Restore viewport center after re-render; clamp only when content shrinks. */
+function restoreScrollAnchor(container: HTMLDivElement, anchor: ScrollAnchor | null) {
+  const maxTop = Math.max(0, container.scrollHeight - container.clientHeight);
+  const maxLeft = Math.max(0, container.scrollWidth - container.clientWidth);
+
+  if (anchor) {
+    const targetLeft = anchor.centerXRatio * container.scrollWidth - container.clientWidth / 2;
+    const targetTop = anchor.centerYRatio * container.scrollHeight - container.clientHeight / 2;
+    container.scrollLeft = Math.min(maxLeft, Math.max(0, targetLeft));
+    container.scrollTop = Math.min(maxTop, Math.max(0, targetTop));
+    return;
+  }
+
+  if (container.scrollTop > maxTop) container.scrollTop = maxTop;
+  if (container.scrollLeft > maxLeft) container.scrollLeft = maxLeft;
+}
+
 export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = '', onLoadError }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -109,7 +138,6 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
   const renderTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pinchRef = useRef<{ dist: number; zoom: number } | null>(null);
   const gestureZoomRef = useRef(1);
-  const rafRef = useRef<number | null>(null);
   const liveZoomRef = useRef(1);
   const wheelCommitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -119,22 +147,21 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
   const [pages, setPages] = useState<PageEntry[]>([]);
   const [zoomPct, setZoomPct] = useState(100);
 
-  const clearPreviewTransform = useCallback(() => {
-    const el = contentRef.current;
-    if (!el) return;
-    el.style.transform = '';
+  const syncScrollAfterLayout = useCallback((anchor: ScrollAnchor | null) => {
+    const container = containerRef.current;
+    if (!container) return;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        restoreScrollAnchor(container, anchor);
+      });
+    });
   }, []);
 
-  const setPreviewTransform = useCallback((liveZoom: number) => {
-    const el = contentRef.current;
-    if (!el) return;
-    const ratio = liveZoom / zoomRef.current;
-    if (Math.abs(ratio - 1) < 0.001) {
-      el.style.transform = '';
-      return;
-    }
-    el.style.transform = `scale(${ratio})`;
-    el.style.transformOrigin = 'center top';
+  const setLiveZoom = useCallback((zoom: number) => {
+    const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom));
+    liveZoomRef.current = clamped;
+    setZoomPct(Math.round(clamped * 100));
+    return clamped;
   }, []);
 
   const renderAllPages = useCallback(
@@ -144,6 +171,9 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
 
       const gen = ++renderGenRef.current;
       if (showSpinner) setRendering(true);
+
+      const container = containerRef.current;
+      const scrollAnchor = container ? captureScrollAnchor(container) : null;
 
       try {
         const layoutScale = baseScaleRef.current;
@@ -161,7 +191,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
         liveZoomRef.current = targetZoom;
         setZoomPct(Math.round(targetZoom * 100));
         setPages(next);
-        clearPreviewTransform();
+        syncScrollAfterLayout(scrollAnchor);
       } catch (e) {
         if (gen === renderGenRef.current) {
           setError(e instanceof Error ? e.message : 'Failed to render PDF');
@@ -170,18 +200,35 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
         if (gen === renderGenRef.current && showSpinner) setRendering(false);
       }
     },
-    [clearPreviewTransform],
+    [syncScrollAfterLayout],
   );
+
+  const flushPendingRender = useCallback(() => {
+    if (renderTimerRef.current) {
+      clearTimeout(renderTimerRef.current);
+      renderTimerRef.current = null;
+    }
+  }, []);
 
   const scheduleRender = useCallback(
     (targetZoom: number) => {
-      if (renderTimerRef.current) clearTimeout(renderTimerRef.current);
+      flushPendingRender();
       renderTimerRef.current = setTimeout(() => {
         renderTimerRef.current = null;
         void renderAllPages(targetZoom, true);
       }, RENDER_DEBOUNCE_MS);
     },
-    [renderAllPages],
+    [renderAllPages, flushPendingRender],
+  );
+
+  const commitZoom = useCallback(
+    (finalZoom: number) => {
+      const clamped = setLiveZoom(finalZoom);
+      if (Math.abs(clamped - zoomRef.current) < 0.02) return;
+      flushPendingRender();
+      void renderAllPages(clamped, true);
+    },
+    [setLiveZoom, renderAllPages, flushPendingRender],
   );
 
   const loadPdf = useCallback(async () => {
@@ -193,7 +240,6 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     zoomRef.current = 1;
     liveZoomRef.current = 1;
     setZoomPct(100);
-    clearPreviewTransform();
 
     try {
       pdfRef.current?.destroy();
@@ -219,19 +265,18 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     } finally {
       setLoading(false);
     }
-  }, [url, fitMode, renderAllPages, clearPreviewTransform]);
+  }, [url, fitMode, renderAllPages]);
 
   useEffect(() => {
     void loadPdf();
     return () => {
       renderGenRef.current += 1;
-      if (renderTimerRef.current) clearTimeout(renderTimerRef.current);
+      flushPendingRender();
       if (wheelCommitTimerRef.current) clearTimeout(wheelCommitTimerRef.current);
-      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
       pdfRef.current?.destroy();
       pdfRef.current = null;
     };
-  }, [loadPdf]);
+  }, [loadPdf, flushPendingRender]);
 
   useEffect(() => {
     const onChange = () => void loadPdf();
@@ -244,33 +289,6 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     };
   }, [loadPdf]);
 
-  const queuePreviewZoom = useCallback(
-    (liveZoom: number) => {
-      const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, liveZoom));
-      liveZoomRef.current = clamped;
-      if (rafRef.current !== null) return;
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = null;
-        setPreviewTransform(liveZoomRef.current);
-      });
-    },
-    [setPreviewTransform],
-  );
-
-  const commitZoom = useCallback(
-    (finalZoom: number) => {
-      const clamped = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, finalZoom));
-      liveZoomRef.current = clamped;
-      setZoomPct(Math.round(clamped * 100));
-      if (Math.abs(clamped - zoomRef.current) < 0.02) {
-        clearPreviewTransform();
-        return;
-      }
-      scheduleRender(clamped);
-    },
-    [scheduleRender, clearPreviewTransform],
-  );
-
   const adjustZoom = useCallback(
     (factor: number) => {
       commitZoom(zoomRef.current * factor);
@@ -282,7 +300,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     commitZoom(1);
   }, [commitZoom]);
 
-  // Pinch, trackpad pinch (ctrl+wheel), and Safari gestures — contained to this viewer.
+  // Pinch, trackpad pinch (ctrl+wheel), and Safari gestures — re-render at true size (no CSS scale).
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -298,12 +316,14 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
         e.preventDefault();
         const dist = touchDistance(e.touches[0], e.touches[1]);
         const ratio = dist / pinchRef.current.dist;
-        queuePreviewZoom(pinchRef.current.zoom * ratio);
+        const next = setLiveZoom(pinchRef.current.zoom * ratio);
+        scheduleRender(next);
       }
     };
 
     const finishTouchZoom = () => {
       if (pinchRef.current) {
+        if (wheelCommitTimerRef.current) clearTimeout(wheelCommitTimerRef.current);
         commitZoom(liveZoomRef.current);
       }
       pinchRef.current = null;
@@ -319,7 +339,8 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
       e.preventDefault();
       e.stopPropagation();
       const factor = Math.exp(-e.deltaY * 0.002);
-      queuePreviewZoom(liveZoomRef.current * factor);
+      const next = setLiveZoom(liveZoomRef.current * factor);
+      scheduleRender(next);
       if (wheelCommitTimerRef.current) clearTimeout(wheelCommitTimerRef.current);
       wheelCommitTimerRef.current = setTimeout(() => {
         wheelCommitTimerRef.current = null;
@@ -335,7 +356,8 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     const onGestureChange = (e: Event) => {
       e.preventDefault();
       const scale = (e as Event & { scale?: number }).scale ?? 1;
-      queuePreviewZoom(gestureZoomRef.current * scale);
+      const next = setLiveZoom(gestureZoomRef.current * scale);
+      scheduleRender(next);
     };
 
     const onGestureEnd = (e: Event) => {
@@ -351,7 +373,6 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     el.addEventListener('gesturestart', onGestureStart as EventListener);
     el.addEventListener('gesturechange', onGestureChange as EventListener);
     el.addEventListener('gestureend', onGestureEnd as EventListener);
-
     return () => {
       el.removeEventListener('touchstart', onTouchStart);
       el.removeEventListener('touchmove', onTouchMove);
@@ -363,17 +384,29 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
       el.removeEventListener('gestureend', onGestureEnd as EventListener);
       if (wheelCommitTimerRef.current) clearTimeout(wheelCommitTimerRef.current);
     };
-  }, [queuePreviewZoom, commitZoom]);
+  }, [setLiveZoom, scheduleRender, commitZoom]);
 
   return (
-    <div
-      ref={containerRef}
-      className={`pdf-viewer relative w-full h-full overflow-auto overscroll-contain ${className}`}
-      style={{ WebkitOverflowScrolling: 'touch' }}
-    >
+    <div className={`pdf-viewer-shell relative w-full h-full ${className}`}>
+      <div
+        ref={containerRef}
+        className="pdf-viewer absolute inset-0 overflow-auto overscroll-contain"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
+        {!loading && !error && pages.length > 0 && (
+          <div ref={contentRef} className="pdf-viewer-stage">
+            <div className="pdf-viewer-pages">
+              {pages.map((p) => (
+                <PageMount key={p.pageNum} canvas={p.canvas} />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
       {loading && (
         <div
-          className="absolute inset-0 z-10 flex items-center justify-center font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--ink-muted)]"
+          className="absolute inset-0 z-10 flex items-center justify-center font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--ink-muted)] pointer-events-none"
           style={{ backgroundColor: 'var(--paper)' }}
         >
           Loading…
@@ -381,27 +414,29 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
       )}
       {rendering && !loading && (
         <div
-          className="absolute top-3 right-3 z-10 px-2.5 py-1 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] pointer-events-none"
+          className="absolute top-3 right-3 z-20 px-2.5 py-1 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] pointer-events-none"
           style={{ backgroundColor: 'var(--paper)', border: '1px solid var(--rule)' }}
         >
           Sharpening…
         </div>
       )}
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center font-serif italic text-[var(--ink-muted)] text-sm px-6 text-center">
+        <div className="absolute inset-0 z-10 flex items-center justify-center font-serif italic text-[var(--ink-muted)] text-sm px-6 text-center pointer-events-none">
           {error}
         </div>
       )}
       {!loading && !error && pages.length > 0 && (
         <div
-          className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 px-3 py-2"
+          className="pdf-viewer-zoom-bar absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 px-3 py-2 pointer-events-none"
           style={{ backgroundColor: 'var(--paper)', border: '1px solid var(--rule)' }}
+          role="toolbar"
+          aria-label="Zoom controls"
         >
           <button
             type="button"
             onClick={() => adjustZoom(1 / ZOOM_STEP)}
             disabled={zoomPct <= MIN_ZOOM * 100}
-            className="p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-30 transition-colors"
+            className="pointer-events-auto p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-30 transition-colors"
             aria-label="Zoom out"
           >
             <ZoomOut size={14} />
@@ -413,7 +448,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
             type="button"
             onClick={() => adjustZoom(ZOOM_STEP)}
             disabled={zoomPct >= MAX_ZOOM * 100}
-            className="p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-30 transition-colors"
+            className="pointer-events-auto p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-30 transition-colors"
             aria-label="Zoom in"
           >
             <ZoomIn size={14} />
@@ -426,20 +461,11 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
           <button
             type="button"
             onClick={resetZoom}
-            className="p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
+            className="pointer-events-auto p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
             aria-label="Reset zoom"
           >
             <RotateCcw size={13} />
           </button>
-        </div>
-      )}
-      {!loading && !error && pages.length > 0 && (
-        <div className="flex justify-center py-3 px-2 pb-16">
-          <div ref={contentRef} className="flex flex-col items-center gap-4">
-            {pages.map((p) => (
-              <PageMount key={p.pageNum} canvas={p.canvas} />
-            ))}
-          </div>
         </div>
       )}
     </div>

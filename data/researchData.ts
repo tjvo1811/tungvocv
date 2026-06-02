@@ -11,10 +11,18 @@ export interface Section {
 export interface ResearchDocument {
   id: string;
   title: string;
-  type: 'Paper' | 'Poster';
+  type: 'Paper' | 'Poster' | 'CV';
   pdfUrl?: string;
   content: Section[];
 }
+
+export const cvDocument: ResearchDocument = {
+  id: 'cv',
+  title: 'Curriculum Vitae',
+  type: 'CV',
+  pdfUrl: '/documents/TV_CV.pdf',
+  content: [],
+};
 
 export const govtPaper: ResearchDocument = {
   id: 'govt-paper',
