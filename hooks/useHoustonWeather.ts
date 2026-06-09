@@ -8,7 +8,9 @@ import { useEffect, useRef, useState } from 'react';
 /** Downtown Houston — Open-Meteo expects WGS84 */
 export const HOUSTON = { latitude: 29.7604, longitude: -95.3698 };
 
-export const HOUSTON_WEATHER_POLL_MS = 60 * 1000;
+// Open-Meteo only refreshes its "current" data about every 15 minutes,
+// so polling more often is wasted network traffic.
+export const HOUSTON_WEATHER_POLL_MS = 15 * 60 * 1000;
 
 export type HoustonWeatherStatus = 'loading' | 'ok' | 'error';
 

@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, Sun } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ustGraphTheoryPoster, cvDocument, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
 import { HeroBioWeather } from './components/HeroBioWeather';
@@ -47,11 +47,11 @@ const mobileMenuItem = {
 
 /** Tab shell only — no `variants` here so children are not forced to animate on tab switch. */
 const tabShellTransition = {
-  duration: 0.4,
+  duration: 0.28,
   ease: cubicEase,
 };
 
-const tabShellExit = { duration: 0.2 };
+const tabShellExit = { duration: 0.12 };
 
 const fadeIn = {
   initial: { opacity: 0, y: 16 },
@@ -459,7 +459,7 @@ const uiStrings = {
   en: {
     connect: 'Connect',
     contact: 'Contact Me',
-    downloadCv: 'Download CV',
+    downloadCv: 'View CV',
     ariaViewCv: 'View curriculum vitae',
     educationLabel: 'Education',
     educationHeading: 'Academic Foundation.',
@@ -478,7 +478,7 @@ const uiStrings = {
     viewPaper: 'View Paper',
     viewDocPrefix: 'View ',
     liveTool: 'Live Tool',
-    rightsReserved: '© 2025 Tung Vo. All rights reserved.',
+    rightsReserved: 'Tung Vo. All rights reserved.',
     fullName: 'Tung (TJ) Vo.',
     ariaHome: 'Home',
     ariaToggleLanguage: 'Toggle language',
@@ -493,7 +493,7 @@ const uiStrings = {
   vi: {
     connect: 'Kết nối',
     contact: 'Liên hệ',
-    downloadCv: 'Tải CV',
+    downloadCv: 'Xem CV',
     ariaViewCv: 'Xem sơ yếu lý lịch',
     educationLabel: 'Học vấn',
     educationHeading: 'Nền tảng học thuật.',
@@ -512,7 +512,7 @@ const uiStrings = {
     viewPaper: 'Xem bài nghiên cứu',
     viewDocPrefix: 'Xem ',
     liveTool: 'Công cụ tương tác trực tuyến',
-    rightsReserved: '© 2025 Võ Sơn Tùng. Bảo lưu toàn bộ quyền.',
+    rightsReserved: 'Võ Sơn Tùng. Bảo lưu toàn bộ quyền.',
     fullName: 'Võ Sơn Tùng.',
     ariaHome: 'Trang chủ',
     ariaToggleLanguage: 'Chuyển ngôn ngữ',
@@ -668,6 +668,8 @@ const ExperienceItem = ({
         {documentData && onOpenDocument && (
           <button
             onClick={() => onOpenDocument(documentData)}
+            onMouseEnter={prefetchPdfViewer}
+            onFocus={prefetchPdfViewer}
             className="group inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
             title={uiStrings[language].viewPaper}
           >
@@ -685,6 +687,8 @@ const ExperienceItem = ({
         {posterData && onOpenDocument && (
           <button
             onClick={() => onOpenDocument(posterData)}
+            onMouseEnter={prefetchPdfViewer}
+            onFocus={prefetchPdfViewer}
             className="group inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
             title={uiStrings[language].viewPoster}
           >
@@ -911,9 +915,55 @@ const getSystemPrefersDark = () =>
   typeof window !== 'undefined' &&
   window.matchMedia('(prefers-color-scheme: dark)').matches;
 
+/* ─── Persisted preferences ───────────────────────────────────────── */
+const LANG_STORAGE_KEY = 'tv-language';
+const THEME_STORAGE_KEY = 'tv-theme';
+const LANG_HINT_STORAGE_KEY = 'tv-lang-hint-dismissed';
+
+const readStoredLanguage = (): Language | null => {
+  try {
+    const v = localStorage.getItem(LANG_STORAGE_KEY);
+    return v === 'en' || v === 'vi' ? v : null;
+  } catch {
+    return null;
+  }
+};
+
+const readStoredTheme = (): 'light' | 'dark' | null => {
+  try {
+    const v = localStorage.getItem(THEME_STORAGE_KEY);
+    return v === 'light' || v === 'dark' ? v : null;
+  } catch {
+    return null;
+  }
+};
+
+const writeStored = (key: string, value: string) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    /* storage unavailable (private mode, etc.) — preference just won't persist */
+  }
+};
+
+const isLangHintStoredDismissed = () => {
+  try {
+    return localStorage.getItem(LANG_HINT_STORAGE_KEY) === '1';
+  } catch {
+    return false;
+  }
+};
+
+/** Warm the pdf.js chunk before the user opens a document, so the viewer opens instantly. */
+const prefetchPdfViewer = () => {
+  void import('./components/PdfViewer');
+};
+
 /* ─── App ────────────────────────────────────────────────────────── */
 const App: React.FC = () => {
   const [language, setLanguage] = useState<Language>(() => {
+    const stored = readStoredLanguage();
+    if (stored) return stored;
     if (typeof navigator === 'undefined') return 'en';
     const langs = [
       ...(navigator.languages ?? []),
@@ -924,13 +974,19 @@ const App: React.FC = () => {
   const [langTransition, setLangTransition] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDocument, setActiveDocument] = useState<ResearchDocument | null>(null);
-  const [isDark, setIsDark] = useState(getSystemPrefersDark);
-  const themeOverride = useRef<'light' | 'dark' | null>(null);
+  const [isDark, setIsDark] = useState(() => {
+    const stored = readStoredTheme();
+    return stored ? stored === 'dark' : getSystemPrefersDark();
+  });
+  const themeOverride = useRef<'light' | 'dark' | null>(readStoredTheme());
   const [activeTab, setActiveTab] = useState<TabId>('home');
   const [navResearchOpen, setNavResearchOpen] = useState(false);
   const navResearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [langHintVisible, setLangHintVisible] = useState(false);
-  const [langHintDismissed, setLangHintDismissed] = useState(false);
+  // No hints for visitors who already picked a language or dismissed the hint before.
+  const [langHintDismissed, setLangHintDismissed] = useState(
+    () => readStoredLanguage() !== null || isLangHintStoredDismissed(),
+  );
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
@@ -971,33 +1027,40 @@ const App: React.FC = () => {
     setIsDark((prev) => {
       const next = !prev;
       themeOverride.current = next ? 'dark' : 'light';
+      writeStored(THEME_STORAGE_KEY, themeOverride.current);
       return next;
     });
   };
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
+    // Keep browser chrome (iOS status bar, Android toolbar) in sync with the
+    // actual theme, not just the OS preference.
+    const color = isDark ? '#1B221C' : '#EBE5D2';
+    document
+      .querySelectorAll('meta[name="theme-color"]')
+      .forEach((m) => m.setAttribute('content', color));
   }, [isDark]);
 
   useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
 
-  // Show hints on every visit; auto-dismiss after 3 s.
-  // Dismissal is session-only — no localStorage — so it reappears on each load.
+  // Nav popup hint: show briefly, then hide the popup only. The hero banner
+  // stays until the visitor switches language or dismisses it explicitly.
   useEffect(() => {
     const showTimer = setTimeout(() => setLangHintVisible(true), 1200);
-    const hideTimer = setTimeout(() => dismissLangHint(), 4200); // 1.2 s delay + 3 s visible
+    const hideTimer = setTimeout(() => setLangHintVisible(false), 4200); // 1.2 s delay + 3 s visible
     return () => {
       clearTimeout(showTimer);
       clearTimeout(hideTimer);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const dismissLangHint = () => {
     setLangHintVisible(false);
     setLangHintDismissed(true);
+    writeStored(LANG_HINT_STORAGE_KEY, '1');
   };
 
   /* Frosted nav shell fades in once content scrolls near the top */
@@ -1016,9 +1079,14 @@ const App: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Snap to the top when the active tab changes on desktop. Skip when only the
+  // mobile/desktop breakpoint changes, so resizing or rotating keeps your place.
+  const prevTabRef = useRef(activeTab);
   useEffect(() => {
-    if (isMobile) return;
-    window.scrollTo({ top: 0 });
+    const tabChanged = prevTabRef.current !== activeTab;
+    prevTabRef.current = activeTab;
+    if (isMobile || !tabChanged) return;
+    window.scrollTo({ top: 0, behavior: 'instant' });
     setNavBarSolid(false);
   }, [activeTab, isMobile]);
 
@@ -1027,6 +1095,9 @@ const App: React.FC = () => {
   const switchTab = (id: TabId, scrollTo?: string) => {
     setMenuOpen(false);
     setNavResearchOpen(false);
+    // Track the section on mobile too, so crossing the breakpoint later lands
+    // on the section the visitor was reading instead of resetting to Home.
+    setActiveTab(id);
 
     if (isMobile) {
       // On mobile, everything is rendered as a continuous scroll.
@@ -1048,13 +1119,12 @@ const App: React.FC = () => {
       return;
     }
 
-    setActiveTab(id);
     setNavBarSolid(false);
     if (scrollTo) {
       setTimeout(() => {
         document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         requestAnimationFrame(syncNavBarSolid);
-      }, 450);
+      }, 320);
     }
   };
 
@@ -1062,7 +1132,15 @@ const App: React.FC = () => {
     if (langTransition) return;
     if (!langHintDismissed) dismissLangHint();
     setLangTransition(true);
-    setTimeout(() => setLanguage((prev) => (prev === 'en' ? 'vi' : 'en')), 190);
+    setTimeout(
+      () =>
+        setLanguage((prev) => {
+          const next = prev === 'en' ? 'vi' : 'en';
+          writeStored(LANG_STORAGE_KEY, next);
+          return next;
+        }),
+      190,
+    );
     setTimeout(() => setLangTransition(false), 390);
   };
 
@@ -1070,7 +1148,10 @@ const App: React.FC = () => {
   const langHintText = language === 'en'
     ? uiStrings.en.langHintEn
     : uiStrings.vi.langHintVi;
-  const showLangHint = langHintVisible && !langHintDismissed;
+  // The hero banner is the primary hint; suppress the nav popup while it's on
+  // screen so two identical hints never show at once.
+  const heroBannerVisible = !langHintDismissed && (isMobile || activeTab === 'home');
+  const showLangHint = langHintVisible && !langHintDismissed && !heroBannerVisible;
 
   const closeDocumentModal = useCallback(() => setActiveDocument(null), []);
 
@@ -1078,6 +1159,7 @@ const App: React.FC = () => {
   const localizedName = language === 'vi' ? 'Võ Sơn Tùng' : 'TJ Vo';
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="site-shell min-h-screen transition-colors duration-300">
       <DocumentModal
         isOpen={!!activeDocument}
@@ -1388,13 +1470,11 @@ const App: React.FC = () => {
       </AnimatePresence>
 
       {/* ── Content area ─────────────────────────────────────── */}
+      {/* Opacity-only fade: a full-page blur filter drops frames on mobile. */}
       <div
         style={{
-          transition: 'opacity 0.19s ease, filter 0.19s ease, transform 0.19s ease',
+          transition: 'opacity 0.19s ease',
           opacity: langTransition ? 0 : 1,
-          filter: langTransition ? 'blur(6px)' : 'blur(0px)',
-          transform: langTransition ? 'scale(0.988)' : 'scale(1)',
-          willChange: 'opacity, filter, transform',
         }}
       >
       <AnimatePresence mode={isMobile ? 'sync' : 'wait'}>
@@ -1403,10 +1483,10 @@ const App: React.FC = () => {
           <motion.div
             key="hero-page"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: 0.5 } }}
-            exit={{ opacity: 0, transition: { duration: 0.3 } }}
+            animate={{ opacity: 1, transition: { duration: 0.3 } }}
+            exit={{ opacity: 0, transition: { duration: 0.15 } }}
           >
-            <header className="relative min-h-screen pb-28 md:pb-36 flex items-center justify-center overflow-hidden">
+            <header className="hero-viewport relative pb-28 md:pb-36 flex items-center justify-center overflow-hidden">
               <div className="relative z-10 container mx-auto px-6 max-w-4xl">
                 <motion.div
                   initial={{ opacity: 0 }}
@@ -1458,6 +1538,8 @@ const App: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setActiveDocument(cvDocument)}
+                    onMouseEnter={prefetchPdfViewer}
+                    onFocus={prefetchPdfViewer}
                     className="group inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.1em] text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
                     aria-label={uiStrings[language].ariaViewCv}
                   >
@@ -1484,7 +1566,7 @@ const App: React.FC = () => {
                     >
                       <div className="flex items-center gap-3 max-w-xl">
                         <span
-                          className="w-1.5 h-1.5 flex-shrink-0"
+                          className="w-1.5 h-1.5 shrink-0"
                           style={{ backgroundColor: 'var(--sage)' }}
                           aria-hidden
                         />
@@ -1499,7 +1581,7 @@ const App: React.FC = () => {
                         </button>
                         <button
                           onClick={dismissLangHint}
-                          className="p-1 text-[var(--ink-muted)]/60 hover:text-[var(--ink)] transition-colors flex-shrink-0"
+                          className="p-1 text-[var(--ink-muted)]/60 hover:text-[var(--ink)] transition-colors shrink-0"
                           aria-label={uiStrings[language].ariaDismissLangHint}
                         >
                           <X size={11} />
@@ -1662,7 +1744,7 @@ const App: React.FC = () => {
                     className="flex gap-5 items-baseline py-5"
                     style={{ borderBottom: '1px solid var(--rule)' }}
                   >
-                    <span className="flex-shrink-0 font-mono text-[11px] tabular-nums text-[var(--ink-muted)] w-6">
+                    <span className="shrink-0 font-mono text-[11px] tabular-nums text-[var(--ink-muted)] w-6">
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div className="flex-1 min-w-0">
@@ -1676,7 +1758,9 @@ const App: React.FC = () => {
                         {p.poster && (
                           <button
                             onClick={() => setActiveDocument(p.poster!)}
-                            className="group flex-shrink-0 inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
+                            onMouseEnter={prefetchPdfViewer}
+                            onFocus={prefetchPdfViewer}
+                            className="group shrink-0 inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
                           >
                             <LayoutTemplate size={11} />
                             <span className="relative">
@@ -1859,7 +1943,7 @@ const App: React.FC = () => {
                 Houston, Texas
               </div>
             </div>
-            <div className="flex flex-col items-start md:items-end gap-2">
+            <div className="flex flex-col items-start md:items-end gap-3">
               <div className="flex gap-5">
                 <a
                   href="mailto:vo.tung@stthom.edu"
@@ -1892,12 +1976,16 @@ const App: React.FC = () => {
                   </span>
                 </a>
               </div>
+              <div className="font-mono text-[10px] tracking-[0.14em] text-[var(--ink-muted)]">
+                © {new Date().getFullYear()} {uiStrings[language].rightsReserved}
+              </div>
             </div>
           </div>
         </motion.div>
       </footer>
       </div>{/* end lang-transition wrapper */}
     </div>
+    </MotionConfig>
   );
 };
 

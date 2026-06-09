@@ -78,30 +78,33 @@ export const HeroBioWeather: React.FC<{ language: 'en' | 'vi' }> = ({ language }
           {language === 'vi' ? 'Hiện sống tại ' : 'Based in '}
         </span>
         <span className="text-[var(--ink)] font-medium">Houston, Texas</span>
-        {live && (
-          <>
-            <span className="mx-2 text-[var(--ink-muted)]/50">—</span>
-            <Degree value={tempF} unit="F" />
-            <span className="mx-1 text-[var(--ink-muted)]/50">·</span>
-            <Degree value={tempC} unit="C" /> {weatherIcon(weatherCode)}
-          </>
-        )}
-        {status === 'loading' && (
-          <>
-            <span className="mx-2 text-[var(--ink-muted)]/50">—</span>
-            <span className="font-mono text-[var(--ink-muted)]/70 text-sm">
-              {language === 'vi' ? 'đang tải thời tiết' : 'reading weather'}
-            </span>
-          </>
-        )}
-        {status === 'error' && (
-          <>
-            <span className="mx-2 text-[var(--ink-muted)]/50">—</span>
-            <span className="italic text-[var(--ink-muted)]/70 text-sm">
-              {language === 'vi' ? 'không có dự báo' : 'forecast unavailable'}
-            </span>
-          </>
-        )}
+        {/* Fixed-width slot so the line doesn't nudge when the forecast resolves */}
+        <span className="inline-block min-w-[7.5rem] text-left align-baseline">
+          {live && (
+            <>
+              <span className="mx-2 text-[var(--ink-muted)]/50">—</span>
+              <Degree value={tempF} unit="F" />
+              <span className="mx-1 text-[var(--ink-muted)]/50">·</span>
+              <Degree value={tempC} unit="C" /> {weatherIcon(weatherCode)}
+            </>
+          )}
+          {status === 'loading' && (
+            <>
+              <span className="mx-2 text-[var(--ink-muted)]/50">—</span>
+              <span className="font-mono text-[var(--ink-muted)]/70 text-sm">
+                {language === 'vi' ? 'đang tải thời tiết' : 'reading weather'}
+              </span>
+            </>
+          )}
+          {status === 'error' && (
+            <>
+              <span className="mx-2 text-[var(--ink-muted)]/50">—</span>
+              <span className="italic text-[var(--ink-muted)]/70 text-sm">
+                {language === 'vi' ? 'không có dự báo' : 'forecast unavailable'}
+              </span>
+            </>
+          )}
+        </span>
       </p>
     </div>
   );

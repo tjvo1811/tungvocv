@@ -17,17 +17,43 @@ GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const MOBILE_QUERY = '(max-width: 767px)';
 const MAX_DPR = 3;
+const MAX_DPR_MOBILE = 2;
 const MAX_CANVAS_PX = 8192;
+/** iOS Safari silently renders blank canvases above ~16.7M pixels of total area. */
+const MAX_CANVAS_AREA = 16 * 1024 * 1024;
 const RENDER_DEBOUNCE_MS = 100;
+const RESIZE_DEBOUNCE_MS = 200;
 const WHEEL_ZOOM_COMMIT_MS = 120;
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 6;
 const ZOOM_STEP = 1.2;
 
+const viewerStrings = {
+  en: {
+    loading: 'Loading…',
+    sharpening: 'Sharpening…',
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+    resetZoom: 'Reset zoom',
+    zoomControls: 'Zoom controls',
+    loadFailed: 'This document could not be loaded.',
+  },
+  vi: {
+    loading: 'Đang tải…',
+    sharpening: 'Đang làm nét…',
+    zoomIn: 'Phóng to',
+    zoomOut: 'Thu nhỏ',
+    resetZoom: 'Đặt lại thu phóng',
+    zoomControls: 'Điều khiển thu phóng',
+    loadFailed: 'Không thể tải tài liệu này.',
+  },
+} as const;
+
 interface PdfViewerProps {
   url: string;
   fitMode: 'page' | 'width';
   className?: string;
+  language?: 'en' | 'vi';
   onLoadError?: () => void;
 }
 
@@ -56,12 +82,14 @@ function computeBaseScale(
 }
 
 function pixelRatioFor(viewportWidth: number, viewportHeight: number) {
-  const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
-  let ratio = dpr;
+  const maxDpr = window.matchMedia(MOBILE_QUERY).matches ? MAX_DPR_MOBILE : MAX_DPR;
+  let ratio = Math.min(window.devicePixelRatio || 1, maxDpr);
   const pxW = viewportWidth * ratio;
   const pxH = viewportHeight * ratio;
   if (pxW > MAX_CANVAS_PX) ratio *= MAX_CANVAS_PX / pxW;
   if (pxH > MAX_CANVAS_PX) ratio *= MAX_CANVAS_PX / pxH;
+  const area = viewportWidth * viewportHeight * ratio * ratio;
+  if (area > MAX_CANVAS_AREA) ratio *= Math.sqrt(MAX_CANVAS_AREA / area);
   return ratio;
 }
 
@@ -128,7 +156,8 @@ function restoreScrollAnchor(container: HTMLDivElement, anchor: ScrollAnchor | n
   if (container.scrollLeft > maxLeft) container.scrollLeft = maxLeft;
 }
 
-export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = '', onLoadError }) => {
+export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = '', language = 'en', onLoadError }) => {
+  const strings = viewerStrings[language];
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const pdfRef = useRef<PDFDocumentProxy | null>(null);
@@ -165,7 +194,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
   }, []);
 
   const renderAllPages = useCallback(
-    async (targetZoom: number, showSpinner = false) => {
+    async (targetZoom: number, showSpinner = false, progressive = false) => {
       const pdf = pdfRef.current;
       if (!pdf) return;
 
@@ -184,6 +213,13 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
           const page = await pdf.getPage(i);
           const canvas = await renderPageToCanvas(page, layoutScale, targetZoom);
           next.push({ pageNum: i, canvas });
+          if (progressive) {
+            // Show each page as soon as it's ready instead of waiting for the
+            // whole document — page 1 appears almost immediately.
+            if (gen !== renderGenRef.current) return;
+            setPages([...next]);
+            if (i === 1) setLoading(false);
+          }
         }
 
         if (gen !== renderGenRef.current) return;
@@ -231,6 +267,24 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     [setLiveZoom, renderAllPages, flushPendingRender],
   );
 
+  const computeLayout = useCallback(async () => {
+    const pdf = pdfRef.current;
+    const container = containerRef.current;
+    if (!pdf || !container) return;
+
+    const isMobile = window.matchMedia(MOBILE_QUERY).matches;
+    const mode = isMobile ? 'page' : fitMode;
+
+    const firstPage = await pdf.getPage(1);
+    const baseViewport = firstPage.getViewport({ scale: 1 });
+    baseScaleRef.current = computeBaseScale(
+      baseViewport.width,
+      baseViewport.height,
+      container,
+      mode,
+    );
+  }, [fitMode]);
+
   const loadPdf = useCallback(async () => {
     const container = containerRef.current;
     if (!container) return;
@@ -246,26 +300,16 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
       const pdf = await getDocument(url).promise;
       pdfRef.current = pdf;
 
-      const isMobile = window.matchMedia(MOBILE_QUERY).matches;
-      const mode = isMobile ? 'page' : fitMode;
-
-      const firstPage = await pdf.getPage(1);
-      const baseViewport = firstPage.getViewport({ scale: 1 });
-      baseScaleRef.current = computeBaseScale(
-        baseViewport.width,
-        baseViewport.height,
-        container,
-        mode,
-      );
-
-      await renderAllPages(1, false);
+      await computeLayout();
+      await renderAllPages(1, false, true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to load PDF');
+      if (e instanceof Error) setError(e.message);
+      else setError('Failed to load PDF');
       onLoadError?.();
     } finally {
       setLoading(false);
     }
-  }, [url, fitMode, renderAllPages]);
+  }, [url, computeLayout, renderAllPages]);
 
   useEffect(() => {
     void loadPdf();
@@ -278,16 +322,33 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
     };
   }, [loadPdf, flushPendingRender]);
 
+  // Re-layout on real width changes only, debounced, without re-fetching the
+  // document. iOS Safari fires `resize` when the address bar collapses during
+  // scroll (height-only change) — ignoring those prevents reloads mid-read.
   useEffect(() => {
-    const onChange = () => void loadPdf();
-    const mq = window.matchMedia(MOBILE_QUERY);
-    mq.addEventListener('change', onChange);
-    window.addEventListener('resize', onChange);
-    return () => {
-      mq.removeEventListener('change', onChange);
-      window.removeEventListener('resize', onChange);
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let lastWidth = window.innerWidth;
+
+    const onResize = () => {
+      if (window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        timer = null;
+        void (async () => {
+          if (!pdfRef.current) return;
+          await computeLayout();
+          await renderAllPages(zoomRef.current, true);
+        })();
+      }, RESIZE_DEBOUNCE_MS);
     };
-  }, [loadPdf]);
+
+    window.addEventListener('resize', onResize);
+    return () => {
+      if (timer) clearTimeout(timer);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [computeLayout, renderAllPages]);
 
   const adjustZoom = useCallback(
     (factor: number) => {
@@ -404,12 +465,12 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
         )}
       </div>
 
-      {loading && (
+      {loading && pages.length === 0 && (
         <div
           className="absolute inset-0 z-10 flex items-center justify-center font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--ink-muted)] pointer-events-none"
           style={{ backgroundColor: 'var(--paper)' }}
         >
-          Loading…
+          {strings.loading}
         </div>
       )}
       {rendering && !loading && (
@@ -417,12 +478,12 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
           className="absolute top-3 right-3 z-20 px-2.5 py-1 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] pointer-events-none"
           style={{ backgroundColor: 'var(--paper)', border: '1px solid var(--rule)' }}
         >
-          Sharpening…
+          {strings.sharpening}
         </div>
       )}
       {error && (
         <div className="absolute inset-0 z-10 flex items-center justify-center font-serif italic text-[var(--ink-muted)] text-sm px-6 text-center pointer-events-none">
-          {error}
+          {strings.loadFailed}
         </div>
       )}
       {!loading && !error && pages.length > 0 && (
@@ -430,14 +491,14 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
           className="pdf-viewer-zoom-bar absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 px-3 py-2 pointer-events-none"
           style={{ backgroundColor: 'var(--paper)', border: '1px solid var(--rule)' }}
           role="toolbar"
-          aria-label="Zoom controls"
+          aria-label={strings.zoomControls}
         >
           <button
             type="button"
             onClick={() => adjustZoom(1 / ZOOM_STEP)}
             disabled={zoomPct <= MIN_ZOOM * 100}
             className="pointer-events-auto p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-30 transition-colors"
-            aria-label="Zoom out"
+            aria-label={strings.zoomOut}
           >
             <ZoomOut size={14} />
           </button>
@@ -449,7 +510,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
             onClick={() => adjustZoom(ZOOM_STEP)}
             disabled={zoomPct >= MAX_ZOOM * 100}
             className="pointer-events-auto p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] disabled:opacity-30 transition-colors"
-            aria-label="Zoom in"
+            aria-label={strings.zoomIn}
           >
             <ZoomIn size={14} />
           </button>
@@ -462,7 +523,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ url, fitMode, className = 
             type="button"
             onClick={resetZoom}
             className="pointer-events-auto p-1.5 text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
-            aria-label="Reset zoom"
+            aria-label={strings.resetZoom}
           >
             <RotateCcw size={13} />
           </button>

@@ -10,62 +10,25 @@
     <meta property="og:title" content="Tung (TJ) Vo — Portfolio" />
     <meta property="og:description" content="Applied Mathematics undergraduate. Research in graph theory, history & public policy, and data-driven storytelling." />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="/og-image.png" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <script>
       (function () {
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          document.documentElement.classList.add('dark');
-        }
+        var stored = null;
+        try { stored = localStorage.getItem('tv-theme'); } catch (e) {}
+        var dark = stored
+          ? stored === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (dark) document.documentElement.classList.add('dark');
       })();
     </script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500;1,8..60,600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {
-            fontFamily: {
-              display: ['"Source Serif 4"', 'Georgia', 'serif'],
-              sans: ['"IBM Plex Sans"', 'system-ui', 'sans-serif'],
-              mono: ['"IBM Plex Mono"', 'ui-monospace', 'monospace'],
-              serif: ['"Source Serif 4"', 'Georgia', 'serif'],
-            },
-            colors: {
-              // ── Sage Folio semantic tokens ────────────────────────────
-              paper:    '#EBE5D2', // page bg (light)
-              'paper-2':'#E1DAC4', // surface (light)
-              ink:      '#3D4A3A', // primary text (light)
-              'ink-muted': '#7A8377',
-              rule:     '#3D4A3A',
-              sage:     '#6B7F60', // link / active accent
-              'sage-soft': '#A8B49A',
-              bone:     '#C8BFA3', // selection / highlight
-              'paper-dk':  '#1B221C', // page bg (dark)
-              'paper-2-dk':'#252C25',
-              'ink-dk':    '#DDE2D5',
-              'ink-muted-dk': '#9DA89A',
-
-              // ── Legacy token aliases (mapped to Sage Folio) ────────────
-              // Kept as names so existing Tailwind classes still resolve;
-              // downstream phases rename usages to semantic tokens.
-              forest: {
-                DEFAULT: '#3D4A3A',
-                light:   '#4A5947',
-                muted:   '#7A8377',
-              },
-              nobel: {
-                gold: '#C8BFA3',
-              },
-              oxblood:   '#6B7F60',
-              dustslate: '#7A8377',
-            }
-          }
-        }
-      }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500;1,8..60,600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
       :root {
         --paper:      #EBE5D2;
@@ -114,7 +77,6 @@
         nav, footer, button { display: none !important; }
       }
     </style>
-<link rel="stylesheet" href="/index.css">
 </head>
   <body>
     <div id="root"></div>

@@ -18,11 +18,9 @@ const modalStrings = {
     posterViewer: 'Poster Viewer',
     cvViewer: 'CV',
     pdfViewer: 'PDF Viewer',
-    unableToDisplayPdf: 'Unable to display PDF',
+    loading: 'Loading…',
     pdfFallback:
-      'The PDF file could not be loaded directly. Please check if the file',
-    existsIn: 'exists in your',
-    folder: 'folder.',
+      'This document couldn\u2019t be displayed in the browser. You can download it instead.',
     downloadPdf: 'Download PDF',
     closeViewer: 'Close Viewer',
     endOfDocument: '*** End of Document ***',
@@ -32,10 +30,9 @@ const modalStrings = {
     posterViewer: 'Trình xem áp phích',
     cvViewer: 'CV',
     pdfViewer: 'Trình xem PDF',
-    unableToDisplayPdf: 'Không thể hiển thị tệp PDF',
-    pdfFallback: 'Không thể tải trực tiếp tệp PDF. Vui lòng kiểm tra xem tệp',
-    existsIn: 'có tồn tại trong thư mục',
-    folder: 'của bạn hay không.',
+    loading: 'Đang tải…',
+    pdfFallback:
+      'Không thể hiển thị tài liệu này trong trình duyệt. Bạn có thể tải tệp về để xem.',
     downloadPdf: 'Tải tệp PDF',
     closeViewer: 'Đóng',
     endOfDocument: '*** Hết tài liệu ***',
@@ -61,6 +58,9 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
 
+  const modalRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   const [pdfFailed, setPdfFailed] = useState(false);
   useEffect(() => {
     if (!isOpen) setPdfFailed(false);
@@ -68,11 +68,43 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
 
   const DEFAULT_VIEWPORT = 'width=device-width, initial-scale=1.0';
 
-  // Close on Escape, lock body scroll, and prevent page pinch-zoom while open.
+  // Move focus into the dialog on open; restore it on close.
+  useEffect(() => {
+    if (!isOpen) return;
+    const previouslyFocused = window.document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+    return () => {
+      previouslyFocused?.focus?.();
+    };
+  }, [isOpen]);
+
+  // Close on Escape, trap Tab focus, lock body scroll, and prevent page
+  // pinch-zoom while open.
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onCloseRef.current();
+      if (e.key === 'Escape') {
+        onCloseRef.current();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const root = modalRef.current;
+        if (!root) return;
+        const focusables = root.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = window.document.activeElement;
+        if (e.shiftKey && (active === first || !root.contains(active))) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (active === last || !root.contains(active))) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     window.addEventListener('keydown', onKey);
     const prevOverflow = window.document.body.style.overflow;
@@ -120,6 +152,10 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
             style={{ backgroundColor: 'var(--ink)' }}
           />
           <motion.div
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={doc.title}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 12 }}
@@ -148,8 +184,9 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
                 </h2>
               </div>
               <button
+                ref={closeButtonRef}
                 onClick={onClose}
-                className="p-2 text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors flex-shrink-0"
+                className="p-2 text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors shrink-0"
                 aria-label={strings.closeViewer}
               >
                 <X size={20} />
@@ -162,7 +199,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
                 <Suspense
                   fallback={
                     <div className="flex-1 flex items-center justify-center font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--ink-muted)]">
-                      Loading…
+                      {strings.loading}
                     </div>
                   }
                 >
@@ -170,6 +207,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
                     url={doc.pdfUrl!}
                     fitMode={isPoster ? 'page' : 'width'}
                     className="flex-1"
+                    language={language}
                     onLoadError={() => setPdfFailed(true)}
                   />
                 </Suspense>
@@ -238,8 +276,7 @@ export const DocumentModal: React.FC<DocumentModalProps> = ({ isOpen, onClose, d
               ) : (
                 <div className="flex-1 flex flex-col items-center justify-center gap-4 px-8 text-center">
                   <p className="font-serif text-sm text-[var(--ink-muted)] leading-relaxed max-w-md">
-                    {strings.unableToDisplayPdf}. {strings.pdfFallback}{' '}
-                    <code className="font-mono text-xs">public/documents/</code> {strings.folder}
+                    {strings.pdfFallback}
                   </p>
                   {hasPdf && (
                     <a

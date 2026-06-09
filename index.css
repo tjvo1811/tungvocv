@@ -1,4 +1,18 @@
-/* ── Film-grain overlay (softened for plaster palette) ──────────── */
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: 'Source Serif 4', Georgia, serif;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+/* ── Film-grain overlay (softened for plaster palette) ──────────────
+   No mix-blend-mode: blending a fixed full-viewport layer with the page
+   forces re-compositing on every scroll frame and janks mobile Safari.
+   A plain low-opacity noise texture looks nearly identical. */
 body::after {
   content: '';
   position: fixed;
@@ -6,12 +20,13 @@ body::after {
   pointer-events: none;
   z-index: 40;
   opacity: 0.035;
-  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
 }
 html.dark body::after {
   opacity: 0.05;
-  mix-blend-mode: screen;
+  /* Static filter on the element's own texture — rasterized once, unlike
+     a blend mode which depends on the backdrop every frame. */
+  filter: invert(1);
 }
 @media (prefers-reduced-motion: reduce), print {
   body::after { display: none; }
@@ -56,6 +71,14 @@ html.dark body::after {
 /* ── Tab content area ────────────────────────────────────────────── */
 .tab-content {
   min-height: 100vh;
+  min-height: 100svh;
+}
+
+/* Hero fills the *visible* viewport: svh ignores the iOS address bar, so
+   content doesn't jump when the bar collapses during scroll. */
+.hero-viewport {
+  min-height: 100vh;
+  min-height: 100svh;
 }
 
 /* ── Staircase timeline ──────────────────────────────────────────── */
