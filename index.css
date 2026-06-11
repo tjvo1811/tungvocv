@@ -128,3 +128,22 @@ html.dark body::after {
     border-right: 1px solid var(--rule);
   }
 }
+
+/* SplitText word masks */
+.hero-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.underline-ease {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-tilt-target {
+  transition: border-color 0.3s ease;
+}
+
+.group:hover .card-tilt-target {
+  border-color: var(--sage) !important;
+}

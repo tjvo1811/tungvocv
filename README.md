@@ -1,20 +1,32 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Tung (TJ) Vo — Portfolio
 
-# Run and deploy your AI Studio app
+Bilingual (EN/VI) editorial portfolio for Tung (TJ) Vo — Applied Mathematics undergraduate at the University of St. Thomas, Houston, TX.
 
-This contains everything you need to run your app locally.
+Built with React 19, Vite 6, Tailwind CSS v4, Framer Motion, GSAP, and Three.js.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1AX6WThmfE3lMDGKWdPau1fmS9LL_WOHy
+## Run locally
 
-## Run Locally
+**Prerequisites:** Node.js 18+
 
-**Prerequisites:**  Node.js
+```bash
+npm install
+npm run dev
+```
 
+Open the URL shown in the terminal (typically `http://localhost:5173`).
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Build
+
+```bash
+npm run build
+npm run preview
+```
+
+## Features
+
+- Desktop tab navigation with GSAP curtain transitions
+- Mobile continuous scroll with Framer Motion reveals
+- Interactive hero graph field (Three.js)
+- In-browser PDF viewer for papers, posters, and CV
+- Live Houston weather (Open-Meteo)
+- Dark mode and EN/VI language toggle

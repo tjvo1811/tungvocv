@@ -8,8 +8,15 @@ import { Menu, X, Mail, Linkedin, FileText, LayoutTemplate, ExternalLink, Moon, 
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import { govtPaper, ricePoster, histPaper, histPoster, nmunPaper, ustGraphTheoryPoster, cvDocument, ResearchDocument } from './data/researchData';
 import { DocumentModal } from './components/DocumentModal';
-import { HeroBioWeather } from './components/HeroBioWeather';
 import { BrandMark } from './components/BrandMark';
+import { HeroSection } from './components/HeroSection';
+import { TabPanel } from './components/TabPanel';
+import CurtainTransition, { type CurtainHandle } from './components/CurtainTransition';
+import { prefersReducedMotion } from './lib/motion';
+import { useNavIndicator } from './hooks/useNavIndicator';
+import { refreshScrollTriggers } from './hooks/useScrollEffects';
+import { useMagnetic } from './hooks/useMagnetic';
+import { useTilt } from './hooks/useTilt';
 
 type TabId = 'home' | 'about' | 'research' | 'leadership' | 'work' | 'honors';
 type Language = 'en' | 'vi';
@@ -84,6 +91,20 @@ const mainTabMotion = {
   animate: { opacity: 1, y: 0, transition: tabShellTransition },
   exit: { opacity: 0, y: -10, transition: tabShellExit },
 };
+
+const isMobileViewportNow = () =>
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+
+const getMainTabMotion = (mobile: boolean) =>
+  mobile
+    ? mainTabMotion
+    : {
+        initial: { opacity: 0 },
+        animate: { opacity: 1, transition: { duration: 0.2 } },
+        exit: { opacity: 0, transition: { duration: 0 } },
+      };
+
+const instantScroll = 'instant' as ScrollBehavior;
 
 /* ─── Static data ─────────────────────────────────────────────────── */
 const educationData: Record<Language, Array<{
@@ -531,15 +552,29 @@ const getStaircaseOffset = (index: number, total: number) =>
   ((total - 1 - index) / Math.max(total - 1, 1)) * 50;
 
 /* ─── Tab hero heading (editorial masthead) ─────────────────────── */
-const TabHero = ({ children, index }: { children: React.ReactNode; index?: number }) => (
-  <motion.div {...scrollReveal} className="text-center mb-16 pt-4">
+const TabHero = ({
+  children,
+  index,
+  tabId,
+}: {
+  children: React.ReactNode;
+  index?: number;
+  tabId: TabId;
+}) => (
+  <motion.div
+    {...(isMobileViewportNow() ? scrollReveal : {})}
+    data-reveal=""
+    className="text-center mb-16 pt-4"
+  >
     {index !== undefined && (
       <div className="font-mono text-[11px] tracking-[0.18em] text-[var(--ink-muted)] mb-4 uppercase">
         № {String(index).padStart(2, '0')}
       </div>
     )}
     <h2
-      className="font-display italic text-[var(--ink)] leading-[0.92]"
+      id={`tabhero-${tabId}`}
+      tabIndex={-1}
+      className="font-display italic text-[var(--ink)] leading-[0.92] outline-none"
       style={{
         fontSize: 'clamp(2.5rem, 7vw, 6rem)',
         fontWeight: 500,
@@ -550,6 +585,7 @@ const TabHero = ({ children, index }: { children: React.ReactNode; index?: numbe
       {children}
     </h2>
     <div
+      data-underline=""
       className="mx-auto mt-6 h-px w-12"
       style={{ backgroundColor: 'var(--sage)' }}
       aria-hidden
@@ -568,16 +604,21 @@ const ProjectCard = ({
   blurb: string;
   url: string;
   visitLabel: string;
-}) => (
+}) => {
+  const tiltRef = useTilt<HTMLAnchorElement>();
+  return (
   <motion.a
+    ref={tiltRef}
     href={url}
     target="_blank"
     rel="noopener noreferrer"
     variants={fadeIn}
+    data-reveal=""
     className="block h-full group"
   >
     <div
-      className="relative h-full flex flex-col gap-3 p-5 transition-colors duration-300"
+      data-tilt-inner=""
+      className="card-tilt-target relative h-full flex flex-col gap-3 p-5 transition-colors duration-300"
       style={{
         backgroundColor: 'transparent',
         border: '1px solid var(--rule)',
@@ -599,12 +640,17 @@ const ProjectCard = ({
       </span>
     </div>
   </motion.a>
-);
+  );
+};
 
 /* ─── Honor row (editorial ruled list) ───────────────────────────── */
-const HonorCard = ({ title, org, date }: { title: string; org: string; date: string }) => (
+const HonorCard = ({ title, org, date }: { title: string; org: string; date: string }) => {
+  const tiltRef = useTilt<HTMLDivElement>();
+  return (
   <motion.div
+    ref={tiltRef}
     variants={fadeIn}
+    data-reveal=""
     className="group flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-6 py-4"
     style={{ borderTop: '1px solid var(--rule)' }}
   >
@@ -620,7 +666,8 @@ const HonorCard = ({ title, org, date }: { title: string; org: string; date: str
       {date}
     </p>
   </motion.div>
-);
+  );
+};
 
 /* ─── Experience item (used in Research) ──────────────────────────── */
 const ExperienceItem = ({
@@ -647,7 +694,8 @@ const ExperienceItem = ({
   language: Language;
 }) => (
   <motion.div
-    {...scrollReveal}
+    {...(isMobileViewportNow() ? scrollReveal : {})}
+    data-reveal=""
     className="mb-10 pl-6 relative"
     style={{ borderLeft: '1px solid var(--rule)' }}
   >
@@ -754,7 +802,8 @@ const SectionHeading = ({
   center?: boolean;
 }) => (
   <motion.div
-    {...scrollReveal}
+    {...(isMobileViewportNow() ? scrollReveal : {})}
+    data-reveal=""
     className={`mb-12 ${center ? 'text-center' : ''}`}
   >
     <div className="font-mono text-[11px] tracking-[0.18em] text-[var(--ink-muted)] uppercase mb-3">
@@ -772,6 +821,7 @@ const SectionHeading = ({
       {heading}
     </h2>
     <div
+      data-underline=""
       className={`${center ? 'mx-auto' : ''} mt-5 h-px w-12`}
       style={{ backgroundColor: 'var(--sage)' }}
       aria-hidden
@@ -799,14 +849,20 @@ const StaircaseCard = ({
   children?: React.ReactNode;
 }) => (
   <motion.div
-    {...scrollReveal}
+    {...(isMobileViewportNow() ? scrollReveal : {})}
+    data-reveal=""
     className="mb-8 staircase-step group overflow-visible"
     style={{ paddingLeft: `${offset}%` }}
   >
     <div
       className="relative pl-6 pr-2 py-3 max-w-2xl overflow-visible"
-      style={{ borderLeft: '1px solid var(--rule)' }}
     >
+      <div
+        data-staircase-line=""
+        className="absolute left-0 top-0 bottom-0 w-px origin-top"
+        style={{ backgroundColor: 'var(--rule)' }}
+        aria-hidden
+      />
       <div className="font-mono text-[10px] tracking-[0.12em] text-[var(--ink-muted)] tabular-nums mb-2">
         {shortDate}
       </div>
@@ -836,10 +892,10 @@ const StaircaseCard = ({
 /* ─── Education entries (editorial bordered columns) ─────────────── */
 const EducationCards = ({ language }: { language: Language }) => (
   <motion.div
-    variants={staggerContainer}
-    initial="initial"
-    whileInView="animate"
-    viewport={scrollViewport}
+    variants={isMobileViewportNow() ? staggerContainer : undefined}
+    initial={isMobileViewportNow() ? 'initial' : false}
+    whileInView={isMobileViewportNow() ? 'animate' : undefined}
+    viewport={isMobileViewportNow() ? scrollViewport : undefined}
     className="grid grid-cols-1 md:grid-cols-3 max-w-5xl mx-auto"
     style={{
       borderTop: '1px solid var(--rule)',
@@ -848,43 +904,70 @@ const EducationCards = ({ language }: { language: Language }) => (
     }}
   >
     {educationData[language].map((item, i) => (
-      <motion.a
+      <EducationCard
         key={`edu-${i}`}
+        item={item}
+        index={i}
+        isLast={i === educationData[language].length - 1}
+      />
+    ))}
+  </motion.div>
+);
+
+const EducationCard = ({
+  item,
+  index,
+  isLast,
+}: {
+  item: (typeof educationData.en)[number];
+  index: number;
+  isLast: boolean;
+}) => {
+  const tiltRef = useTilt<HTMLAnchorElement>();
+  return (
+      <motion.a
+        ref={tiltRef}
         href={item.url}
         target="_blank"
         rel="noopener noreferrer"
         variants={fadeIn}
+        data-reveal=""
         className={`group block p-6 md:p-8 transition-colors duration-300${
-          i < educationData[language].length - 1 ? ' education-card-divider' : ''
+          !isLast ? ' education-card-divider' : ''
         }`}
         style={{
           borderBottom: '1px solid var(--rule)',
         }}
       >
-        <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] mb-3">
-          № {String(i + 1).padStart(2, '0')}
-        </div>
-        <h4
-          className="font-display italic text-[var(--ink)] text-xl leading-tight mb-2 group-hover:text-[var(--sage)] transition-colors"
-          style={{ fontWeight: 500 }}
+        <div
+          data-tilt-inner=""
+          className="card-tilt-target h-full"
+          style={{ border: '1px solid transparent' }}
         >
-          {item.school}
-        </h4>
-        <p className="font-serif italic text-[var(--ink-muted)] text-[14px] mb-3 whitespace-pre-line">
-          {item.degree}
-        </p>
-        <div className="font-mono text-[11px] text-[var(--ink-muted)] mb-2 tabular-nums">
-          {item.date}
-        </div>
-        {item.honor ? (
-          <p className="font-serif text-[13px] text-[var(--ink)] leading-snug">
-            {item.honor}
+          <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] mb-3">
+            № {String(index + 1).padStart(2, '0')}
+          </div>
+          <h4
+            className="font-display italic text-[var(--ink)] text-xl leading-tight mb-2 group-hover:text-[var(--sage)] transition-colors"
+            style={{ fontWeight: 500 }}
+          >
+            {item.school}
+          </h4>
+          <p className="font-serif italic text-[var(--ink-muted)] text-[14px] mb-3 whitespace-pre-line">
+            {item.degree}
           </p>
-        ) : null}
+          <div className="font-mono text-[11px] text-[var(--ink-muted)] mb-2 tabular-nums">
+            {item.date}
+          </div>
+          {item.honor ? (
+            <p className="font-serif text-[13px] text-[var(--ink)] leading-snug">
+              {item.honor}
+            </p>
+          ) : null}
+        </div>
       </motion.a>
-    ))}
-  </motion.div>
-);
+  );
+};
 
 /* ─── Nav links ──────────────────────────────────────────────────── */
 const NAV_LINKS: Record<Language, { id: TabId; label: string; altLabel: string }[]> = {
@@ -907,9 +990,14 @@ const NAV_LINKS: Record<Language, { id: TabId; label: string; altLabel: string }
 const navLinkClass = (active: boolean) =>
   `relative px-2 py-3 font-sans text-[11px] tracking-[0.18em] uppercase cursor-pointer whitespace-nowrap transition-colors duration-200 ${
     active
-      ? 'text-[var(--ink)] after:absolute after:left-2 after:right-2 after:bottom-1.5 after:h-px after:bg-[var(--sage)]'
-      : 'text-[var(--ink-muted)] hover:text-[var(--ink)] after:absolute after:left-2 after:right-2 after:bottom-1.5 after:h-px after:bg-[var(--sage)] after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200'
+      ? 'text-[var(--ink)]'
+      : 'text-[var(--ink-muted)] hover:text-[var(--ink)] after:absolute after:left-2 after:right-2 after:bottom-1.5 after:h-px after:bg-[var(--sage)] after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform after:duration-200 underline-ease'
   }`;
+
+const labelFor = (id: TabId, language: Language) => {
+  if (id === 'home') return language === 'vi' ? 'Võ Sơn Tùng' : 'TJ Vo';
+  return NAV_LINKS[language].find((l) => l.id === id)?.label ?? id;
+};
 
 const getSystemPrefersDark = () =>
   typeof window !== 'undefined' &&
@@ -960,7 +1048,37 @@ const prefetchPdfViewer = () => {
 };
 
 /* ─── App ────────────────────────────────────────────────────────── */
+const NavLinkButton = ({
+  id,
+  label,
+  active,
+  onClick,
+}: {
+  id: TabId;
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) => {
+  const ref = useMagnetic<HTMLButtonElement>();
+  return (
+    <button
+      ref={ref}
+      data-nav-id={id}
+      onClick={onClick}
+      className={navLinkClass(active)}
+    >
+      {label}
+    </button>
+  );
+};
+
 const App: React.FC = () => {
+  const curtainRef = useRef<CurtainHandle>(null);
+  const navLinksRef = useRef<HTMLDivElement>(null);
+  const navIndicatorRef = useRef<HTMLSpanElement>(null);
+  const linkedInRef = useMagnetic<HTMLAnchorElement>();
+  const activeTabRef = useRef<TabId>('home');
+
   const [language, setLanguage] = useState<Language>(() => {
     const stored = readStoredLanguage();
     if (stored) return stored;
@@ -980,6 +1098,9 @@ const App: React.FC = () => {
   });
   const themeOverride = useRef<'light' | 'dark' | null>(readStoredTheme());
   const [activeTab, setActiveTab] = useState<TabId>('home');
+  activeTabRef.current = activeTab;
+
+  useNavIndicator(navLinksRef, navIndicatorRef, activeTab, language);
   const [navResearchOpen, setNavResearchOpen] = useState(false);
   const navResearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [langHintVisible, setLangHintVisible] = useState(false);
@@ -1049,6 +1170,25 @@ const App: React.FC = () => {
   // Nav popup hint: show briefly, then hide the popup only. The hero banner
   // stays until the visitor switches language or dismisses it explicitly.
   useEffect(() => {
+    const prefetchGraph = () => void import('./components/GraphField');
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(prefetchGraph, { timeout: 3000 });
+    } else {
+      setTimeout(prefetchGraph, 2000);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!activeDocument) {
+      refreshScrollTriggers();
+    }
+  }, [activeDocument]);
+
+  useEffect(() => {
+    refreshScrollTriggers();
+  }, [activeTab]);
+
+  useEffect(() => {
     const showTimer = setTimeout(() => setLangHintVisible(true), 1200);
     const hideTimer = setTimeout(() => setLangHintVisible(false), 4200); // 1.2 s delay + 3 s visible
     return () => {
@@ -1095,13 +1235,11 @@ const App: React.FC = () => {
   const switchTab = (id: TabId, scrollTo?: string) => {
     setMenuOpen(false);
     setNavResearchOpen(false);
-    // Track the section on mobile too, so crossing the breakpoint later lands
-    // on the section the visitor was reading instead of resetting to Home.
-    setActiveTab(id);
+
+    const tabChanged = activeTabRef.current !== id;
 
     if (isMobile) {
-      // On mobile, everything is rendered as a continuous scroll.
-      // Tab clicks just scroll to the corresponding section.
+      setActiveTab(id);
       const targetId = scrollTo
         ? scrollTo
         : id === 'home'
@@ -1111,7 +1249,6 @@ const App: React.FC = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         setNavBarSolid(false);
       } else {
-        // Defer slightly so the menu close animation doesn't fight the scroll.
         setTimeout(() => {
           document.getElementById(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 50);
@@ -1119,12 +1256,50 @@ const App: React.FC = () => {
       return;
     }
 
+    if (!tabChanged && scrollTo) {
+      setActiveTab(id);
+      setNavBarSolid(false);
+      setTimeout(() => {
+        document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        requestAnimationFrame(syncNavBarSolid);
+      }, 50);
+      return;
+    }
+
+    if (tabChanged && !prefersReducedMotion()) {
+      void curtainRef.current
+        ?.play(labelFor(id, language), () => {
+          setActiveTab(id);
+          setNavBarSolid(false);
+          window.scrollTo({ top: 0, behavior: instantScroll });
+          if (scrollTo) {
+            document.getElementById(scrollTo)?.scrollIntoView({
+              behavior: instantScroll,
+              block: 'start',
+            });
+            requestAnimationFrame(syncNavBarSolid);
+          }
+        })
+        .then(() => {
+          if (id !== 'home') {
+            document.getElementById(`tabhero-${id}`)?.focus({ preventScroll: true });
+          }
+        });
+      return;
+    }
+
+    setActiveTab(id);
     setNavBarSolid(false);
     if (scrollTo) {
       setTimeout(() => {
         document.getElementById(scrollTo)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         requestAnimationFrame(syncNavBarSolid);
-      }, 320);
+      }, tabChanged ? 50 : 320);
+    }
+    if (tabChanged && id !== 'home') {
+      requestAnimationFrame(() => {
+        document.getElementById(`tabhero-${id}`)?.focus({ preventScroll: true });
+      });
     }
   };
 
@@ -1167,6 +1342,7 @@ const App: React.FC = () => {
         document={activeDocument}
         language={language}
       />
+      <CurtainTransition ref={curtainRef} />
 
       {/* ── Editorial masthead nav ─────────────────────────── */}
       <nav
@@ -1187,7 +1363,13 @@ const App: React.FC = () => {
             <BrandMark className="h-7" />
           </button>
 
-          <div className="flex items-center gap-0">
+          <div ref={navLinksRef} className="relative flex items-center gap-0">
+            <span
+              ref={navIndicatorRef}
+              className="absolute bottom-1.5 left-0 h-px bg-[var(--sage)] opacity-0 pointer-events-none"
+              style={{ width: 0 }}
+              aria-hidden
+            />
             {navLinks.map(({ id, label }) =>
               id === 'research' ? (
                 <div
@@ -1201,12 +1383,12 @@ const App: React.FC = () => {
                     navResearchTimer.current = setTimeout(() => setNavResearchOpen(false), 120);
                   }}
                 >
-                  <button
+                  <NavLinkButton
+                    id={id}
+                    label={label}
+                    active={activeTab === id}
                     onClick={() => switchTab(id)}
-                    className={navLinkClass(activeTab === id)}
-                  >
-                    {label}
-                  </button>
+                  />
                   <AnimatePresence>
                     {navResearchOpen && (
                       <motion.div
@@ -1251,13 +1433,13 @@ const App: React.FC = () => {
                   </AnimatePresence>
                 </div>
               ) : (
-                <button
+                <NavLinkButton
                   key={id}
+                  id={id}
+                  label={label}
+                  active={activeTab === id}
                   onClick={() => switchTab(id)}
-                  className={navLinkClass(activeTab === id)}
-                >
-                  {label}
-                </button>
+                />
               )
             )}
           </div>
@@ -1320,6 +1502,7 @@ const App: React.FC = () => {
               </AnimatePresence>
             </div>
             <a
+              ref={linkedInRef}
               href="https://www.linkedin.com/in/tung-vo-4728b7235/"
               target="_blank"
               rel="noopener noreferrer"
@@ -1477,152 +1660,54 @@ const App: React.FC = () => {
           opacity: langTransition ? 0 : 1,
         }}
       >
-      <AnimatePresence mode={isMobile ? 'sync' : 'wait'}>
-        {/* ── Home (Hero + Education) ──────────────────────── */}
+      <AnimatePresence mode="sync">
+        {/* ── Home (Hero) ──────────────────────── */}
         {(isMobile || activeTab === 'home') && (
           <motion.div
             key="hero-page"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: 0.3 } }}
-            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+            exit={{ opacity: 0, transition: { duration: isMobile ? 0.15 : 0 } }}
           >
-            <header className="hero-viewport relative pb-28 md:pb-36 flex items-center justify-center overflow-hidden">
-              <div className="relative z-10 container mx-auto px-6 max-w-4xl">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.32, ease: cubicEase, delay: 0.1 }}
-                  className="text-center"
-                >
-                  <div className="font-mono text-[11px] tracking-[0.22em] text-[var(--ink-muted)] uppercase mb-6">
-                    Portfolio · Tung (TJ) Vo
-                  </div>
-                  <h1
-                    className="font-display italic text-[var(--ink)] leading-[0.95] mb-8 md:mb-10"
-                    style={{
-                      fontSize: 'clamp(3rem, 9vw, 7.5rem)',
-                      fontWeight: 500,
-                      fontVariationSettings: '"opsz" 60',
-                      letterSpacing: '-0.015em',
-                    }}
-                  >
-                    {language === 'vi' ? 'Tôi là Võ Sơn Tùng.' : "Hi. I'm TJ."}
-                  </h1>
-                </motion.div>
-
-                <HeroBioWeather language={language} />
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.32, ease: cubicEase, delay: 0.35 }}
-                  className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 -mt-1"
-                >
-                  <a
-                    href="mailto:vo.tung@stthom.edu"
-                    className="group inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.1em] text-[var(--ink)] transition-colors"
-                  >
-                    <Mail size={14} className="text-[var(--sage)]" />
-                    <span className="relative">
-                      vo.tung@stthom.edu
-                      <span
-                        className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-100 transition-transform duration-300"
-                        style={{ backgroundColor: 'var(--sage)' }}
-                        aria-hidden
-                      />
-                    </span>
-                  </a>
-                  <span className="hidden sm:inline text-[var(--ink-muted)]/40" aria-hidden>
-                    ·
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setActiveDocument(cvDocument)}
-                    onMouseEnter={prefetchPdfViewer}
-                    onFocus={prefetchPdfViewer}
-                    className="group inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.1em] text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
-                    aria-label={uiStrings[language].ariaViewCv}
-                  >
-                    <FileText size={14} className="text-[var(--sage)]" />
-                    <span className="relative">
-                      {uiStrings[language].downloadCv}
-                      <span
-                        className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
-                        style={{ backgroundColor: 'var(--sage)' }}
-                        aria-hidden
-                      />
-                    </span>
-                  </button>
-                </motion.div>
-
-                {/* Language availability banner — visible in hero until user switches or dismisses */}
-                <AnimatePresence>
-                  {!langHintDismissed && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, transition: { delay: 1.0, duration: 0.4 } }}
-                      exit={{ opacity: 0, transition: { duration: 0.2 } }}
-                      className="mt-8 flex justify-center"
-                    >
-                      <div className="flex items-center gap-3 max-w-xl">
-                        <span
-                          className="w-1.5 h-1.5 shrink-0"
-                          style={{ backgroundColor: 'var(--sage)' }}
-                          aria-hidden
-                        />
-                        <button
-                          onClick={handleLanguageToggle}
-                          className="font-serif italic text-[13px] text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
-                          aria-label={language === 'en' ? uiStrings.en.ariaSwitchToVietnamese : uiStrings.vi.ariaSwitchToEnglish}
-                        >
-                          {language === 'en'
-                            ? uiStrings.en.langHintEn
-                            : uiStrings.vi.langHintVi}
-                        </button>
-                        <button
-                          onClick={dismissLangHint}
-                          className="p-1 text-[var(--ink-muted)]/60 hover:text-[var(--ink)] transition-colors shrink-0"
-                          aria-label={uiStrings[language].ariaDismissLangHint}
-                        >
-                          <X size={11} />
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-              </div>
-            </header>
+            <HeroSection
+              language={language}
+              uiStrings={uiStrings[language]}
+              langHintDismissed={langHintDismissed}
+              onLanguageToggle={handleLanguageToggle}
+              onDismissLangHint={dismissLangHint}
+              onOpenCv={() => setActiveDocument(cvDocument)}
+              onPrefetchPdf={prefetchPdfViewer}
+            />
           </motion.div>
         )}
 
         {/* ── Education ───────────────────────────────────────── */}
         {(isMobile || activeTab === 'about') && (
-          <motion.main
+          <TabPanel
             key="about"
-            id="section-about"
-            {...mainTabMotion}
+            tabId="about"
+            {...getMainTabMotion(isMobile)}
             className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
-            <TabHero index={1}>{language === 'vi' ? 'Học vấn.' : 'Education.'}</TabHero>
+            <TabHero tabId="about" index={1}>{language === 'vi' ? 'Học vấn.' : 'Education.'}</TabHero>
             <EducationCards language={language} />
-          </motion.main>
+          </TabPanel>
         )}
 
         {/* ── Research ────────────────────────────────────────── */}
         {(isMobile || activeTab === 'research') && (
-          <motion.main
+          <TabPanel
             key="research"
-            id="section-research"
-            {...mainTabMotion}
+            tabId="research"
+            {...getMainTabMotion(isMobile)}
             className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
-            <TabHero index={2}>{language === 'vi' ? 'Nghiên cứu.' : 'Research.'}</TabHero>
+            <TabHero tabId="research" index={2}>{language === 'vi' ? 'Nghiên cứu.' : 'Research.'}</TabHero>
 
             {/* Research experience */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
               {/* Left column */}
-              <div>
+              <div data-reveal="">
                 <ExperienceItem
                   language={language}
                   title={language === 'vi' ? 'Đại học Rice' : 'Rice University'}
@@ -1678,7 +1763,7 @@ const App: React.FC = () => {
               </div>
 
               {/* Right column */}
-              <div>
+              <div data-reveal="">
                 <ExperienceItem
                   language={language}
                   title={language === 'vi' ? 'Trường Cao đẳng Cộng đồng Lone Star | Trường Cao đẳng Danh dự' : 'Lone Star College | The Honors College'}
@@ -1740,7 +1825,8 @@ const App: React.FC = () => {
                 {presentationsData[language].map((p, i) => (
                   <motion.div
                     key={i}
-                    {...scrollReveal}
+                    {...(isMobileViewportNow() ? scrollReveal : {})}
+                    data-reveal=""
                     className="flex gap-5 items-baseline py-5"
                     style={{ borderBottom: '1px solid var(--rule)' }}
                   >
@@ -1796,10 +1882,10 @@ const App: React.FC = () => {
                 center
               />
               <motion.div
-                variants={staggerContainer}
-                initial="initial"
-                whileInView="animate"
-                viewport={scrollViewport}
+                variants={isMobileViewportNow() ? staggerContainer : undefined}
+                initial={isMobileViewportNow() ? 'initial' : false}
+                whileInView={isMobileViewportNow() ? 'animate' : undefined}
+                viewport={isMobileViewportNow() ? scrollViewport : undefined}
                 className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4"
               >
                 {projectsData[language].map((proj) => (
@@ -1813,18 +1899,18 @@ const App: React.FC = () => {
                 ))}
               </motion.div>
             </div>
-          </motion.main>
+          </TabPanel>
         )}
 
         {/* ── Leadership ──────────────────────────────────────── */}
         {(isMobile || activeTab === 'leadership') && (
-          <motion.main
+          <TabPanel
             key="leadership"
-            id="section-leadership"
-            {...mainTabMotion}
+            tabId="leadership"
+            {...getMainTabMotion(isMobile)}
             className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
-            <TabHero index={3}>{language === 'vi' ? 'Lãnh đạo.' : 'Leadership.'}</TabHero>
+            <TabHero tabId="leadership" index={3}>{language === 'vi' ? 'Lãnh đạo.' : 'Leadership.'}</TabHero>
             <div className="overflow-x-clip overflow-y-visible">
               {leadershipData[language].map((entry, i, arr) => (
                 <StaircaseCard
@@ -1839,18 +1925,18 @@ const App: React.FC = () => {
                 </StaircaseCard>
               ))}
             </div>
-          </motion.main>
+          </TabPanel>
         )}
 
         {/* ── Work ────────────────────────────────────────────── */}
         {(isMobile || activeTab === 'work') && (
-          <motion.main
+          <TabPanel
             key="work"
-            id="section-work"
-            {...mainTabMotion}
+            tabId="work"
+            {...getMainTabMotion(isMobile)}
             className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
-            <TabHero index={4}>{language === 'vi' ? 'Kinh nghiệm.' : 'Work.'}</TabHero>
+            <TabHero tabId="work" index={4}>{language === 'vi' ? 'Kinh nghiệm.' : 'Work.'}</TabHero>
             <div className="overflow-x-clip overflow-y-visible">
               {workData[language].map((entry, i, arr) => (
                 <StaircaseCard
@@ -1865,18 +1951,18 @@ const App: React.FC = () => {
                 </StaircaseCard>
               ))}
             </div>
-          </motion.main>
+          </TabPanel>
         )}
 
         {/* ── Honors ──────────────────────────────────────────── */}
         {(isMobile || activeTab === 'honors') && (
-          <motion.main
+          <TabPanel
             key="honors"
-            id="section-honors"
-            {...mainTabMotion}
+            tabId="honors"
+            {...getMainTabMotion(isMobile)}
             className="tab-content pt-24 pb-24 px-6 md:px-16 scroll-mt-20"
           >
-            <TabHero index={5}>{language === 'vi' ? 'Thành tích.' : 'Honors.'}</TabHero>
+            <TabHero tabId="honors" index={5}>{language === 'vi' ? 'Thành tích.' : 'Honors.'}</TabHero>
             <motion.div
               {...scrollReveal}
               className="mb-10 text-center font-serif italic text-[var(--ink-muted)] text-base max-w-xl mx-auto"
@@ -1884,10 +1970,10 @@ const App: React.FC = () => {
               {uiStrings[language].honorsSub}
             </motion.div>
             <motion.div
-              variants={staggerContainer}
-              initial="initial"
-              whileInView="animate"
-              viewport={scrollViewport}
+              variants={isMobileViewportNow() ? staggerContainer : undefined}
+              initial={isMobileViewportNow() ? 'initial' : false}
+              whileInView={isMobileViewportNow() ? 'animate' : undefined}
+              viewport={isMobileViewportNow() ? scrollViewport : undefined}
               className="max-w-3xl mx-auto"
               style={{ borderBottom: '1px solid var(--rule)' }}
             >
@@ -1921,7 +2007,7 @@ const App: React.FC = () => {
                 ))}
               </p>
             </motion.div>
-          </motion.main>
+          </TabPanel>
         )}
       </AnimatePresence>
 

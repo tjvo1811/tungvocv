@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Cloud,
   CloudLightning,
@@ -25,13 +25,60 @@ function weatherIcon(code: number, size = 14): React.ReactNode {
   return <CloudLightning size={size} className={cls} aria-hidden />;
 }
 
+function prefersReducedMotion() {
+  return (
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
 function Degree({ value, unit }: { value: number | null; unit: 'F' | 'C' }) {
-  const rounded =
+  const target =
     value !== null && !Number.isNaN(value) ? Math.round(value) : null;
-  if (rounded === null) return null;
+  const [display, setDisplay] = useState(target === null ? null : 0);
+  const rafRef = useRef(0);
+  const startedRef = useRef(false);
+
+  useEffect(() => {
+    if (target === null) {
+      setDisplay(null);
+      startedRef.current = false;
+      return;
+    }
+
+    if (prefersReducedMotion()) {
+      setDisplay(target);
+      return;
+    }
+
+    if (startedRef.current) {
+      setDisplay(target);
+      return;
+    }
+    startedRef.current = true;
+
+    const start = performance.now();
+    const duration = 800;
+
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setDisplay(Math.round(target * eased));
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    setDisplay(0);
+    rafRef.current = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [target]);
+
+  if (display === null) return null;
   return (
     <span className="font-mono tabular-nums text-[var(--ink)]">
-      {rounded}°{unit}
+      {display}°{unit}
     </span>
   );
 }
@@ -78,7 +125,6 @@ export const HeroBioWeather: React.FC<{ language: 'en' | 'vi' }> = ({ language }
           {language === 'vi' ? 'Hiện sống tại ' : 'Based in '}
         </span>
         <span className="text-[var(--ink)] font-medium">Houston, Texas</span>
-        {/* Fixed-width slot so the line doesn't nudge when the forecast resolves */}
         <span className="inline-block min-w-[7.5rem] text-left align-baseline">
           {live && (
             <>
