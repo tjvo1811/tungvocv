@@ -104,7 +104,7 @@ export const CurrentResearch: React.FC<CurrentResearchProps> = ({
   return (
     <section aria-label={strings[language].label}>
       <div
-        className="max-w-2xl mx-auto px-4 sm:px-5 py-4 sm:py-5"
+        className="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-5"
         style={{
           borderTop: '1px solid var(--rule)',
           borderBottom: '1px solid var(--rule)',
@@ -125,21 +125,26 @@ export const CurrentResearch: React.FC<CurrentResearchProps> = ({
         </div>
 
         <div
-          className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4"
+          className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-y-5 sm:gap-x-10 pt-5"
           style={{ borderTop: '1px solid var(--rule)' }}
         >
           {items.map((item, i) => (
             <div key={item.institution} className="min-w-0 text-center sm:text-left">
-              <div className="font-mono text-[9px] tracking-[0.16em] uppercase text-[var(--ink-muted)] mb-1">
+              <div
+                className="hidden sm:block mb-4 h-px w-8"
+                style={{ backgroundColor: 'var(--rule)' }}
+                aria-hidden
+              />
+              <div className="font-mono text-[9px] tracking-[0.16em] uppercase text-[var(--ink-muted)] mb-2">
                 № {String(i + 1).padStart(2, '0')} / {item.date}
               </div>
               <h3
-                className="font-display italic text-[14px] leading-snug text-[var(--ink)]"
+                className="font-display italic text-[14px] sm:text-[15px] leading-snug text-[var(--ink)]"
                 style={{ fontWeight: 500 }}
               >
                 {item.institution}
               </h3>
-              <p className="font-sans text-[10px] tracking-[0.12em] uppercase text-[var(--ink-muted)] mt-1">
+              <p className="font-sans text-[10px] tracking-[0.12em] uppercase text-[var(--ink-muted)] mt-2 leading-relaxed">
                 {item.focus}
               </p>
             </div>

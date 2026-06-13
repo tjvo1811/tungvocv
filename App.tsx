@@ -505,11 +505,10 @@ const uiStrings = {
     ariaToggleLanguage: 'Toggle language',
     ariaToggleDarkMode: 'Toggle dark mode',
     ariaDismiss: 'Dismiss',
-    ariaDismissLangHint: 'Dismiss language hint',
     ariaSwitchToVietnamese: 'Switch to Vietnamese',
     ariaSwitchToEnglish: 'Switch to English',
-    langHintVi: '🇺🇸 Also available in English — click to switch.',
-    langHintEn: '🇻🇳 Có tiếng Việt — bấm để chuyển đổi.',
+    langHintVi: 'English version is here.',
+    langHintEn: 'Có bản tiếng Việt ở đây.',
   },
   vi: {
     connect: 'Kết nối',
@@ -539,11 +538,10 @@ const uiStrings = {
     ariaToggleLanguage: 'Chuyển ngôn ngữ',
     ariaToggleDarkMode: 'Chuyển chế độ sáng/tối',
     ariaDismiss: 'Đóng',
-    ariaDismissLangHint: 'Ẩn gợi ý ngôn ngữ',
     ariaSwitchToVietnamese: 'Chuyển sang tiếng Việt',
     ariaSwitchToEnglish: 'Chuyển sang tiếng Anh',
-    langHintVi: '🇺🇸 Trang này cũng có bản tiếng Anh — bấm để chuyển đổi.',
-    langHintEn: '🇻🇳 Có tiếng Việt — bấm để chuyển đổi.',
+    langHintVi: 'English version is here.',
+    langHintEn: 'Có bản tiếng Việt ở đây.',
   },
 } as const;
 
@@ -1006,7 +1004,6 @@ const getSystemPrefersDark = () =>
 /* ─── Persisted preferences ───────────────────────────────────────── */
 const LANG_STORAGE_KEY = 'tv-language';
 const THEME_STORAGE_KEY = 'tv-theme';
-const LANG_HINT_STORAGE_KEY = 'tv-lang-hint-dismissed';
 
 const readStoredLanguage = (): Language | null => {
   try {
@@ -1031,14 +1028,6 @@ const writeStored = (key: string, value: string) => {
     localStorage.setItem(key, value);
   } catch {
     /* storage unavailable (private mode, etc.) — preference just won't persist */
-  }
-};
-
-const isLangHintStoredDismissed = () => {
-  try {
-    return localStorage.getItem(LANG_HINT_STORAGE_KEY) === '1';
-  } catch {
-    return false;
   }
 };
 
@@ -1104,10 +1093,7 @@ const App: React.FC = () => {
   const [navResearchOpen, setNavResearchOpen] = useState(false);
   const navResearchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [langHintVisible, setLangHintVisible] = useState(false);
-  // No hints for visitors who already picked a language or dismissed the hint before.
-  const [langHintDismissed, setLangHintDismissed] = useState(
-    () => readStoredLanguage() !== null || isLangHintStoredDismissed(),
-  );
+  const [langHintDismissed, setLangHintDismissed] = useState(false);
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
@@ -1189,18 +1175,17 @@ const App: React.FC = () => {
   }, [activeTab]);
 
   useEffect(() => {
-    const showTimer = setTimeout(() => setLangHintVisible(true), 1200);
-    const hideTimer = setTimeout(() => setLangHintVisible(false), 4200); // 1.2 s delay + 3 s visible
+    if (langHintDismissed) return;
+    setLangHintVisible(true);
+    const hideTimer = setTimeout(() => setLangHintVisible(false), 3000);
     return () => {
-      clearTimeout(showTimer);
       clearTimeout(hideTimer);
     };
-  }, []);
+  }, [langHintDismissed]);
 
   const dismissLangHint = () => {
     setLangHintVisible(false);
     setLangHintDismissed(true);
-    writeStored(LANG_HINT_STORAGE_KEY, '1');
   };
 
   /* Frosted nav shell fades in once content scrolls near the top */
@@ -1323,10 +1308,7 @@ const App: React.FC = () => {
   const langHintText = language === 'en'
     ? uiStrings.en.langHintEn
     : uiStrings.vi.langHintVi;
-  // The hero banner is the primary hint; suppress the nav popup while it's on
-  // screen so two identical hints never show at once.
-  const heroBannerVisible = !langHintDismissed && (isMobile || activeTab === 'home');
-  const showLangHint = langHintVisible && !langHintDismissed && !heroBannerVisible;
+  const showLangHint = langHintVisible && !langHintDismissed;
 
   const closeDocumentModal = useCallback(() => setActiveDocument(null), []);
 
@@ -1475,27 +1457,28 @@ const App: React.FC = () => {
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0, transition: { duration: 0.2 } }}
                     exit={{ opacity: 0, y: -4, transition: { duration: 0.15 } }}
-                    className="absolute top-full right-0 mt-2 w-64 overflow-hidden"
+                    className="absolute top-full right-0 mt-2 w-max max-w-[calc(100vw-2rem)] overflow-visible"
                     style={{
                       backgroundColor: 'var(--paper)',
                       border: '1px solid var(--rule)',
                     }}
                     role="status"
                   >
+                    <span
+                      className="absolute -top-[5px] right-5 h-2.5 w-2.5 rotate-45"
+                      style={{
+                        backgroundColor: 'var(--paper)',
+                        borderLeft: '1px solid var(--rule)',
+                        borderTop: '1px solid var(--rule)',
+                      }}
+                      aria-hidden
+                    />
                     <button
                       type="button"
                       onClick={handleLanguageToggle}
-                      className="w-full text-left px-4 pt-3 pb-2.5 font-serif italic text-[13px] text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors"
+                      className="relative whitespace-nowrap text-left px-4 py-3 font-serif italic text-[13px] leading-snug text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors"
                     >
-                      <span className="pr-5">{langHintText}</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={dismissLangHint}
-                      aria-label={uiStrings[language].ariaDismiss}
-                      className="absolute top-2 right-2 p-1 text-[var(--ink-muted)] hover:text-[var(--ink)]"
-                    >
-                      <X size={11} />
+                      {langHintText}
                     </button>
                   </motion.div>
                 )}
@@ -1564,27 +1547,28 @@ const App: React.FC = () => {
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0, transition: { duration: 0.2 } }}
                     exit={{ opacity: 0, y: -4, transition: { duration: 0.15 } }}
-                    className="absolute top-full right-0 mt-2 w-60 z-50 overflow-hidden"
+                    className="absolute top-full right-0 mt-2 w-max max-w-[calc(100vw-2rem)] z-50 overflow-visible"
                     style={{
                       backgroundColor: 'var(--paper)',
                       border: '1px solid var(--rule)',
                     }}
                     role="status"
                   >
+                    <span
+                      className="absolute -top-[5px] right-5 h-2.5 w-2.5 rotate-45"
+                      style={{
+                        backgroundColor: 'var(--paper)',
+                        borderLeft: '1px solid var(--rule)',
+                        borderTop: '1px solid var(--rule)',
+                      }}
+                      aria-hidden
+                    />
                     <button
                       type="button"
                       onClick={handleLanguageToggle}
-                      className="w-full text-left px-4 pt-3 pb-2.5 font-serif italic text-[13px] text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors"
+                      className="relative whitespace-nowrap text-left px-4 py-3 font-serif italic text-[13px] leading-snug text-[var(--ink)] hover:bg-[var(--paper-2)] transition-colors"
                     >
-                      <span className="pr-5">{langHintText}</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={dismissLangHint}
-                      aria-label={uiStrings[language].ariaDismiss}
-                      className="absolute top-2 right-2 p-1 text-[var(--ink-muted)] hover:text-[var(--ink)]"
-                    >
-                      <X size={11} />
+                      {langHintText}
                     </button>
                   </motion.div>
                 )}
@@ -1672,9 +1656,6 @@ const App: React.FC = () => {
             <HeroSection
               language={language}
               uiStrings={uiStrings[language]}
-              langHintDismissed={langHintDismissed}
-              onLanguageToggle={handleLanguageToggle}
-              onDismissLangHint={dismissLangHint}
               onOpenCv={() => setActiveDocument(cvDocument)}
               onPrefetchPdf={prefetchPdfViewer}
               isMobile={isMobile}

@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Mail, FileText, X } from 'lucide-react';
+import { Mail, FileText } from 'lucide-react';
 import { CurrentResearch } from './CurrentResearch';
 import { HeroBioWeather } from './HeroBioWeather';
 import { useHeroIntro } from '../hooks/useHeroIntro';
@@ -15,15 +14,7 @@ type HeroSectionProps = {
   uiStrings: {
     ariaViewCv: string;
     downloadCv: string;
-    ariaSwitchToVietnamese: string;
-    ariaSwitchToEnglish: string;
-    ariaDismissLangHint: string;
-    langHintEn: string;
-    langHintVi: string;
   };
-  langHintDismissed: boolean;
-  onLanguageToggle: () => void;
-  onDismissLangHint: () => void;
   onOpenCv: () => void;
   onPrefetchPdf: () => void;
   isMobile: boolean;
@@ -33,9 +24,6 @@ type HeroSectionProps = {
 export const HeroSection: React.FC<HeroSectionProps> = ({
   language,
   uiStrings,
-  langHintDismissed,
-  onLanguageToggle,
-  onDismissLangHint,
   onOpenCv,
   onPrefetchPdf,
   isMobile,
@@ -133,44 +121,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             onOpenResearch={onOpenResearch}
           />
         </div>
-
-        <AnimatePresence>
-          {!langHintDismissed && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, transition: { delay: 1.0, duration: 0.4 } }}
-              exit={{ opacity: 0, transition: { duration: 0.2 } }}
-              className="mt-8 flex justify-center"
-              data-hero-banner
-            >
-              <div className="flex items-center gap-3 max-w-xl">
-                <span
-                  className="w-1.5 h-1.5 shrink-0"
-                  style={{ backgroundColor: 'var(--sage)' }}
-                  aria-hidden
-                />
-                <button
-                  onClick={onLanguageToggle}
-                  className="font-serif italic text-[13px] text-[var(--ink-muted)] hover:text-[var(--ink)] transition-colors"
-                  aria-label={
-                    language === 'en'
-                      ? uiStrings.ariaSwitchToVietnamese
-                      : uiStrings.ariaSwitchToEnglish
-                  }
-                >
-                  {language === 'en' ? uiStrings.langHintEn : uiStrings.langHintVi}
-                </button>
-                <button
-                  onClick={onDismissLangHint}
-                  className="p-1 text-[var(--ink-muted)]/60 hover:text-[var(--ink)] transition-colors shrink-0"
-                  aria-label={uiStrings.ariaDismissLangHint}
-                >
-                  <X size={11} />
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </header>
   );
