@@ -104,11 +104,7 @@ export const CurrentResearch: React.FC<CurrentResearchProps> = ({
   return (
     <section aria-label={strings[language].label}>
       <div
-        className="w-full py-4 sm:py-5"
-        style={{
-          borderTop: '1px solid var(--rule)',
-          borderBottom: '1px solid var(--rule)',
-        }}
+        className="relative w-full py-4 sm:py-5 before:pointer-events-none after:pointer-events-none before:absolute before:top-0 before:left-0 before:right-0 sm:before:-left-1 sm:before:-right-1 before:h-px before:bg-[var(--rule)] after:absolute after:bottom-0 after:left-0 after:right-0 sm:after:-left-1 sm:after:-right-1 after:h-px after:bg-[var(--rule)]"
       >
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-6 text-center sm:text-left">
           <div>
@@ -125,8 +121,7 @@ export const CurrentResearch: React.FC<CurrentResearchProps> = ({
         </div>
 
         <div
-          className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-y-5 sm:gap-x-6 pt-5"
-          style={{ borderTop: '1px solid var(--rule)' }}
+          className="relative mt-5 grid grid-cols-1 sm:grid-cols-3 gap-y-5 sm:gap-x-6 pt-5 before:pointer-events-none before:absolute before:top-0 before:left-0 before:right-0 sm:before:-left-1 sm:before:-right-1 before:h-px before:bg-[var(--rule)]"
         >
           {items.map((item, i) => (
             <div key={item.institution} className="min-w-0 text-center sm:text-left">
