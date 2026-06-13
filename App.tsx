@@ -1760,8 +1760,8 @@ const App: React.FC = () => {
                   date={language === 'vi' ? 'Hè 2026' : 'Summer 2026'}
                   location={
                     language === 'vi'
-                      ? 'Puerto Rico, Ponce | Giáo sư hướng dẫn: Tiến sĩ Pamela Harris và Tiến sĩ Fernando Pinero'
-                      : 'Puerto Rico, Ponce | Supervisors: Dr. Pamela Harris and Dr. Fernando Pinero'
+                      ? 'Puerto Rico, Ponce | Giáo sư hướng dẫn: Tiến sĩ Pamela Harris và Tiến sĩ Fernando Pinero | Cố vấn: Cyrus Young và Melissa Beerbower'
+                      : 'Puerto Rico, Ponce | Supervisors: Dr. Pamela Harris and Dr. Fernando Pinero | Mentors: Cyrus Young and Melissa Beerbower'
                   }
                 >
                   {language === 'vi'
