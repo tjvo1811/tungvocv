@@ -25,7 +25,7 @@ const data: Record<Language, Item[]> = {
     },
     {
       institution: 'University of Puerto Rico – Ponce',
-      role: 'Incoming REU Fellow',
+      role: 'Undergraduate REU Fellow',
       date: 'Summer 2026',
       focus: 'Coding theory and combinatorics',
     },
@@ -45,7 +45,7 @@ const data: Record<Language, Item[]> = {
     },
     {
       institution: 'Đại học Puerto Rico – Ponce',
-      role: 'Học giả REU sắp tới',
+      role: 'Học giả REU bậc đại học',
       date: 'Hè 2026',
       focus: 'Lý thuyết mã hóa và tổ hợp',
     },
