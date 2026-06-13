@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Mail, FileText, X } from 'lucide-react';
+import { CurrentResearch } from './CurrentResearch';
 import { HeroBioWeather } from './HeroBioWeather';
 import { useHeroIntro } from '../hooks/useHeroIntro';
 import { useHeroParallax } from '../hooks/useScrollEffects';
@@ -25,6 +26,8 @@ type HeroSectionProps = {
   onDismissLangHint: () => void;
   onOpenCv: () => void;
   onPrefetchPdf: () => void;
+  isMobile: boolean;
+  onOpenResearch: () => void;
 };
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
@@ -35,6 +38,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   onDismissLangHint,
   onOpenCv,
   onPrefetchPdf,
+  isMobile,
+  onOpenResearch,
 }) => {
   const heroRef = useHeroIntro(language);
   useHeroParallax(heroRef);
@@ -44,7 +49,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   return (
     <header
       ref={heroRef}
-      className="hero-viewport relative pb-28 md:pb-36 flex items-center justify-center overflow-hidden"
+      className="hero-viewport relative pt-24 pb-16 md:pt-28 md:pb-20 flex items-center justify-center overflow-hidden"
     >
       <Suspense fallback={null}>
         <GraphField />
@@ -119,6 +124,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               />
             </span>
           </button>
+        </div>
+
+        <div data-hero-research className="mt-8 sm:mt-10">
+          <CurrentResearch
+            language={language}
+            isMobile={isMobile}
+            onOpenResearch={onOpenResearch}
+          />
         </div>
 
         <AnimatePresence>

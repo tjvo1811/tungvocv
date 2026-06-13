@@ -1677,6 +1677,8 @@ const App: React.FC = () => {
               onDismissLangHint={dismissLangHint}
               onOpenCv={() => setActiveDocument(cvDocument)}
               onPrefetchPdf={prefetchPdfViewer}
+              isMobile={isMobile}
+              onOpenResearch={() => switchTab('research')}
             />
           </motion.div>
         )}

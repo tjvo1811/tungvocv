@@ -19,9 +19,10 @@ export function useHeroIntro(language: 'en' | 'vi') {
       const title = scope.querySelector('[data-hero-title]');
       const bio = scope.querySelector('[data-hero-bio]');
       const actions = scope.querySelector('[data-hero-actions]');
+      const research = scope.querySelector('[data-hero-research]');
 
       if (prefersReducedMotion()) {
-        gsap.set([kicker, title, bio, actions], { opacity: 1, y: 0, clearProps: 'all' });
+        gsap.set([kicker, title, bio, actions, research], { opacity: 1, y: 0, clearProps: 'all' });
         if (kicker) gsap.set(kicker, { letterSpacing: '0.22em' });
         return;
       }
@@ -72,7 +73,7 @@ export function useHeroIntro(language: 'en' | 'vi') {
       if (bio && actions) {
         const startAt = isReplay ? 0.2 : 0.55;
         tl.fromTo(
-          [bio, actions],
+          [bio, actions, research],
           { y: 16, opacity: 0 },
           { y: 0, opacity: 1, duration: 0.6, ease: 'power3.out', stagger: 0.12 },
           startAt,
