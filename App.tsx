@@ -667,6 +667,53 @@ const HonorCard = ({ title, org, date }: { title: string; org: string; date: str
   );
 };
 
+/* ─── Research document actions (paper / poster / tool) ───────────── */
+const docActionClass =
+  'group inline-flex items-center gap-1.5 px-2 py-1 font-mono text-[10px] tracking-[0.14em] uppercase text-[var(--ink-muted)] border border-[var(--rule)] transition-colors duration-200 hover:text-[var(--sage)] hover:border-[var(--sage)]/50';
+
+const DocActionButton = ({
+  icon: Icon,
+  label,
+  onClick,
+  onPrefetch,
+}: {
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  label: string;
+  onClick: () => void;
+  onPrefetch?: () => void;
+}) => (
+  <button
+    type="button"
+    onClick={onClick}
+    onMouseEnter={onPrefetch}
+    onFocus={onPrefetch}
+    className={docActionClass}
+  >
+    <Icon size={11} className="text-[var(--ink-muted)] group-hover:text-[var(--sage)] shrink-0 transition-colors" aria-hidden />
+    <span>{label}</span>
+  </button>
+);
+
+const DocActionLink = ({
+  icon: Icon,
+  label,
+  href,
+}: {
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  label: string;
+  href: string;
+}) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    className={docActionClass}
+  >
+    <Icon size={11} className="text-[var(--ink-muted)] group-hover:text-[var(--sage)] shrink-0 transition-colors" aria-hidden />
+    <span>{label}</span>
+  </a>
+);
+
 /* ─── Experience item (used in Research) ──────────────────────────── */
 const ExperienceItem = ({
   title,
@@ -704,70 +751,12 @@ const ExperienceItem = ({
     />
 
     <div className="flex flex-col md:flex-row md:items-baseline md:justify-between mb-2 gap-2">
-      <div className="flex items-baseline gap-4 flex-wrap">
-        <h3
-          className="font-display italic text-[var(--ink)] text-xl leading-snug"
-          style={{ fontWeight: 500 }}
-        >
-          {title}
-        </h3>
-        {documentData && onOpenDocument && (
-          <button
-            onClick={() => onOpenDocument(documentData)}
-            onMouseEnter={prefetchPdfViewer}
-            onFocus={prefetchPdfViewer}
-            className="group inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
-            title={uiStrings[language].viewPaper}
-          >
-            <FileText size={11} />
-            <span className="relative">
-              {uiStrings[language].viewPaper}
-              <span
-                className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
-                style={{ backgroundColor: 'var(--sage)' }}
-                aria-hidden
-              />
-            </span>
-          </button>
-        )}
-        {posterData && onOpenDocument && (
-          <button
-            onClick={() => onOpenDocument(posterData)}
-            onMouseEnter={prefetchPdfViewer}
-            onFocus={prefetchPdfViewer}
-            className="group inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
-            title={uiStrings[language].viewPoster}
-          >
-            <LayoutTemplate size={11} />
-            <span className="relative">
-              {uiStrings[language].viewPoster}
-              <span
-                className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
-                style={{ backgroundColor: 'var(--sage)' }}
-                aria-hidden
-              />
-            </span>
-          </button>
-        )}
-        {toolUrl && (
-          <a
-            href={toolUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
-          >
-            <ExternalLink size={11} />
-            <span className="relative">
-              {uiStrings[language].liveTool}
-              <span
-                className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
-                style={{ backgroundColor: 'var(--sage)' }}
-                aria-hidden
-              />
-            </span>
-          </a>
-        )}
-      </div>
+      <h3
+        className="font-display italic text-[var(--ink)] text-xl leading-snug"
+        style={{ fontWeight: 500 }}
+      >
+        {title}
+      </h3>
       <span className="font-mono text-[11px] text-[var(--ink-muted)] tabular-nums whitespace-nowrap">
         {date}
       </span>
@@ -777,8 +766,35 @@ const ExperienceItem = ({
       {role}
     </div>
     {location && (
-      <div className="font-serif italic text-[12px] text-[var(--ink-muted)] mb-3">
+      <div className="font-serif italic text-[12px] text-[var(--ink-muted)] mb-2">
         {location}
+      </div>
+    )}
+    {(documentData || posterData || toolUrl) && (
+      <div className="flex flex-wrap gap-2 mb-3">
+        {documentData && onOpenDocument && (
+          <DocActionButton
+            icon={FileText}
+            label={uiStrings[language].viewPaper}
+            onClick={() => onOpenDocument(documentData)}
+            onPrefetch={prefetchPdfViewer}
+          />
+        )}
+        {posterData && onOpenDocument && (
+          <DocActionButton
+            icon={LayoutTemplate}
+            label={uiStrings[language].viewPoster}
+            onClick={() => onOpenDocument(posterData)}
+            onPrefetch={prefetchPdfViewer}
+          />
+        )}
+        {toolUrl && (
+          <DocActionLink
+            icon={ExternalLink}
+            label={uiStrings[language].liveTool}
+            href={toolUrl}
+          />
+        )}
       </div>
     )}
     <div className="font-serif text-[var(--ink)] leading-relaxed text-[15px]">
@@ -1817,7 +1833,7 @@ const App: React.FC = () => {
                       {String(i + 1).padStart(2, '0')}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-3 mb-1">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-1">
                         <h4
                           className="font-display italic text-[var(--ink)] leading-snug text-[16px]"
                           style={{ fontWeight: 500 }}
@@ -1825,22 +1841,12 @@ const App: React.FC = () => {
                           {p.title}
                         </h4>
                         {p.poster && (
-                          <button
+                          <DocActionButton
+                            icon={LayoutTemplate}
+                            label={uiStrings[language].viewPoster}
                             onClick={() => setActiveDocument(p.poster!)}
-                            onMouseEnter={prefetchPdfViewer}
-                            onFocus={prefetchPdfViewer}
-                            className="group shrink-0 inline-flex items-center gap-1.5 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--ink-muted)] hover:text-[var(--sage)] transition-colors py-1"
-                          >
-                            <LayoutTemplate size={11} />
-                            <span className="relative">
-                              {uiStrings[language].viewPoster}
-                              <span
-                                className="absolute left-0 right-0 -bottom-0.5 h-px origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200"
-                                style={{ backgroundColor: 'var(--sage)' }}
-                                aria-hidden
-                              />
-                            </span>
-                          </button>
+                            onPrefetch={prefetchPdfViewer}
+                          />
                         )}
                       </div>
                       <p className="font-serif text-[13px] text-[var(--ink-muted)] mt-1">
