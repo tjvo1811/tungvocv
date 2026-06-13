@@ -1,11 +1,11 @@
 /**
- * Editorial wordmark: "TV." in Source Serif 4 italic — replaces the prior
+ * Editorial wordmark: "tj." in Source Serif 4 italic — replaces the prior
  * circular pill mark. The dot is set in the sage accent for a quiet
  * masthead signature.
  */
 export function BrandMark({ className = '' }: { className?: string }) {
   return (
-    <svg viewBox="0 0 36 32" className={`block ${className}`} aria-label="TV." role="img">
+    <svg viewBox="0 0 28 32" className={`block ${className}`} aria-label="tj." role="img">
       <text
         x={0}
         y={24}
@@ -20,10 +20,10 @@ export function BrandMark({ className = '' }: { className?: string }) {
           letterSpacing: '-0.02em',
         }}
       >
-        TV
+        tj
       </text>
       <text
-        x={28}
+        x={20}
         y={24}
         textAnchor="start"
         className="fill-[var(--sage)]"
