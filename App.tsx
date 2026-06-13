@@ -767,7 +767,16 @@ const ExperienceItem = ({
     </div>
     {location && (
       <div className="font-serif italic text-[12px] text-[var(--ink-muted)] mb-2">
-        {location}
+        {location.split(' | ').map((part, i, parts) => (
+          <React.Fragment key={i}>
+            {part}
+            {i < parts.length - 1 && (
+              <span className="mx-1.5 text-[var(--ink-muted)]/50 not-italic" aria-hidden>
+                |
+              </span>
+            )}
+          </React.Fragment>
+        ))}
       </div>
     )}
     {(documentData || posterData || toolUrl) && (
@@ -1718,8 +1727,8 @@ const App: React.FC = () => {
                   date={language === 'vi' ? 'Hè 2026 – Hiện tại' : 'Summer 2026 – Current'}
                   location={
                     language === 'vi'
-                      ? 'Trưởng dự án: Saber Dinpazhouh (Nghiên cứu sinh tiến sĩ) | Giáo sư hướng dẫn: Tiến sĩ Illya Hicks'
-                      : 'Project Lead: Saber Dinpazhouh (PhD Candidate) | Supervisor: Dr. Illya Hicks'
+                      ? 'Houston, Texas | Trưởng dự án: Saber Dinpazhouh (Nghiên cứu sinh tiến sĩ) | Giáo sư hướng dẫn: Tiến sĩ Illya Hicks'
+                      : 'Houston, Texas | Project Lead: Saber Dinpazhouh (PhD Candidate) | Supervisor: Dr. Illya Hicks'
                   }
                 >
                   {language === 'vi'
@@ -1731,7 +1740,7 @@ const App: React.FC = () => {
                   title={language === 'vi' ? 'Đại học St. Thomas' : 'University of St. Thomas'}
                   role={language === 'vi' ? 'Nghiên cứu viên bậc đại học' : 'Undergraduate Researcher'}
                   date={language === 'vi' ? 'Mùa thu 2025 – Hiện tại' : 'Fall 2025 – Current'}
-                  location={language === 'vi' ? 'Giáo sư hướng dẫn: Tiến sĩ Mary Flagg' : 'Supervisor: Dr. Mary Flagg'}
+                  location={language === 'vi' ? 'Houston, Texas | Giáo sư hướng dẫn: Tiến sĩ Mary Flagg' : 'Houston, Texas | Supervisor: Dr. Mary Flagg'}
                   posterData={ustGraphTheoryPoster}
                   onOpenDocument={(doc) => setActiveDocument(doc)}
                 >
@@ -1751,13 +1760,13 @@ const App: React.FC = () => {
                   date={language === 'vi' ? 'Hè 2026' : 'Summer 2026'}
                   location={
                     language === 'vi'
-                      ? 'Giáo sư hướng dẫn: Tiến sĩ Pamela Harris và Tiến sĩ Fernando Pinero'
-                      : 'Supervisor: Dr. Pamela Harris and Dr. Fernando Pinero'
+                      ? 'Puerto Rico, Ponce | Giáo sư hướng dẫn: Tiến sĩ Pamela Harris và Tiến sĩ Fernando Pinero'
+                      : 'Puerto Rico, Ponce | Supervisors: Dr. Pamela Harris and Dr. Fernando Pinero'
                   }
                 >
                   {language === 'vi'
-                    ? 'Tập trung vào lý thuyết mã hóa, tổ hợp, lý thuyết đồ thị, mã cục bộ phục hồi được và mã từ các hình học hữu hạn.'
-                    : 'Working on coding theory, combinatorics, graph theory, locally recoverable codes, and codes from finite geometries.'}
+                    ? 'Tập trung vào tổ hợp, đặc biệt là hàm đỗ xe (parking functions), cùng với lý thuyết mã hóa.'
+                    : 'Working on combinatorics, including parking functions, as well as coding theory.'}
                 </ExperienceItem>
               </div>
 
@@ -1768,7 +1777,7 @@ const App: React.FC = () => {
                   title={language === 'vi' ? 'Trường Cao đẳng Cộng đồng Lone Star | Trường Cao đẳng Danh dự' : 'Lone Star College | The Honors College'}
                   role={language === 'vi' ? 'Nghiên cứu viên – Phân tích Chiến tranh Việt Nam' : 'Researcher – Vietnam War Analysis'}
                   date={language === 'vi' ? 'Mùa thu 2024' : 'Fall 2024'}
-                  location={language === 'vi' ? 'Giáo sư hướng dẫn: Tiến sĩ Kelly Phillips' : 'Supervisor: Dr. Kelly Phillips'}
+                  location={language === 'vi' ? 'Houston, Texas | Giáo sư hướng dẫn: Tiến sĩ Kelly Phillips' : 'Houston, Texas | Supervisor: Dr. Kelly Phillips'}
                   documentData={histPaper}
                   posterData={histPoster}
                   onOpenDocument={(doc) => setActiveDocument(doc)}
@@ -1799,7 +1808,7 @@ const App: React.FC = () => {
                   title={language === 'vi' ? 'Trường Cao đẳng Cộng đồng Lone Star | Trường Cao đẳng Danh dự' : 'Lone Star College | The Honors College'}
                   role={language === 'vi' ? 'Nghiên cứu viên – Ô nhiễm không khí' : 'Researcher – Air Pollution'}
                   date={language === 'vi' ? 'Mùa xuân 2024' : 'Spring 2024'}
-                  location={language === 'vi' ? 'Giáo sư hướng dẫn: Tiến sĩ Dana Van De Walker' : 'Supervisor: Dr. Dana Van De Walker'}
+                  location={language === 'vi' ? 'Houston, Texas | Giáo sư hướng dẫn: Tiến sĩ Dana Van De Walker' : 'Houston, Texas | Supervisor: Dr. Dana Van De Walker'}
                   documentData={govtPaper}
                   onOpenDocument={(doc) => setActiveDocument(doc)}
                 >
