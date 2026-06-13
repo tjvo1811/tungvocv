@@ -55,12 +55,12 @@ const data: Record<Language, Item[]> = {
 const strings = {
   en: {
     label: 'Current Research',
-    summary: 'Active work includes quantum routing, graph theory, combinatorics, and coding theory.',
+    summary: 'On quantum routing, graph theory, combinatorics, and coding theory.',
     seeMore: 'See full research',
   },
   vi: {
     label: 'Nghiên cứu hiện tại',
-    summary: 'Các hướng nghiên cứu hiện tại gồm định tuyến lượng tử, lý thuyết đồ thị, tổ hợp và lý thuyết mã hóa.',
+    summary: 'Về định tuyến lượng tử, lý thuyết đồ thị, tổ hợp và lý thuyết mã hóa.',
     seeMore: 'Xem nghiên cứu đầy đủ',
   },
 } as const;
