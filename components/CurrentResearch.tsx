@@ -104,7 +104,7 @@ export const CurrentResearch: React.FC<CurrentResearchProps> = ({
   return (
     <section aria-label={strings[language].label}>
       <div
-        className="w-full px-4 sm:px-6 py-4 sm:py-5"
+        className="w-full py-4 sm:py-5"
         style={{
           borderTop: '1px solid var(--rule)',
           borderBottom: '1px solid var(--rule)',
@@ -125,7 +125,7 @@ export const CurrentResearch: React.FC<CurrentResearchProps> = ({
         </div>
 
         <div
-          className="mt-5 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.35fr)] gap-y-5 sm:gap-x-8 pt-5"
+          className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-y-5 sm:gap-x-6 pt-5"
           style={{ borderTop: '1px solid var(--rule)' }}
         >
           {items.map((item, i) => (
