@@ -114,12 +114,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </button>
         </div>
 
-        <div data-hero-research className="mt-8 sm:mt-10">
-          <CurrentResearch
-            language={language}
-            isMobile={isMobile}
-            onOpenResearch={onOpenResearch}
-          />
+        <div data-hero-research className="mt-8 sm:mt-10 w-screen relative left-1/2 -translate-x-1/2 px-6">
+          <div className="max-w-5xl mx-auto">
+            <CurrentResearch
+              language={language}
+              isMobile={isMobile}
+              onOpenResearch={onOpenResearch}
+            />
+          </div>
         </div>
       </div>
     </header>
