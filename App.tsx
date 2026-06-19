@@ -1766,7 +1766,7 @@ const App: React.FC = () => {
                 >
                   {language === 'vi'
                     ? 'Tập trung vào tổ hợp, đặc biệt là hàm đỗ xe (parking functions), cùng với lý thuyết mã hóa.'
-                    : 'Working on combinatorics, including parking functions, as well as coding theory.'}
+                    : 'On parking function variants (Cayley permutations, unit interval parking functions, Fubini rankings) and constructing inversion-preserving bijections between them. Parallel track in coding theory: finite fields, polynomial evaluation maps, Reed-Solomon codes, and the Berlekamp-Welch decoder.'}
                 </ExperienceItem>
               </div>
 
