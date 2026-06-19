@@ -27,7 +27,7 @@ const data: Record<Language, Item[]> = {
       institution: 'University of Puerto Rico – Ponce',
       role: 'Research Fellow, NSF REU',
       date: 'Summer 2026',
-      focus: 'Coding theory and combinatorics',
+      focus: 'Parking function variants & Reed–Solomon codes',
     },
   ],
   vi: [
@@ -47,7 +47,7 @@ const data: Record<Language, Item[]> = {
       institution: 'Đại học Puerto Rico – Ponce',
       role: 'Học giả nghiên cứu, NSF REU',
       date: 'Hè 2026',
-      focus: 'Lý thuyết mã hóa và tổ hợp',
+      focus: 'Biến thể hàm đỗ xe & mã Reed-Solomon',
     },
   ],
 };

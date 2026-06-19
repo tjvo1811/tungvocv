@@ -39,7 +39,7 @@ Nghiên cứu được tài trợ bởi chương trình NSF PRIMES PAIR (chươn
 **Đại học Puerto Rico – Ponce** — Hè 2026
 *Giáo sư hướng dẫn: Tiến sĩ Pamela Harris và Tiến sĩ Fernando Pinero*
 
-Học giả REU (Chương trình Nghiên cứu Mùa hè dành cho Sinh viên Đại học) dự kiến tham gia. Tập trung vào lý thuyết mã hóa, tổ hợp, lý thuyết đồ thị, mã cục bộ phục hồi được và mã từ các hình học hữu hạn.
+Học giả REU (Chương trình Nghiên cứu Mùa hè dành cho Sinh viên Đại học). Về các biến thể hàm đỗ xe (hoán vị Cayley, hàm đỗ xe đoạn đơn vị, xếp hạng Fubini) và xây dựng các song song hóa bảo toàn đảo nghịch giữa chúng. Hướng song song trong lý thuyết mã hóa: trường hữu hạn, ánh xạ đánh giá đa thức, mã Reed-Solomon và bộ giải mã Berlekamp-Welch.
 
 ---
 

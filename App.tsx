@@ -1765,7 +1765,7 @@ const App: React.FC = () => {
                   }
                 >
                   {language === 'vi'
-                    ? 'Tập trung vào tổ hợp, đặc biệt là hàm đỗ xe (parking functions), cùng với lý thuyết mã hóa.'
+                    ? 'Về các biến thể hàm đỗ xe (hoán vị Cayley, hàm đỗ xe đoạn đơn vị, xếp hạng Fubini) và xây dựng các song song hóa bảo toàn đảo nghịch giữa chúng. Hướng song song trong lý thuyết mã hóa: trường hữu hạn, ánh xạ đánh giá đa thức, mã Reed-Solomon và bộ giải mã Berlekamp-Welch.'
                     : 'On parking function variants (Cayley permutations, unit interval parking functions, Fubini rankings) and constructing inversion-preserving bijections between them. Parallel track in coding theory: finite fields, polynomial evaluation maps, Reed-Solomon codes, and the Berlekamp-Welch decoder.'}
                 </ExperienceItem>
               </div>
